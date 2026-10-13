@@ -1,60 +1,154 @@
-"use client";
-
-import { useRef } from "react";
-import { motion, useScroll, useTransform } from "motion/react";
+import Link from "next/link";
 import type { Service } from "@/data/services";
-import { ServiceSectionContent } from "@/components/services/ServiceSectionContent";
+import { Icon } from "@/components/ui/Icon";
+import { ServiceArt } from "@/components/media/ServiceArt";
+import { STACK } from "@/config/stack";
 
 /**
- * One sticky panel in the desktop stack. The *rise and cover* is produced by
- * native `position: sticky` + document flow (so scrolling, keyboard and anchor
- * links keep working). Framer Motion only adds the subtle depth of the panel
- * being covered: as the next panel rises over it, this one eases to 96% scale
- * and 90% opacity so a readable margin stays visible behind. The last panel
- * never recedes (nothing covers it). Transform + opacity only.
+ * Presentational service panel — identical structure for all six services.
+ * Used by the pinned stage (mode="stage", fits one screen) and the fallback
+ * (mode="flow", natural height). Only colour, media and copy differ.
  */
 export function ServicePanel({
   service,
-  index,
-  isLast,
+  mode,
 }: {
   service: Service;
-  index: number;
-  isLast: boolean;
+  mode: "stage" | "flow";
 }) {
-  const ref = useRef<HTMLElement>(null);
-
-  // 0 when this panel pins at the top, 1 when it is fully covered by the next.
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start start", "end start"],
-  });
-
-  const scale = useTransform(scrollYProgress, [0, 1], [1, isLast ? 1 : 0.96]);
-  const opacity = useTransform(scrollYProgress, [0, 1], [1, isLast ? 1 : 0.9]);
+  const { colors, mediaSide } = service;
+  const total = 6;
 
   return (
-    <motion.section
-      ref={ref}
-      id={service.slug}
-      aria-label={`${service.title} — ${service.teamLabel}`}
-      className="sticky top-0 flex h-[100svh] items-center overflow-hidden rounded-t-[1.75rem] border-t bg-bg will-change-transform"
+    <div
+      className={`relative w-full overflow-hidden ${
+        mode === "stage" ? "h-full" : "min-h-[560px]"
+      }`}
       style={
         {
-          "--accent": service.accent.hex,
-          zIndex: index + 1,
-          scale,
-          opacity,
-          transformOrigin: "center top",
-          scrollMarginTop: "var(--header-h)",
-          paddingTop: "var(--header-h)",
-          borderTopColor:
-            "color-mix(in srgb, var(--accent) 32%, var(--color-hairline))",
-          boxShadow: "0 -14px 34px -26px rgba(26,25,23,0.55)",
-        } as unknown as React.CSSProperties
+          background: colors.bg,
+          color: colors.text,
+          borderRadius: STACK.radiusPx,
+          "--accent": colors.highlight,
+        } as React.CSSProperties
       }
     >
-      <ServiceSectionContent service={service} />
-    </motion.section>
+      <div
+        className="grid h-full items-center gap-[clamp(1.5rem,3vw,3rem)] p-[clamp(1.5rem,3.2vw,3.25rem)] lg:grid-cols-[42%_1fr]"
+      >
+        {/* Media */}
+        <div
+          className={`order-1 ${
+            mediaSide === "left" ? "lg:order-1" : "lg:order-2"
+          }`}
+        >
+          <figure className="relative m-0">
+            <div
+              className={`relative mx-auto aspect-[4/5] w-full overflow-hidden rounded-[10px] ${
+                mode === "stage" ? "max-h-[56svh]" : ""
+              }`}
+              style={{ maxWidth: mode === "stage" ? "min(100%, 44svh)" : "26rem" }}
+            >
+              <ServiceArt
+                slug={service.slug}
+                accent={colors.highlight}
+                className="h-full w-full"
+              />
+              <figcaption
+                className="absolute bottom-2.5 left-2.5 rounded-full px-2.5 py-1 text-[0.6875rem] font-medium"
+                style={{ background: "rgba(0,0,0,0.55)", color: "#F4EEE8" }}
+              >
+                {service.media.caption}
+              </figcaption>
+            </div>
+          </figure>
+        </div>
+
+        {/* Text */}
+        <div
+          className={`order-2 min-w-0 ${
+            mediaSide === "left" ? "lg:order-2" : "lg:order-1"
+          }`}
+        >
+          <p className="eyebrow flex items-center gap-2" style={{ color: colors.muted }}>
+            <span
+              aria-hidden="true"
+              className="inline-block h-1.5 w-1.5 rounded-full"
+              style={{ background: colors.highlight }}
+            />
+            {service.teamLabel} · {service.number} / {String(total).padStart(2, "0")}
+          </p>
+
+          <h2 className="font-display mt-4 text-[length:var(--text-title)] font-semibold leading-[1.05] tracking-[-0.02em]">
+            {service.title}
+          </h2>
+
+          <p
+            className="mt-3 max-w-[46ch] text-[length:var(--text-body-lg)] leading-snug"
+            style={{ color: colors.muted }}
+          >
+            {service.description}
+          </p>
+
+          <ul className="mt-5 grid list-none grid-cols-1 gap-x-4 gap-y-3 p-0 sm:grid-cols-3">
+            {service.deliverables.map((d) => (
+              <li key={d.label} className="min-w-0">
+                <span
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-[10px] border"
+                  style={{ borderColor: colors.line }}
+                >
+                  <Icon name={d.icon} className="h-5 w-5" />
+                </span>
+                <p className="mt-2.5 text-[0.95rem] font-semibold leading-tight">
+                  {d.label}
+                </p>
+                <p className="text-[0.8rem]" style={{ color: colors.muted }}>
+                  {d.caption}
+                </p>
+              </li>
+            ))}
+          </ul>
+
+          <p className="font-display mt-5 text-[length:var(--text-highlight)] font-medium leading-snug">
+            <Highlight text={service.highlight.text} accent={service.highlight.accent} color={colors.highlight} />
+          </p>
+
+          <div className="mt-5">
+            <Link
+              href="#contact"
+              className="group inline-flex items-center gap-1.5 rounded-full px-5 py-2.5 text-[0.9rem] font-semibold transition-opacity duration-300 hover:opacity-85"
+              style={{
+                background: colors.dark ? "#FDF2EC" : "#0A0A0A",
+                color: colors.dark ? "#0A0A0A" : "#FDF2EC",
+              }}
+            >
+              Discuss this project
+              <span aria-hidden="true">→</span>
+            </Link>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** Renders `text` with its `accent` substring in the highlight colour. */
+function Highlight({
+  text,
+  accent,
+  color,
+}: {
+  text: string;
+  accent: string;
+  color: string;
+}) {
+  const i = text.indexOf(accent);
+  if (i === -1) return <>{text}</>;
+  return (
+    <>
+      {text.slice(0, i)}
+      <span style={{ color }}>{accent}</span>
+      {text.slice(i + accent.length)}
+    </>
   );
 }

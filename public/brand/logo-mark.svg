@@ -1,0 +1,6 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ProMotion mark">
+  <!-- Replaceable square logo mark (used for the spinning contact mark). -->
+  <circle cx="24" cy="24" r="21" fill="none" stroke="#0A0A0A" stroke-width="2" opacity="0.3"/>
+  <path d="M24 3a21 21 0 0 1 21 21" fill="none" stroke="#D4502A" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M19 16 34 24 19 32Z" fill="#0A0A0A"/>
+</svg>

@@ -1,0 +1,7 @@
+<svg width="208" height="48" viewBox="0 0 208 48" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ProMotion">
+  <!-- Replaceable horizontal logo lockup. Or edit components/ui/Logo.tsx. -->
+  <circle cx="24" cy="24" r="21" fill="none" stroke="#0A0A0A" stroke-width="2" opacity="0.3"/>
+  <path d="M24 3a21 21 0 0 1 21 21" fill="none" stroke="#D4502A" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M19 16 34 24 19 32Z" fill="#0A0A0A"/>
+  <text x="58" y="31" font-family="'Space Grotesk', Arial, sans-serif" font-size="22" font-weight="600" fill="#0A0A0A">ProMotion</text>
+</svg>

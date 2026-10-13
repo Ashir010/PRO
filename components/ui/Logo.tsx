@@ -1,12 +1,11 @@
 /**
  * Replaceable logo placeholder.
+ *  - LogoMark: square glyph (also used by the spinning contact mark).
+ *  - Logo: mark + "ProMotion" wordmark lockup.
  *
- * `mark` is a standalone glyph (also used by the spinning contact logo);
- * the full lockup pairs it with the "ProMotion" wordmark.
- *
- * To swap in a real logo: replace the SVG paths below, or drop a file at
- * public/logo.svg and render it with next/image. Keep the mark roughly square
- * so the contact spinner stays balanced.
+ * To swap in a real logo: replace the SVG below, or drop files at
+ * public/brand/logo.svg and public/brand/logo-mark.svg and render with
+ * next/image. Keep the mark square so the contact spinner stays balanced.
  */
 
 export function LogoMark({ className = "" }: { className?: string }) {
@@ -24,25 +23,35 @@ export function LogoMark({ className = "" }: { className?: string }) {
         fill="none"
         stroke="currentColor"
         strokeWidth="2"
-        opacity="0.35"
+        opacity="0.3"
       />
       <path
-        d="M24 3 a21 21 0 0 1 21 21"
+        d="M24 3a21 21 0 0 1 21 21"
         fill="none"
         stroke="var(--accent)"
         strokeWidth="2.5"
         strokeLinecap="round"
       />
-      <path d="M19 16 L34 24 L19 32 Z" fill="currentColor" />
+      <path d="M19 16 34 24 19 32Z" fill="currentColor" />
     </svg>
   );
 }
 
-export function Logo({ className = "" }: { className?: string }) {
+export function Logo({
+  className = "",
+  tone = "ink",
+}: {
+  className?: string;
+  tone?: "ink" | "light";
+}) {
+  const color = tone === "light" ? "#FDF2EC" : "#0A0A0A";
   return (
-    <span className={`inline-flex items-center gap-2.5 ${className}`}>
-      <LogoMark className="h-7 w-7 text-ink" />
-      <span className="font-display text-[1.25rem] font-medium tracking-tight text-ink">
+    <span
+      className={`inline-flex items-center gap-2.5 ${className}`}
+      style={{ color }}
+    >
+      <LogoMark className="h-7 w-7" />
+      <span className="font-display text-[1.2rem] font-semibold tracking-tight">
         ProMotion
       </span>
     </span>
