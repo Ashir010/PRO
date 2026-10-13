@@ -51,10 +51,10 @@ npx tsc --noEmit     # typecheck
   driven by `useScroll`/`useTransform` (translateY %, + an overlay opacity for
   the covered dim). Earlier panels stay docked — no scale/fade. Zero-height
   markers (`id={slug}`) anchor each panel's docked offset.
-- **Fallback:** `ServicesShowcase` renders `StackFallback` (plain vertical stack)
-  when the viewport is shorter than `STACK.minStageHeightPx`, under reduced
-  motion, or before hydration. Both paths render identical `ServicePanel`s, so
-  nothing is lost and anchors work either way.
+- **Fallback:** `ServicesShowcase` renders `StackFallback` (plain vertical stack,
+  media above text) when the viewport is narrower than 1024px, shorter than
+  `STACK.minStageHeightPx`, under reduced motion, or before hydration. Both paths
+  render identical `ServicePanel`s, so nothing is lost and anchors work either way.
 - **Motion rules:** transform/opacity only; respect `prefers-reduced-motion`
   (`lib/hooks/usePrefersReducedMotion.ts`); never override cursor/selection.
 - **Contact:** validation shared client+server via `lib/validation.ts`; the route

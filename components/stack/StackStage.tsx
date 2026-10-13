@@ -19,7 +19,6 @@ import {
   runwayVh,
   travelWindowVh,
 } from "@/config/stack";
-import { useMediaQuery } from "@/lib/hooks/useMediaQuery";
 
 const EASE = cubicBezier(...STACK.ease);
 
@@ -30,8 +29,8 @@ const EASE = cubicBezier(...STACK.ease);
  * faint overlay dims covered panels. Zero-height markers anchor each panel.
  */
 export function StackStage() {
-  const isMobile = useMediaQuery("(max-width: 767px)");
-  const slotVh = isMobile ? STACK.mobile.slotVh : STACK.slotVh;
+  // Pinned stage only runs at >=1024px (see ServicesShowcase), so desktop slot.
+  const slotVh = STACK.slotVh;
   const count = services.length;
   const R = runwayVh(count, slotVh);
 

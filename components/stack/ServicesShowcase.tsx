@@ -16,9 +16,13 @@ import { usePrefersReducedMotion } from "@/lib/hooks/usePrefersReducedMotion";
 export function ServicesShowcase() {
   const mounted = useMounted();
   const tallEnough = useMediaQuery(`(min-height: ${STACK.minStageHeightPx}px)`);
+  // Pinned stacking needs room for a full content-rich panel in one viewport.
+  // Narrow viewports (mobile/portrait tablet) can't fit it without clipping, so
+  // they use the natural-height flow stack — per the brief's narrow fallback.
+  const wideEnough = useMediaQuery("(min-width: 1024px)");
   const reduced = usePrefersReducedMotion();
 
-  const canPin = mounted && tallEnough && !reduced;
+  const canPin = mounted && tallEnough && wideEnough && !reduced;
 
   if (canPin) return <StackStage />;
   return <StackFallback animate={mounted && !reduced} />;

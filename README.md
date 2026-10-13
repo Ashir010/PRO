@@ -42,12 +42,12 @@ mobile: { slotVh: 120 },
 ```
 
 - **Scroll length:** 5 transitions → runway ≈ `introHoldVh + 5·slotVh + outroHoldVh`
-  = **920vh (~9.2 screens)** desktop, **720vh (~7.2 screens)** mobile. Lower
-  `slotVh` for a snappier feel.
-- **Mobile (<768px):** media stacks above text, `mobile.slotVh` timing.
-- **Short viewports (< `minStageHeightPx`, default 640px), reduced-motion, and
-  pre-hydration:** a clean vertical stack (no pinning), so tall content is never
-  lost.
+  = **920vh (~9.2 screens)** on desktop. Lower `slotVh` for a snappier feel.
+- **Below 1024px (mobile / portrait tablet), short viewports
+  (< `minStageHeightPx`, default 640px), reduced-motion, and pre-hydration:** a
+  clean natural-height vertical stack (no pinning) with media stacked above text,
+  so no content is ever clipped. (`mobile.slotVh` is reserved for a future
+  pinned mobile mode.)
 - **Anchors:** zero-height markers (`id={slug}`) sit at each panel's docked
   offset; nav, index cards and `#hash` smooth-scroll there with header offset.
 - **Keyboard/SR:** all panel content stays in the DOM in reading order; focusing
