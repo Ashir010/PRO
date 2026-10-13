@@ -135,6 +135,19 @@ async function fitRun(label, viewport) {
 }
 await fitRun("d1440x700", { width: 1440, height: 700 });
 
+// short laptop — longest-title panel (06), docked, fit check
+async function fitPanel(label, viewport, j) {
+  const ctx = await browser.newContext({ viewport });
+  const page = await ctx.newPage();
+  await page.goto(BASE, { waitUntil: "networkidle" });
+  await prep(page);
+  await toVh(page, markerVh(j, STACK.slotVh));
+  await shot(page, `${label}_p${j}_fit`);
+  await ctx.close();
+}
+await fitPanel("laptop1366x660", { width: 1366, height: 660 }, 5);
+await fitPanel("laptop1440x720", { width: 1440, height: 720 }, 5);
+
 // tablet (pinned at >=768px; two-column panel)
 await pinnedRun("t768", { width: 768, height: 1024 }, STACK.slotVh);
 await pinnedRun("t1024land", { width: 1024, height: 768 }, STACK.slotVh);

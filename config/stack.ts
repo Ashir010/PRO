@@ -14,13 +14,15 @@ export const STACK = {
   travelRatio: 0.58, // remaining 58%: next panel rises
   introHoldVh: 50, // rest on panel 1 before the first transition
   outroHoldVh: 70, // rest on the last panel before the stage releases
-  peekPx: 26, // visible top-edge strip of each covered panel
-  maxPeek: 3, // cap on visible strips; older panels share the last position
+  peekPx: 18, // visible top-edge strip of each covered panel
+  // Every previous panel stays visibly stacked (accumulating deck, like the
+  // reference). With 6 panels this means 5 peek strips above the current one.
+  maxPeek: 5,
   ease: [0.22, 0.61, 0.36, 1] as [number, number, number, number],
-  dimCovered: 0.08, // max black overlay on a covered panel (0 disables)
-  topGapPx: 72, // gap from viewport top to the first docked panel (clears header)
-  bottomGapPx: 24, // gap below the docked panel
-  minStageHeightPx: 640, // below this viewport height -> flow fallback
+  dimCovered: 0, // reference keeps covered panels full-colour (no greying)
+  topGapPx: 68, // gap from viewport top to the first docked panel (clears header)
+  bottomGapPx: 20, // gap below the docked panel
+  minStageHeightPx: 660, // below this viewport height -> flow fallback
   sideInsetVw: 2, // horizontal inset of the full-width cards
   radiusPx: 14,
   mobile: { slotVh: 120 },

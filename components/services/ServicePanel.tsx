@@ -34,7 +34,7 @@ export function ServicePanel({
       }
     >
       <div
-        className="grid h-full items-center gap-[clamp(1.5rem,3vw,3rem)] p-[clamp(1.5rem,3.2vw,3.25rem)] md:grid-cols-[42%_1fr]"
+        className="grid h-full items-center gap-[clamp(1.5rem,3vw,3rem)] px-[clamp(1.5rem,3.2vw,3.25rem)] py-[clamp(1rem,2.2vh,2.5rem)] md:grid-cols-[42%_1fr]"
       >
         {/* Media */}
         <div
@@ -84,13 +84,13 @@ export function ServicePanel({
           </h2>
 
           <p
-            className="mt-3 max-w-[46ch] text-[length:var(--text-body-lg)] leading-snug"
+            className="mt-2.5 max-w-[46ch] text-[length:var(--text-body-lg)] leading-snug"
             style={{ color: colors.muted }}
           >
             {service.description}
           </p>
 
-          <ul className="mt-5 grid list-none grid-cols-1 gap-x-4 gap-y-3 p-0 sm:grid-cols-3">
+          <ul className="mt-4 grid list-none grid-cols-1 gap-x-4 gap-y-3 p-0 sm:grid-cols-3">
             {service.deliverables.map((d) => (
               <li key={d.label} className="min-w-0">
                 <span
@@ -109,11 +109,11 @@ export function ServicePanel({
             ))}
           </ul>
 
-          <p className="font-display mt-5 text-[length:var(--text-highlight)] font-medium leading-snug">
+          <p className="font-display mt-4 text-[length:var(--text-highlight)] font-medium leading-snug">
             <Highlight text={service.highlight.text} accent={service.highlight.accent} color={colors.highlight} />
           </p>
 
-          <div className="mt-5">
+          <div className="mt-4">
             <Link
               href="#contact"
               className="group inline-flex items-center gap-1.5 rounded-full px-5 py-2.5 text-[0.9rem] font-semibold transition-opacity duration-300 hover:opacity-85"

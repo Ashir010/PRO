@@ -145,7 +145,7 @@ function StagePanel({
       }}
     >
       <ServicePanel service={service} mode="stage" />
-      {covered && (
+      {covered && STACK.dimCovered > 0 && (
         <motion.div
           aria-hidden="true"
           className="pointer-events-none absolute inset-0"
