@@ -1,66 +1,56 @@
 /**
  * ProMotion — single source of truth for all service content.
  *
- * Nav links, service cards, section IDs and the stacked panels are ALL driven
- * from this array. To edit copy, change it here. To add/remove a media slot,
- * change the `media` array (keep the slot set identical across services so the
- * layout stays balanced and every team gets equal weight).
+ * Nav, index cards, the stacked panels and the anchor markers all derive from
+ * this array. Edit copy here. Keep every service to the SAME shape (one 4:5
+ * media slot, exactly three deliverables, one highlight line) so no team
+ * dominates and the deck stays uniform.
  *
- * Media files live at:  public/media/<slug>/<slotKey>.<ext>
+ * Media files live at:  public/media/<slug>/primary.(webp|mp4)
  * See README.md → "Replacing placeholder assets".
  */
 
-export type MotifKind =
-  | "exploded" // 3D
-  | "interface" // SaaS & motion graphics
-  | "timeline" // editing & post
-  | "podcast" // podcast
-  | "shortform" // UGC & social
-  | "onsite"; // videography
+import type { IconName } from "@/components/ui/Icon";
 
-export type MediaSlot = {
-  /** stable key, also the placeholder/real filename stem */
-  key: "primary" | "detailA" | "detailB";
-  /** CSS aspect-ratio string */
-  aspect: "16 / 9" | "4 / 3" | "1 / 1";
-  /** descriptive alt text (placeholder today, keep when swapping in real media) */
-  alt: string;
-  /** short editable caption shown under the media */
+export type Deliverable = {
+  icon: IconName;
+  label: string;
   caption: string;
-  /** replaceable public path (without extension) */
-  path: string;
 };
 
-export type Accent = {
-  /** human label for the accent (documentation only) */
-  name: string;
-  /** hex used for labels, fine lines, numerals and interactive states */
-  hex: string;
+export type ServiceColors = {
+  /** panel fill */
+  bg: string;
+  /** primary text on the panel */
+  text: string;
+  /** muted text on the panel (solid, AA-safe — not low opacity) */
+  muted: string;
+  /** single accent used for the highlight phrase + details */
+  highlight: string;
+  /** hairline/icon border on the panel */
+  line: string;
+  /** true when the panel is dark (CTA becomes light) */
+  dark: boolean;
 };
 
 export type Service = {
   id: string;
   slug: string;
-  /** "01".."06" — understated section numeral */
-  number: string;
+  number: string; // "01".."06"
   title: string;
   teamLabel: string;
-  /** one line, used on the service card */
-  shortDesc: string;
-  /** 1–2 sentences, used in the detailed section */
-  longDesc: string;
-  /** short list of use-cases / deliverables */
-  useCases: string[];
-  /** heading above the use-case list, so each section reads correctly */
-  useCasesLabel: string;
-  accent: Accent;
-  motif: MotifKind;
-  media: MediaSlot[];
+  description: string; // ~two lines
+  deliverables: [Deliverable, Deliverable, Deliverable];
+  highlight: { text: string; accent: string }; // accent is a substring of text
+  colors: ServiceColors;
+  mediaSide: "left" | "right";
+  media: {
+    aspect: "4 / 5";
+    alt: string;
+    caption: string; // placeholder caption chip
+    path: string; // replaceable, without extension
+  };
 };
-
-function media(slug: string, items: Omit<MediaSlot, "path">[]): MediaSlot[] {
-  return items.map((m) => ({ ...m, path: `/media/${slug}/${m.key}` }));
-}
 
 export const services: Service[] = [
   {
@@ -69,81 +59,59 @@ export const services: Service[] = [
     number: "01",
     title: "3D Videos",
     teamLabel: "3D Video Team",
-    shortDesc:
-      "Visual explanations of products, technologies and the mechanisms behind how things work.",
-    longDesc:
-      "Visual explanations of products, technologies, industrial mechanisms and processes — built to make complex ideas easy to grasp and easy to sell.",
-    useCasesLabel: "Where it's used",
-    useCases: [
-      "Show how a product or mechanism works",
-      "Explain complex ideas simply",
-      "Support sales pitches and product pages",
-      "Exploded views and component demos",
-      "Trade-show and presentation visuals",
+    description:
+      "Visual explanations of products, technologies, industrial mechanisms and processes — so complex ideas land fast with the people who matter.",
+    deliverables: [
+      { icon: "cube", label: "Exploded views", caption: "See every component" },
+      { icon: "gears", label: "Mechanism demos", caption: "How it moves and works" },
+      { icon: "layers", label: "Process explainers", caption: "Step-by-step clarity" },
     ],
-    accent: { name: "Steel / mineral", hex: "#5B6B7A" },
-    motif: "exploded",
-    media: media("3d-videos", [
-      {
-        key: "primary",
-        aspect: "16 / 9",
-        alt: "Placeholder: exploded-view 3D render of a product's internal components",
-        caption: "Exploded view — product component breakdown",
-      },
-      {
-        key: "detailA",
-        aspect: "4 / 3",
-        alt: "Placeholder: 3D visualization of an industrial mechanism in motion",
-        caption: "Mechanism visualization",
-      },
-      {
-        key: "detailB",
-        aspect: "1 / 1",
-        alt: "Placeholder: close-up 3D render of a machined component",
-        caption: "Technical explainer still",
-      },
-    ]),
+    highlight: { text: "Built to make the complex obvious.", accent: "obvious" },
+    colors: {
+      bg: "#FFFFFF",
+      text: "#0A0A0A",
+      muted: "#5A5450",
+      highlight: "#D4502A",
+      line: "#E7DED6",
+      dark: false,
+    },
+    mediaSide: "left",
+    media: {
+      aspect: "4 / 5",
+      alt: "Placeholder: exploded-view 3D render of a product's internal components",
+      caption: "Placeholder · exploded view",
+      path: "/media/3d-videos/primary",
+    },
   },
   {
     id: "svc-saas",
     slug: "saas-motion-graphics",
     number: "02",
     title: "SaaS & Motion Graphics",
-    teamLabel: "Motion & SaaS Team",
-    shortDesc:
-      "Motion graphics and explainers for software products, digital tools and technical concepts.",
-    longDesc:
-      "Motion graphics and explainers for software products, digital tools and technical concepts — focused on clarity and concise storytelling that lands quickly.",
-    useCasesLabel: "Where it's used",
-    useCases: [
-      "Product launches and software demos",
-      "Website and in-app explainers",
-      "Ads and campaign motion graphics",
-      "Customer and sales presentations",
-      "Trade-show visuals",
+    teamLabel: "SaaS & Tech Video Team",
+    description:
+      "Motion graphics and explainers for software, digital tools and technical concepts — focused on clarity and concise storytelling.",
+    deliverables: [
+      { icon: "window", label: "Product walkthroughs", caption: "Show the software working" },
+      { icon: "spark", label: "Concept explainers", caption: "Make the abstract clear" },
+      { icon: "play", label: "Launch visuals", caption: "For demos, ads and sites" },
     ],
-    accent: { name: "Cool technical blue", hex: "#2F6DB0" },
-    motif: "interface",
-    media: media("saas-motion-graphics", [
-      {
-        key: "primary",
-        aspect: "16 / 9",
-        alt: "Placeholder: animated software interface walkthrough frame",
-        caption: "Animated product walkthrough",
-      },
-      {
-        key: "detailA",
-        aspect: "4 / 3",
-        alt: "Placeholder: motion-graphics explainer of a technical concept",
-        caption: "Concept explainer",
-      },
-      {
-        key: "detailB",
-        aspect: "1 / 1",
-        alt: "Placeholder: launch visual for a software product",
-        caption: "Launch visual",
-      },
-    ]),
+    highlight: { text: "Clear stories for complex software.", accent: "Clear stories" },
+    colors: {
+      bg: "#C2451E",
+      text: "#FFFFFF",
+      muted: "#F6DDD2",
+      highlight: "#0A0A0A",
+      line: "rgba(255,255,255,0.28)",
+      dark: true,
+    },
+    mediaSide: "right",
+    media: {
+      aspect: "4 / 5",
+      alt: "Placeholder: animated software interface walkthrough frame",
+      caption: "Placeholder · UI walkthrough",
+      path: "/media/saas-motion-graphics/primary",
+    },
   },
   {
     id: "svc-editing",
@@ -151,81 +119,62 @@ export const services: Service[] = [
     number: "03",
     title: "Editing & Post-Production",
     teamLabel: "Post-Production Team",
-    shortDesc:
-      "From focused editing tasks to advanced finishing, shaped around the footage you supply.",
-    longDesc:
-      "From focused editing tasks to advanced finishing — a flexible post-production workflow shaped around the footage you supply, at whatever depth your project needs.",
-    useCasesLabel: "Deliverables",
-    useCases: [
-      "Editing and pacing",
-      "Captions and subtitles",
-      "Color grading",
-      "Motion graphics",
-      "Refinement of supplied footage",
+    description:
+      "From focused editing tasks to advanced finishing, built around the footage you supply — at whatever depth your project needs.",
+    deliverables: [
+      { icon: "scissors", label: "Editing & pacing", caption: "Shape the narrative" },
+      { icon: "captions", label: "Captions & grading", caption: "Subtitles and colour" },
+      { icon: "motion", label: "Motion graphics", caption: "Titles and polish" },
     ],
-    accent: { name: "Restrained amber", hex: "#B07A2E" },
-    motif: "timeline",
-    media: media("editing-post-production", [
-      {
-        key: "primary",
-        aspect: "16 / 9",
-        alt: "Placeholder: editing timeline with clips, captions and audio track",
-        caption: "Edit timeline and pacing",
-      },
-      {
-        key: "detailA",
-        aspect: "4 / 3",
-        alt: "Placeholder: before and after color-grading comparison",
-        caption: "Color grading",
-      },
-      {
-        key: "detailB",
-        aspect: "1 / 1",
-        alt: "Placeholder: captioned social cut of a longer edit",
-        caption: "Captions and subtitles",
-      },
-    ]),
+    highlight: { text: "Your footage, finished properly.", accent: "finished properly" },
+    colors: {
+      bg: "#0A0A0A",
+      text: "#FFFFFF",
+      muted: "#B9B4AF",
+      highlight: "#E8643C",
+      line: "rgba(255,255,255,0.22)",
+      dark: true,
+    },
+    mediaSide: "left",
+    media: {
+      aspect: "4 / 5",
+      alt: "Placeholder: editing timeline with clips, captions and audio track",
+      caption: "Placeholder · edit timeline",
+      path: "/media/editing-post-production/primary",
+    },
   },
   {
     id: "svc-podcast",
     slug: "podcast-production",
     number: "04",
     title: "Podcast Production",
-    teamLabel: "Podcast Team",
-    shortDesc:
-      "Recording through editing, publishing and promotion. You bring the conversation; we handle the production.",
-    longDesc:
-      "End-to-end podcast production, from recording through editing, publishing and promotion. You bring the conversation — we handle the production.",
-    useCasesLabel: "What's included",
-    useCases: [
-      "Professional lighting setups",
-      "Multiple Sony cameras",
-      "Podcast editing",
-      "Upload and publishing support",
-      "Promotion support",
+    teamLabel: "Podcast Production Team",
+    description:
+      "Recording through editing, publishing and promotion — professional lighting and multiple cameras, handled end to end.",
+    deliverables: [
+      { icon: "mic", label: "Multi-cam capture", caption: "Lit, multiple cameras" },
+      { icon: "scissors", label: "Editing & delivery", caption: "Episodes, ready to ship" },
+      { icon: "upload", label: "Upload & promotion", caption: "Publishing support" },
     ],
-    accent: { name: "Muted burgundy", hex: "#7A3B52" },
-    motif: "podcast",
-    media: media("podcast-production", [
-      {
-        key: "primary",
-        aspect: "16 / 9",
-        alt: "Placeholder: lit multi-camera podcast recording setup",
-        caption: "Lit, multi-camera recording setup",
-      },
-      {
-        key: "detailA",
-        aspect: "4 / 3",
-        alt: "Placeholder: podcast episode being edited",
-        caption: "Editing the episode",
-      },
-      {
-        key: "detailB",
-        aspect: "1 / 1",
-        alt: "Placeholder: published episode and promo clip",
-        caption: "Published episode and promo clip",
-      },
-    ]),
+    highlight: {
+      text: "You bring the conversation. We handle the production.",
+      accent: "We handle the production.",
+    },
+    colors: {
+      bg: "#4A1D2E",
+      text: "#FFFFFF",
+      muted: "#E4C3CC",
+      highlight: "#F2A99A",
+      line: "rgba(255,255,255,0.24)",
+      dark: true,
+    },
+    mediaSide: "right",
+    media: {
+      aspect: "4 / 5",
+      alt: "Placeholder: lit multi-camera podcast recording setup",
+      caption: "Placeholder · recording setup",
+      path: "/media/podcast-production/primary",
+    },
   },
   {
     id: "svc-ugc",
@@ -233,81 +182,59 @@ export const services: Service[] = [
     number: "05",
     title: "UGC & Social Media",
     teamLabel: "UGC & Social Team",
-    shortDesc:
-      "Engaging video content that helps brands communicate products and connect with audiences.",
-    longDesc:
-      "Engaging, relatable video content that helps brands communicate products and connect with audiences — through thoughtful storytelling, careful composition and clear product value.",
-    useCasesLabel: "What we make",
-    useCases: [
-      "Short-form product content",
-      "Social-first brand stories",
-      "Lifestyle product presentations",
-      "Short-form promo edits",
-      "Relatable, clearly composed storytelling",
+    description:
+      "Engaging video that helps brands communicate products and connect with audiences through thoughtful, relatable storytelling.",
+    deliverables: [
+      { icon: "mobile", label: "Short-form content", caption: "Made for the feed" },
+      { icon: "heart", label: "Brand stories", caption: "Relatable and specific" },
+      { icon: "tag", label: "Product presentations", caption: "Clear product value" },
     ],
-    accent: { name: "Restrained coral", hex: "#C45B4A" },
-    motif: "shortform",
-    media: media("ugc-social", [
-      {
-        key: "primary",
-        aspect: "16 / 9",
-        alt: "Placeholder: short-form social video framed for mobile",
-        caption: "Short-form, social-first content",
-      },
-      {
-        key: "detailA",
-        aspect: "4 / 3",
-        alt: "Placeholder: lifestyle product presentation still",
-        caption: "Lifestyle product story",
-      },
-      {
-        key: "detailB",
-        aspect: "1 / 1",
-        alt: "Placeholder: vertical product promo edit",
-        caption: "Short-form promo edit",
-      },
-    ]),
+    highlight: { text: "Content that actually feels human.", accent: "feels human" },
+    colors: {
+      bg: "#F3C9B8",
+      text: "#0A0A0A",
+      muted: "#6B4A3C",
+      highlight: "#C2412B",
+      line: "rgba(10,10,10,0.14)",
+      dark: false,
+    },
+    mediaSide: "left",
+    media: {
+      aspect: "4 / 5",
+      alt: "Placeholder: short-form social video framed for mobile",
+      caption: "Placeholder · short-form",
+      path: "/media/ugc-social/primary",
+    },
   },
   {
     id: "svc-videography",
     slug: "videography-on-site",
     number: "06",
     title: "Videography & On-Site Shoots",
-    teamLabel: "On-Site Video Team",
-    shortDesc:
-      "We travel to your location for professional filming, composed and tailored to the environment.",
-    longDesc:
-      "The team travels to client locations — cafes, sports clubs, car dealerships, industrial facilities and other commercial sites — for professional filming and thoughtful composition tailored to each environment.",
-    useCasesLabel: "How it works",
-    useCases: [
-      "Filming on location at your site",
-      "Shoots tailored to each environment",
-      "Professional, considered composition",
-      "Flexible setups for commercial spaces",
-      "Cafes, clubs, dealerships, facilities and more",
+    teamLabel: "Videography Team",
+    description:
+      "The team travels to your location — cafes, sports clubs, dealerships, industrial sites — for professional filming tailored to each environment.",
+    deliverables: [
+      { icon: "camera", label: "On-location shoots", caption: "We travel to you" },
+      { icon: "pin", label: "Tailored to the space", caption: "Built for each site" },
+      { icon: "frame", label: "Considered composition", caption: "Professional framing" },
     ],
-    accent: { name: "Muted green / earthy", hex: "#5A6E52" },
-    motif: "onsite",
-    media: media("videography-on-site", [
-      {
-        key: "primary",
-        aspect: "16 / 9",
-        alt: "Placeholder: on-site shoot framed through a camera viewfinder",
-        caption: "On location, framed to the space",
-      },
-      {
-        key: "detailA",
-        aspect: "4 / 3",
-        alt: "Placeholder: professional filming at a commercial site",
-        caption: "Professional on-site filming",
-      },
-      {
-        key: "detailB",
-        aspect: "1 / 1",
-        alt: "Placeholder: composed detail shot from a location shoot",
-        caption: "Composed detail shot",
-      },
-    ]),
+    highlight: { text: "We come to your location.", accent: "your location" },
+    colors: {
+      bg: "#1F3A2E",
+      text: "#FFFFFF",
+      muted: "#BFD6C6",
+      highlight: "#9FD3B0",
+      line: "rgba(255,255,255,0.22)",
+      dark: true,
+    },
+    mediaSide: "right",
+    media: {
+      aspect: "4 / 5",
+      alt: "Placeholder: on-site shoot framed through a camera viewfinder",
+      caption: "Placeholder · on location",
+      path: "/media/videography-on-site/primary",
+    },
   },
 ];
 
@@ -327,18 +254,19 @@ export type Region = (typeof regions)[number];
 export const site = {
   name: "ProMotion",
   hero: {
-    headline: "Video production, handled by specialists — not generalists.",
+    headline: "Six specialist video teams, one production partner.",
     support:
-      "ProMotion runs six dedicated teams — 3D, SaaS motion graphics, editing, podcasts, social content and on-site videography — so every project goes to people who do that work every day.",
+      "ProMotion plans, shoots, animates and edits — from 3D product explainers and SaaS motion graphics to podcasts, UGC and on-site shoots — each handled by a team that does only that.",
   },
   teamsIntro: {
     heading: "Six specialist teams. One production partner.",
     support:
-      "Each discipline below is owned end-to-end by a team that focuses on nothing else — so you get specialist depth with a single point of contact.",
+      "Every service below is owned end to end by a dedicated team — specialist depth, a single point of contact.",
   },
   contact: {
-    heading: "Let's talk about your project.",
+    kicker: "Start a project",
+    heading: "Tell us what you're making.",
     support:
-      "Tell us what you're making and where you are in the world. We work with teams across the US, UK, Europe, Australia and beyond, and we'll point you to the right specialist team.",
+      "Share the project and where you are in the world — we work with teams across the US, UK, Europe, Australia and beyond, and we'll route you to the right specialist team.",
   },
 };

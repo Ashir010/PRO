@@ -1,7 +1,9 @@
 # ProMotion — project guide
 
 Premium single-page marketing site for a video-production agency with six
-co-equal specialist teams. Signature interaction: scroll-driven stacked panels.
+co-equal specialist teams. Signature interaction: a **scroll-driven stacked-card
+showcase** (pinned stage) that deliberately holds on each panel before the next
+rises and covers it like a deck.
 
 ## Stack
 
@@ -13,40 +15,48 @@ co-equal specialist teams. Signature interaction: scroll-driven stacked panels.
 ## Commands
 
 ```bash
-npm run dev     # local dev (Turbopack)
-npm run build   # production build
-npm run start   # serve the build
-npm run lint    # ESLint (eslint-config-next)
-npx tsc --noEmit  # typecheck
+npm run dev          # local dev (Turbopack)
+npm run build        # production build
+npm run start        # serve the build
+npm run lint         # ESLint (eslint-config-next)
+npx tsc --noEmit     # typecheck
 ```
 
-## Where content & media live
+## Where content, media & timing live
 
-- **All service copy, accents, slugs, team labels and media slots:**
-  `data/services.ts` — the single source of truth. Nav links, cards and section
-  IDs all derive from it. Edit copy here.
-- **Site-wide copy** (hero, teams intro, contact): the `site` export in the same file.
-- **Media:** placeholders are rendered as inline SVG (`components/media/ServicePlaceholder.tsx`).
-  Real assets go in `public/media/<service-slug>/<slot>.<ext>` and are swapped in
-  via `components/ui/MediaFrame.tsx`. See README → "Replacing placeholder assets".
-- **Logo:** `components/ui/Logo.tsx` (inline, theme-aware) and `public/logo.svg`.
+- **Service copy, slugs, colours, team labels, deliverables, highlight lines,
+  media slots:** `data/services.ts` — the single source of truth. Nav, index
+  cards, panels and anchor markers all derive from it.
+- **Site-wide copy** (hero, teams intro, contact): the `site` export there.
+- **Stacking timing & geometry:** `config/stack.ts` — the ONE file to tune the
+  interaction (hold/travel ratios, slot length, peek, dim, gaps, mobile slot).
+- **Media:** placeholders are inline SVG (`components/media/ServiceArt.tsx`, 4:5).
+  Real assets go in `public/media/<slug>/primary.(webp|mp4)` and are swapped in
+  `components/services/ServicePanel.tsx`. See README.
+- **Logo:** `components/ui/Logo.tsx` (inline) + `public/brand/{logo,logo-mark}.svg`.
 
 ## Conventions
 
-- **Server components by default.** Client components (`"use client"`) only where
-  interactivity/motion is required: `Header`, `services/ServiceStack` +
-  `ServicePanel` + `ProgressRail`, `contact/ContactForm` + `SpinningLogo`, and the
-  hooks in `lib/hooks`. `ServiceSectionContent` is shared static markup reused by
-  both the sticky and flow paths — keep it presentational.
-- **Design tokens** (colors, fonts, type scale, easing) are CSS variables in
-  `@theme` in `app/globals.css`. Per-service accent is passed as the `--accent`
-  custom property via inline `style` and consumed with `var(--accent)`.
+- **Server components by default.** Client components only where motion/
+  interactivity needs them: `Header`, `stack/*` (ServicesShowcase, StackStage,
+  StackFallback), `contact/{ContactForm,SpinningLogo}`, and `lib/hooks`.
+  `ServicePanel`, `ServiceIndexCard`, `ServiceArt`, `Icon` are presentational.
+- **Design tokens** (colours, fonts, type scale, easing) are CSS vars in `@theme`
+  in `app/globals.css`. Each panel's accent is passed as `--accent` via inline
+  `style` and read with `var(--accent)`.
+- **Fonts:** Space Grotesk (display), Manrope (body) via `next/font`.
+- **Stacking engine:** a **pinned stage** (NOT per-panel `position: sticky`). A
+  tall runway (`#services`, height from `config/stack.ts`) holds one
+  `sticky; top:0; height:100svh` stage; panels are absolutely positioned and
+  driven by `useScroll`/`useTransform` (translateY %, + an overlay opacity for
+  the covered dim). Earlier panels stay docked — no scale/fade. Zero-height
+  markers (`id={slug}`) anchor each panel's docked offset.
+- **Fallback:** `ServicesShowcase` renders `StackFallback` (plain vertical stack)
+  when the viewport is shorter than `STACK.minStageHeightPx`, under reduced
+  motion, or before hydration. Both paths render identical `ServicePanel`s, so
+  nothing is lost and anchors work either way.
 - **Motion rules:** transform/opacity only; respect `prefers-reduced-motion`
-  (see `lib/hooks/usePrefersReducedMotion.ts`); never override cursor/selection.
-- **Stacking:** sticky-per-panel + `useScroll`/`useTransform` for the cover depth
-  only. Desktop (>=1024px) stacks; below that and under reduced motion it falls
-  back to a natural-flow stacked reveal. Panels are `100svh`; keep section
-  content able to fit one viewport at desktop widths.
-- **Contact:** validation is shared client+server via `lib/validation.ts`. The
-  route never claims success unless an email provider actually accepted the send.
+  (`lib/hooks/usePrefersReducedMotion.ts`); never override cursor/selection.
+- **Contact:** validation shared client+server via `lib/validation.ts`; the route
+  never claims success unless a provider actually accepted the send.
 ```

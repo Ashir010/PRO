@@ -1,31 +1,30 @@
 import type { Metadata } from "next";
-import { Fraunces, Hanken_Grotesk } from "next/font/google";
+import { Space_Grotesk, Manrope } from "next/font/google";
 import "./globals.css";
 
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-space-grotesk",
   subsets: ["latin"],
   display: "swap",
-  axes: ["opsz", "SOFT"],
 });
 
-const hanken = Hanken_Grotesk({
-  variable: "--font-hanken",
+const manrope = Manrope({
+  variable: "--font-manrope",
   subsets: ["latin"],
   display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "ProMotion — Video production, handled by specialists",
+  title: "ProMotion — Six specialist video teams, one production partner",
   description:
-    "ProMotion is a creative production studio running six dedicated teams across 3D, SaaS motion graphics, editing, podcasts, social content, and on-site videography.",
+    "ProMotion is a creative production studio: 3D, SaaS motion graphics, editing, podcasts, UGC, and on-site videography — each handled by a dedicated specialist team.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${fraunces.variable} ${hanken.variable} h-full antialiased`}
+      className={`${spaceGrotesk.variable} ${manrope.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
