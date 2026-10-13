@@ -34,12 +34,12 @@ export function ServicePanel({
       }
     >
       <div
-        className="grid h-full items-center gap-[clamp(1.5rem,3vw,3rem)] p-[clamp(1.5rem,3.2vw,3.25rem)] lg:grid-cols-[42%_1fr]"
+        className="grid h-full items-center gap-[clamp(1.5rem,3vw,3rem)] p-[clamp(1.5rem,3.2vw,3.25rem)] md:grid-cols-[42%_1fr]"
       >
         {/* Media */}
         <div
           className={`order-1 ${
-            mediaSide === "left" ? "lg:order-1" : "lg:order-2"
+            mediaSide === "left" ? "md:order-1" : "md:order-2"
           }`}
         >
           <figure className="relative m-0">
@@ -67,7 +67,7 @@ export function ServicePanel({
         {/* Text */}
         <div
           className={`order-2 min-w-0 ${
-            mediaSide === "left" ? "lg:order-2" : "lg:order-1"
+            mediaSide === "left" ? "md:order-2" : "md:order-1"
           }`}
         >
           <p className="eyebrow flex items-center gap-2" style={{ color: colors.muted }}>

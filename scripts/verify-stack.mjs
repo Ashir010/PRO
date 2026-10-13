@@ -135,11 +135,13 @@ async function fitRun(label, viewport) {
 }
 await fitRun("d1440x700", { width: 1440, height: 700 });
 
-// tablet (pinned, height 1024)
+// tablet (pinned at >=768px; two-column panel)
 await pinnedRun("t768", { width: 768, height: 1024 }, STACK.slotVh);
+await pinnedRun("t1024land", { width: 1024, height: 768 }, STACK.slotVh);
+await pinnedRun("ipad834", { width: 834, height: 1112 }, STACK.slotVh);
 
-// mobile portrait (pinned, mobile slot, media-above-text)
-await pinnedRun("m390", { width: 390, height: 844 }, STACK.mobileSlotVh);
+// mobile portrait (<768 -> flow fallback, media over text)
+await flowRun("m390", { width: 390, height: 844 });
 
 // mobile landscape (short -> flow fallback)
 await flowRun("m844land", { width: 844, height: 390 });

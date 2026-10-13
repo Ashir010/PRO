@@ -17,9 +17,9 @@ export function ServicesShowcase() {
   const mounted = useMounted();
   const tallEnough = useMediaQuery(`(min-height: ${STACK.minStageHeightPx}px)`);
   // Pinned stacking needs room for a full content-rich panel in one viewport.
-  // Narrow viewports (mobile/portrait tablet) can't fit it without clipping, so
-  // they use the natural-height flow stack — per the brief's narrow fallback.
-  const wideEnough = useMediaQuery("(min-width: 1024px)");
+  // Tablet+ (>=768px) uses the two-column panel and fits; phones use the
+  // natural-height flow stack (media over text) so nothing is clipped.
+  const wideEnough = useMediaQuery("(min-width: 768px)");
   const reduced = usePrefersReducedMotion();
 
   const canPin = mounted && tallEnough && wideEnough && !reduced;
