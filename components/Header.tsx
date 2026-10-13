@@ -18,17 +18,13 @@ export function Header() {
     <header
       className={`sticky top-0 z-50 transition-colors duration-300 ${
         scrolled
-          ? "border-b bg-bg/85 backdrop-blur-md"
-          : "border-b border-transparent bg-bg/0"
+          ? "border-b border-hairline bg-peach/85 backdrop-blur-md"
+          : "border-b border-transparent"
       }`}
       style={{ height: "var(--header-h)" }}
     >
       <div className="shell flex h-full items-center justify-between gap-4">
-        <Link
-          href="#top"
-          aria-label="ProMotion — back to top"
-          className="rounded-sm"
-        >
+        <Link href="#top" aria-label="ProMotion — back to top" className="rounded-sm">
           <Logo />
         </Link>
 
@@ -47,7 +43,7 @@ export function Header() {
           </Link>
           <Link
             href="#contact"
-            className="inline-flex items-center rounded-full border border-ink px-4 py-2 text-[0.9rem] font-medium text-ink transition-colors duration-300 hover:bg-ink hover:text-bg"
+            className="inline-flex items-center rounded-full bg-ink px-4 py-2 text-[0.9rem] font-semibold text-peach transition-opacity duration-300 hover:opacity-85"
           >
             Start a project
           </Link>

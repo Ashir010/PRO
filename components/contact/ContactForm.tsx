@@ -11,7 +11,9 @@ import {
 
 type Status = "idle" | "submitting" | "success" | "notConfigured" | "error";
 
-const ERROR_COLOR = "#B23A2E";
+const ERROR_COLOR = "#F6A592";
+const INPUT =
+  "w-full rounded-md border border-white/20 bg-white/5 px-3.5 py-2.5 text-[0.975rem] text-white placeholder:text-white/40 focus:border-white/40";
 
 const empty: ContactPayload = {
   name: "",
@@ -25,7 +27,7 @@ export function ContactForm() {
   const [values, setValues] = useState<ContactPayload>(empty);
   const [errors, setErrors] = useState<FieldErrors>({});
   const [status, setStatus] = useState<Status>("idle");
-  const [serverMessage, setServerMessage] = useState<string>("");
+  const [serverMessage, setServerMessage] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
 
   const update =
@@ -47,21 +49,16 @@ export function ContactForm() {
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-
     const found = validateContact(values);
     if (hasErrors(found)) {
       setErrors(found);
-      // move focus to the first invalid field
       const firstKey = Object.keys(found)[0];
-      formRef.current
-        ?.querySelector<HTMLElement>(`[name="${firstKey}"]`)
-        ?.focus();
+      formRef.current?.querySelector<HTMLElement>(`[name="${firstKey}"]`)?.focus();
       return;
     }
 
     setStatus("submitting");
     setServerMessage("");
-
     try {
       const res = await fetch("/api/contact", {
         method: "POST",
@@ -80,19 +77,16 @@ export function ContactForm() {
         setStatus("idle");
         return;
       }
-
       if (res.ok && data.ok) {
         setStatus("success");
         setValues(empty);
         return;
       }
-
       if (res.status === 503 || data.configured === false) {
         setStatus("notConfigured");
         setServerMessage(data.message ?? "");
         return;
       }
-
       setStatus("error");
       setServerMessage(data.message ?? "");
     } catch {
@@ -103,24 +97,24 @@ export function ContactForm() {
 
   if (status === "success") {
     return (
-      <Notice tone="positive" heading="Thanks — your message is in.">
-        We&apos;ll be in touch shortly about your project. If it&apos;s urgent,
-        reply to the confirmation and we&apos;ll route you to the right team.
+      <Notice heading="Thanks — your message is in.">
+        We&apos;ll be in touch shortly about your project and route you to the
+        right specialist team.
       </Notice>
     );
   }
 
   if (status === "notConfigured") {
     return (
-      <Notice tone="neutral" heading="Your details passed validation.">
+      <Notice heading="Your details passed validation.">
         Email delivery isn&apos;t connected on this deployment yet, so nothing
-        was sent — we&apos;re not going to pretend otherwise.
-        {serverMessage ? ` ${serverMessage}` : ""} See the project README to
-        connect a provider (Resend, Formspree or SMTP).
+        was sent — we won&apos;t pretend otherwise.
+        {serverMessage ? ` ${serverMessage}` : ""} See the README to connect a
+        provider.
         <button
           type="button"
           onClick={() => setStatus("idle")}
-          className="ul-link mt-4 block text-[0.9rem] font-medium text-ink"
+          className="ul-link mt-4 block text-[0.9rem] font-semibold text-white"
         >
           Back to the form
         </button>
@@ -132,7 +126,6 @@ export function ContactForm() {
 
   return (
     <form ref={formRef} onSubmit={onSubmit} noValidate className="w-full">
-      {/* Honeypot — hidden from humans, visible to naive bots */}
       <div aria-hidden="true" className="sr-hp">
         <label htmlFor="company">Company (leave this field empty)</label>
         <input
@@ -178,13 +171,13 @@ export function ContactForm() {
             disabled={submitting}
             aria-invalid={errors.region ? "true" : undefined}
             aria-describedby={errors.region ? "region-error" : undefined}
-            className="w-full rounded-md border bg-surface px-3.5 py-2.5 text-[0.975rem] text-ink"
+            className={INPUT}
           >
             <option value="" disabled>
               Select a region…
             </option>
             {regions.map((r) => (
-              <option key={r} value={r}>
+              <option key={r} value={r} className="text-black">
                 {r}
               </option>
             ))}
@@ -208,40 +201,34 @@ export function ContactForm() {
             placeholder="What are you making, and what do you need from us?"
             aria-invalid={errors.message ? "true" : undefined}
             aria-describedby={errors.message ? "message-error" : undefined}
-            className="w-full resize-y rounded-md border bg-surface px-3.5 py-2.5 text-[0.975rem] text-ink placeholder:text-faint"
+            className={`${INPUT} resize-y`}
           />
         </FieldShell>
       </div>
 
       {status === "error" && (
-        <p
-          role="alert"
-          className="mt-5 text-[0.9rem]"
-          style={{ color: ERROR_COLOR }}
-        >
+        <p role="alert" className="mt-5 text-[0.9rem]" style={{ color: ERROR_COLOR }}>
           Something went wrong{serverMessage ? `: ${serverMessage}` : ""}. Please
           try again.
         </p>
       )}
 
-      <div className="mt-7 flex items-center gap-4">
+      <div className="mt-7 flex flex-wrap items-center gap-4">
         <button
           type="submit"
           disabled={submitting}
           aria-busy={submitting}
-          className="inline-flex items-center rounded-full bg-ink px-6 py-3 text-[0.95rem] font-medium text-bg transition-opacity duration-300 hover:opacity-85 disabled:opacity-60"
+          className="inline-flex items-center rounded-full bg-[#F4EEE8] px-6 py-3 text-[0.95rem] font-semibold text-ink transition-opacity duration-300 hover:opacity-85 disabled:opacity-60"
         >
           {submitting ? "Sending…" : "Send enquiry"}
         </button>
-        <p className="text-caption text-faint">
+        <p className="text-caption text-white/50">
           No phone number needed. We reply by email.
         </p>
       </div>
     </form>
   );
 }
-
-/* ---------------------------------------------------------------- */
 
 function Field({
   label,
@@ -263,7 +250,7 @@ function Field({
         type={type}
         aria-invalid={error ? "true" : undefined}
         aria-describedby={error ? `${name}-error` : undefined}
-        className="w-full rounded-md border bg-surface px-3.5 py-2.5 text-[0.975rem] text-ink placeholder:text-faint"
+        className={INPUT}
         {...rest}
       />
     </FieldShell>
@@ -283,20 +270,12 @@ function FieldShell({
 }) {
   return (
     <div>
-      <label
-        htmlFor={name}
-        className="mb-1.5 block text-[0.85rem] font-medium text-ink"
-      >
-        {label} <span style={{ color: "#B23A2E" }}>*</span>
+      <label htmlFor={name} className="mb-1.5 block text-[0.85rem] font-medium text-white/90">
+        {label} <span style={{ color: ERROR_COLOR }}>*</span>
       </label>
       {children}
       {error && (
-        <p
-          id={`${name}-error`}
-          role="alert"
-          className="mt-1.5 text-[0.8rem]"
-          style={{ color: "#B23A2E" }}
-        >
+        <p id={`${name}-error`} role="alert" className="mt-1.5 text-[0.8rem]" style={{ color: ERROR_COLOR }}>
           {error}
         </p>
       )}
@@ -305,29 +284,16 @@ function FieldShell({
 }
 
 function Notice({
-  tone,
   heading,
   children,
 }: {
-  tone: "positive" | "neutral";
   heading: string;
   children: React.ReactNode;
 }) {
   return (
-    <div
-      role="status"
-      className="rounded-xl border bg-surface p-6"
-      style={{
-        borderColor:
-          tone === "positive"
-            ? "color-mix(in srgb, #5A6E52 45%, var(--color-hairline))"
-            : "var(--color-hairline)",
-      }}
-    >
-      <h3 className="font-display text-[1.3rem] font-medium text-ink">
-        {heading}
-      </h3>
-      <p className="mt-2 text-[0.975rem] text-muted">{children}</p>
+    <div role="status" className="rounded-xl border border-white/15 bg-white/5 p-6">
+      <h3 className="font-display text-[1.3rem] font-semibold text-white">{heading}</h3>
+      <p className="mt-2 text-[0.975rem] text-white/70">{children}</p>
     </div>
   );
 }
