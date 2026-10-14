@@ -6,24 +6,17 @@ import { STACK } from "@/config/stack";
 
 /**
  * Presentational service panel — identical structure for all six services.
- * Used by the pinned stage (mode="stage", fits one screen) and the fallback
- * (mode="flow", natural height). Only colour, media and copy differ.
+ * It fills its container: the sticky card wrapper sets a fixed height at >=768px
+ * (two-column, fits one viewport); on mobile the wrapper is natural height
+ * (single column, media over text). Only colour, media and copy differ.
  */
-export function ServicePanel({
-  service,
-  mode,
-}: {
-  service: Service;
-  mode: "stage" | "flow";
-}) {
+export function ServicePanel({ service }: { service: Service }) {
   const { colors, mediaSide } = service;
   const total = 6;
 
   return (
     <div
-      className={`relative w-full overflow-hidden ${
-        mode === "stage" ? "h-full" : "min-h-[560px]"
-      }`}
+      className="relative h-full w-full overflow-hidden"
       style={
         {
           background: colors.bg,
@@ -33,9 +26,7 @@ export function ServicePanel({
         } as React.CSSProperties
       }
     >
-      <div
-        className="grid h-full items-center gap-[clamp(1.5rem,3vw,3rem)] px-[clamp(1.5rem,3.2vw,3.25rem)] py-[clamp(1rem,2.2vh,2.5rem)] md:grid-cols-[42%_1fr]"
-      >
+      <div className="grid h-full items-center gap-[clamp(1.5rem,3vw,3rem)] px-[clamp(1.5rem,3.2vw,3.25rem)] py-[clamp(1rem,2.2vh,2.5rem)] md:grid-cols-[42%_1fr]">
         {/* Media */}
         <div
           className={`order-1 ${
@@ -44,10 +35,8 @@ export function ServicePanel({
         >
           <figure className="relative m-0">
             <div
-              className={`relative mx-auto aspect-[4/5] w-full overflow-hidden rounded-[10px] ${
-                mode === "stage" ? "max-h-[56svh]" : ""
-              }`}
-              style={{ maxWidth: mode === "stage" ? "min(100%, 44svh)" : "26rem" }}
+              className="relative mx-auto aspect-[4/5] w-full max-h-[52svh] overflow-hidden rounded-[10px]"
+              style={{ maxWidth: "min(100%, 42svh)" }}
             >
               <ServiceArt
                 slug={service.slug}

@@ -2,12 +2,14 @@ import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { TeamsIntro } from "@/components/TeamsIntro";
 import { ServicesShowcase } from "@/components/stack/ServicesShowcase";
+import { StackAnchors } from "@/components/stack/StackAnchors";
 import { Contact } from "@/components/contact/Contact";
 import { Footer } from "@/components/Footer";
 
 export default function Home() {
   return (
     <>
+      <StackAnchors />
       <Header />
       <main className="flex-1">
         <Hero />

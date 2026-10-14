@@ -126,3 +126,51 @@ body {
     transform: scaleX(1);
   }
 }
+
+/* ------------------------------------------------------------------ */
+/*  Stacked-card showcase — pure CSS `position: sticky` stacking.      */
+/*  No JS: works on first paint, every viewport, and under reduced     */
+/*  motion (sticky stacking is layout, not animation).                 */
+/* ------------------------------------------------------------------ */
+.services-stack {
+  position: relative;
+}
+
+/* Mobile (<768px): a clean, readable vertical sequence (media over text),
+   natural height so nothing is clipped. */
+.service-panel {
+  position: static;
+}
+.service-card {
+  padding-inline: var(--stack-inset, 2vw);
+  padding-bottom: 1.25rem;
+  pointer-events: none; /* transparent wrapper never intercepts clicks */
+}
+.service-card > :first-child {
+  pointer-events: auto; /* the solid panel card is interactive */
+}
+
+@media (min-width: 768px) {
+  /* Each panel pins and the next rises from below to cover it. Increasing
+     z-index (set inline) keeps later panels on top; earlier panels stay
+     pinned behind them. */
+  .service-panel {
+    position: sticky;
+    top: 0;
+    height: var(--stack-slot, 100svh);
+  }
+  .service-card {
+    box-sizing: border-box;
+    height: 100svh;
+    padding-top: calc(var(--header-h) + var(--i, 0) * var(--stack-peek, 18px));
+    padding-bottom: 0;
+  }
+  /* Fixed card height so every panel lines up; the deck (peek strips) and the
+     bottom gap are reserved out of the viewport. */
+  .service-card > :first-child {
+    height: calc(
+      100svh - var(--header-h) - (var(--stack-count, 6) - 1) *
+        var(--stack-peek, 18px) - var(--stack-bottom, 20px)
+    );
+  }
+}

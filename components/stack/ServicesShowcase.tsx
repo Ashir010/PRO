@@ -1,29 +1,48 @@
-"use client";
-
-import { StackStage } from "@/components/stack/StackStage";
-import { StackFallback } from "@/components/stack/StackFallback";
-import { STACK } from "@/config/stack";
-import { useMediaQuery, useMounted } from "@/lib/hooks/useMediaQuery";
-import { usePrefersReducedMotion } from "@/lib/hooks/usePrefersReducedMotion";
+import { services } from "@/data/services";
+import { ServicePanel } from "@/components/services/ServicePanel";
+import { PANEL_COUNT, STACK } from "@/config/stack";
 
 /**
- * Chooses the showcase presentation:
- *  - pinned stage when mounted, the viewport is tall enough, and motion is allowed
- *  - otherwise the natural-flow fallback (reduced-motion / short screens / SSR)
- * Both render identical panel content, so nothing is lost and anchors work in
- * either mode.
+ * Stacked-card showcase using pure CSS `position: sticky` (see globals.css).
+ * Server component — no JS, no hydration gate, works on first paint at every
+ * viewport and under reduced motion. Each panel pins and the next rises from
+ * below to cover it; increasing z-index keeps later panels on top while earlier
+ * ones stay pinned behind; each card is offset by `index * peek` for the deck.
  */
 export function ServicesShowcase() {
-  const mounted = useMounted();
-  const tallEnough = useMediaQuery(`(min-height: ${STACK.minStageHeightPx}px)`);
-  // Pinned stacking needs room for a full content-rich panel in one viewport.
-  // Tablet+ (>=768px) uses the two-column panel and fits; phones use the
-  // natural-height flow stack (media over text) so nothing is clipped.
-  const wideEnough = useMediaQuery("(min-width: 768px)");
-  const reduced = usePrefersReducedMotion();
-
-  const canPin = mounted && tallEnough && wideEnough && !reduced;
-
-  if (canPin) return <StackStage />;
-  return <StackFallback animate={mounted && !reduced} />;
+  return (
+    <div
+      id="services"
+      className="services-stack"
+      style={
+        {
+          "--stack-peek": `${STACK.peekPx}px`,
+          "--stack-bottom": `${STACK.bottomGapPx}px`,
+          "--stack-count": PANEL_COUNT,
+          "--stack-inset": `${STACK.sideInsetVw}vw`,
+          "--stack-slot": `${STACK.slotVh}svh`,
+        } as React.CSSProperties
+      }
+    >
+      {services.map((service, i) => (
+        <section
+          key={service.id}
+          id={service.slug}
+          aria-label={`${service.title} — ${service.teamLabel}`}
+          className="service-panel"
+          style={
+            {
+              zIndex: i + 1,
+              "--i": i,
+              scrollMarginTop: "var(--header-h)",
+            } as React.CSSProperties
+          }
+        >
+          <div className="service-card">
+            <ServicePanel service={service} />
+          </div>
+        </section>
+      ))}
+    </div>
+  );
 }
