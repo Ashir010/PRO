@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { Logo } from "@/components/ui/Logo";
-import { services } from "@/data/services";
 
 export function Footer() {
   const year = 2026; // static: avoids a dynamic render under cacheComponents
@@ -15,19 +14,6 @@ export function Footer() {
             logo and all media on this site are replaceable placeholders.
           </p>
         </div>
-
-        <nav aria-label="Teams" className="flex flex-col gap-2.5">
-          <span className="eyebrow text-white/40">Teams</span>
-          {services.map((s) => (
-            <Link
-              key={s.id}
-              href={`#${s.slug}`}
-              className="ul-link text-[0.9rem] transition-colors hover:text-white"
-            >
-              {s.title}
-            </Link>
-          ))}
-        </nav>
 
         <nav aria-label="Go to" className="flex flex-col gap-2.5">
           <span className="eyebrow text-white/40">Go to</span>

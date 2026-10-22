@@ -259,7 +259,7 @@ export const site = {
       "ProMotion plans, shoots, animates and edits — from 3D product explainers and SaaS motion graphics to podcasts, UGC and on-site shoots — each handled by a team that does only that.",
   },
   teamsIntro: {
-    heading: "Six specialist teams. One production partner.",
+    heading: "One team per discipline.",
     support:
       "Every service below is owned end to end by a dedicated team — specialist depth, a single point of contact.",
   },

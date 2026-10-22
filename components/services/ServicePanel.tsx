@@ -1,6 +1,5 @@
 import Link from "next/link";
 import type { Service } from "@/data/services";
-import { Icon } from "@/components/ui/Icon";
 import { ServiceArt } from "@/components/media/ServiceArt";
 import { STACK } from "@/config/stack";
 
@@ -79,26 +78,7 @@ export function ServicePanel({ service }: { service: Service }) {
             {service.description}
           </p>
 
-          <ul className="mt-4 grid list-none grid-cols-1 gap-x-4 gap-y-3 p-0 sm:grid-cols-3">
-            {service.deliverables.map((d) => (
-              <li key={d.label} className="min-w-0">
-                <span
-                  className="inline-flex h-10 w-10 items-center justify-center rounded-[10px] border"
-                  style={{ borderColor: colors.line }}
-                >
-                  <Icon name={d.icon} className="h-5 w-5" />
-                </span>
-                <p className="mt-2.5 text-[0.95rem] font-semibold leading-tight">
-                  {d.label}
-                </p>
-                <p className="text-[0.8rem]" style={{ color: colors.muted }}>
-                  {d.caption}
-                </p>
-              </li>
-            ))}
-          </ul>
-
-          <p className="font-display mt-4 text-[length:var(--text-highlight)] font-medium leading-snug">
+          <p className="font-display mt-6 text-[length:var(--text-highlight)] font-medium leading-snug">
             <Highlight text={service.highlight.text} accent={service.highlight.accent} color={colors.highlight} />
           </p>
 
