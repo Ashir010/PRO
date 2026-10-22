@@ -12,7 +12,7 @@ export function ServiceCards() {
     <section
       id="services"
       aria-label="Our six specialist teams"
-      className="shell py-20 lg:py-28"
+      className="shell pb-20 pt-8 lg:pb-28 lg:pt-10"
       style={{ scrollMarginTop: "var(--header-h)" }}
     >
       <p className="eyebrow text-muted">What we do</p>
@@ -20,7 +20,7 @@ export function ServiceCards() {
         Each discipline, its own team.
       </h2>
 
-      <ul className="mt-12 grid list-none grid-cols-1 gap-5 p-0 sm:grid-cols-2 lg:grid-cols-3">
+      <ul className="mt-6 grid list-none grid-cols-1 gap-4 p-0 sm:grid-cols-2 lg:grid-cols-3">
         {services.map((service) => {
           const { colors } = service;
           return (
@@ -31,7 +31,7 @@ export function ServiceCards() {
                 className="group relative block overflow-hidden rounded-[18px] outline-none ring-offset-2 ring-offset-peach transition-[transform,box-shadow] duration-300 ease-[var(--ease-signature)] hover:-translate-y-1.5 hover:shadow-[0_26px_50px_-28px_rgba(10,10,10,0.5)] focus-visible:-translate-y-1.5"
                 style={{ ["--accent" as string]: colors.highlight }}
               >
-                <div className="relative aspect-[4/5]">
+                <div className="relative aspect-[16/9]">
                   <ServiceArt
                     slug={service.slug}
                     accent={colors.highlight}
@@ -61,12 +61,14 @@ export function ServiceCards() {
                   </span>
 
                   {/* title + team label */}
-                  <div className="absolute inset-x-0 bottom-0 p-5">
-                    <p className="eyebrow text-white/70">{service.teamLabel}</p>
-                    <h3 className="font-display mt-1.5 text-[1.3rem] font-semibold leading-tight text-white">
+                  <div className="absolute inset-x-0 bottom-0 p-4">
+                    <p className="eyebrow text-[0.65rem] text-white/70">
+                      {service.teamLabel}
+                    </p>
+                    <h3 className="font-display mt-1 text-[1.05rem] font-semibold leading-tight text-white">
                       {service.title}
                     </h3>
-                    <span className="ul-link mt-3 inline-flex text-[0.85rem] font-semibold text-white">
+                    <span className="ul-link mt-2 inline-flex text-[0.8rem] font-semibold text-white">
                       Discuss this project
                       <span aria-hidden="true">→</span>
                     </span>

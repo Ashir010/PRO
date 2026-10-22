@@ -16,10 +16,8 @@ export function Header() {
 
   return (
     <header
-      className={`sticky top-0 z-50 transition-colors duration-300 ${
-        scrolled
-          ? "border-b border-hairline bg-peach/85 backdrop-blur-md"
-          : "border-b border-transparent"
+      className={`fixed inset-x-0 top-0 z-50 bg-peach transition-colors duration-300 ${
+        scrolled ? "border-b border-hairline" : "border-b border-transparent"
       }`}
       style={{ height: "var(--header-h)" }}
     >

@@ -4,7 +4,7 @@ export function Hero() {
   return (
     <section
       id="top"
-      className="shell flex min-h-[56svh] flex-col justify-center pb-10 pt-[clamp(2rem,7vh,4.5rem)]"
+      className="shell flex flex-col pt-[clamp(2.5rem,10vh,6.5rem)] pb-[clamp(1.5rem,4vh,3rem)]"
     >
       <p className="eyebrow text-muted">Creative production studio</p>
 
