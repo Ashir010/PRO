@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import Link from "next/link";
 import {
   motion,
   useScroll,
@@ -163,6 +164,22 @@ function ServiceStackCard({ service }: { service: Service }) {
           <p className="mt-3 max-w-[42ch] text-[0.975rem] leading-snug text-ink/65">
             {service.description}
           </p>
+          <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3">
+            <Link
+              href={`/services/${service.slug}`}
+              className="inline-flex items-center gap-1.5 rounded-full bg-ink px-5 py-2.5 text-[0.9rem] font-semibold text-peach transition-opacity duration-300 hover:opacity-85"
+            >
+              Read more
+              <span aria-hidden="true">→</span>
+            </Link>
+            <Link
+              href="#contact"
+              className="ul-link inline-flex items-center gap-1.5 text-[0.9rem] font-semibold text-ink"
+            >
+              Discuss this project
+              <span aria-hidden="true">→</span>
+            </Link>
+          </div>
         </div>
       </div>
 
