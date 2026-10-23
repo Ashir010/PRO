@@ -44,29 +44,22 @@ export function StackedServices() {
         </h2>
       </div>
 
-      {reduced ? (
-        // Reduced motion: a plain, readable stacked list — no sticky, no scaling.
-        <div className="shell flex flex-col items-center gap-6 pb-20">
-          {services.map((service) => (
-            <div key={service.id} className="w-full max-w-[1000px]">
-              <ServiceStackCard service={service} />
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div ref={container} className="relative">
-          {services.map((service, i) => (
-            <StickyCard
-              key={service.id}
-              i={i}
-              service={service}
-              progress={scrollYProgress}
-              range={[i / TOTAL, 1]}
-              targetScale={Math.max(0.75, 1 - (TOTAL - i - 1) * 0.05)}
-            />
-          ))}
-        </div>
-      )}
+      {/* Sticky stacking runs on every device (it's layout, not an animation).
+          Under reduced motion we keep the stack but drop the scroll-linked
+          scale. */}
+      <div ref={container} className="relative">
+        {services.map((service, i) => (
+          <StickyCard
+            key={service.id}
+            i={i}
+            service={service}
+            progress={scrollYProgress}
+            range={[i / TOTAL, 1]}
+            targetScale={Math.max(0.75, 1 - (TOTAL - i - 1) * 0.05)}
+            reduced={reduced}
+          />
+        ))}
+      </div>
     </section>
   );
 }
@@ -77,20 +70,22 @@ function StickyCard({
   progress,
   range,
   targetScale,
+  reduced,
 }: {
   i: number;
   service: Service;
   progress: MotionValue<number>;
   range: [number, number];
   targetScale: number;
+  reduced: boolean;
 }) {
-  const scale = useTransform(progress, range, [1, targetScale]);
+  const scaleMV = useTransform(progress, range, [1, targetScale]);
 
   return (
     <div className="sticky top-0 flex h-[100svh] items-start justify-center px-4">
       <motion.div
         style={{
-          scale,
+          scale: reduced ? 1 : scaleMV,
           // small stepped offset so every card stays fully visible and peeks
           top: `calc(10svh + ${i * 24}px)`,
           zIndex: i,
