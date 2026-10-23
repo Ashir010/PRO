@@ -47,6 +47,18 @@ export function StackedServices() {
           Under reduced motion we keep the stack but drop the scroll-linked
           scale. */}
       <div ref={container} className="relative">
+        {/* Zero-height anchor markers at each card's active scroll position, so
+            the grid cards can jump to the matching stacked card. */}
+        {services.map((service, i) => (
+          <span
+            key={`marker-${service.id}`}
+            id={`stack-${service.slug}`}
+            aria-hidden="true"
+            className="pointer-events-none absolute left-0 block h-0 w-0"
+            style={{ top: `${i * 100}svh`, scrollMarginTop: "var(--header-h)" }}
+          />
+        ))}
+
         {services.map((service, i) => (
           <StickyCard
             key={service.id}

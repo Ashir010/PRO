@@ -3,16 +3,17 @@ import type { Service } from "@/data/services";
 import { ServiceArt } from "@/components/media/ServiceArt";
 
 /**
- * Grid service card: art + team label + title + a short info teaser, with a
- * "Read more" link to the service's detail page and a "Discuss this project"
- * link to the contact section.
+ * Grid service card: art + team label + title + a short info teaser. The whole
+ * card links to the service's detail page.
  */
 export function ServiceGridCard({ service }: { service: Service }) {
   const { colors } = service;
 
   return (
-    <div
-      className="group relative overflow-hidden rounded-[18px] transition-[transform,box-shadow] duration-300 ease-[var(--ease-signature)] hover:-translate-y-1.5 hover:shadow-[0_26px_50px_-28px_rgba(10,10,10,0.5)]"
+    <Link
+      href={`#stack-${service.slug}`}
+      aria-label={`${service.title} — jump to card`}
+      className="group relative block overflow-hidden rounded-[18px] outline-none ring-offset-2 ring-offset-peach transition-[transform,box-shadow] duration-300 ease-[var(--ease-signature)] hover:-translate-y-1.5 hover:shadow-[0_26px_50px_-28px_rgba(10,10,10,0.5)] focus-visible:-translate-y-1.5"
       style={{ ["--accent" as string]: colors.highlight }}
     >
       <div className="relative aspect-[3/2]">
@@ -55,16 +56,8 @@ export function ServiceGridCard({ service }: { service: Service }) {
           <p className="mt-1.5 line-clamp-2 text-[0.78rem] leading-snug text-white/85">
             {service.description}
           </p>
-          <div className="mt-3">
-            <Link
-              href={`/services/${service.slug}`}
-              className="inline-flex items-center rounded-full border border-white/30 px-3 py-1 text-[0.72rem] font-semibold text-white transition-colors duration-200 hover:bg-white hover:text-[#0A0A0A]"
-            >
-              Read more
-            </Link>
-          </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
