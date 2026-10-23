@@ -121,7 +121,7 @@ function ServiceStackCard({ service }: { service: Service }) {
 
   return (
     <article
-      className="relative grid grid-cols-1 overflow-hidden rounded-[32px] text-ink ring-1 ring-black/5 shadow-[0_36px_70px_-34px_rgba(90,60,40,0.38)] md:h-[520px] md:grid-cols-2"
+      className="relative grid grid-cols-1 overflow-hidden rounded-[32px] text-ink ring-1 ring-black/5 shadow-[0_36px_70px_-34px_rgba(90,60,40,0.38)] md:h-[560px] md:grid-cols-2"
       style={{
         ["--accent" as string]: colors.highlight,
         background:
@@ -164,7 +164,7 @@ function ServiceStackCard({ service }: { service: Service }) {
           <p className="mt-3 max-w-[42ch] text-[0.975rem] leading-snug text-ink/65">
             {service.description}
           </p>
-          <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3">
+          <div className="mt-6 flex flex-col items-start gap-4">
             <Link
               href={`/services/${service.slug}`}
               className="inline-flex items-center gap-1.5 rounded-full bg-ink px-5 py-2.5 text-[0.9rem] font-semibold text-peach transition-opacity duration-300 hover:opacity-85"
