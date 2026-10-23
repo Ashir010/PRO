@@ -94,12 +94,12 @@ function StickyCard({
   const scaleMV = useTransform(progress, range, [1, targetScale]);
 
   return (
-    <div className="sticky top-0 flex h-[100svh] items-start justify-center px-4">
+    <div className="sticky top-0 flex h-[100svh] items-center justify-center px-4">
       <motion.div
         style={{
           scale: reduced ? 1 : scaleMV,
-          // small stepped offset so every card stays fully visible and peeks
-          top: `calc(10svh + ${i * 24}px)`,
+          // stepped offset for the peek, re-centred so the deck sits mid-viewport
+          top: `calc(${i * 22}px - 50px)`,
           zIndex: i,
         }}
         className="relative w-full max-w-[1000px] origin-top"
@@ -121,7 +121,7 @@ function ServiceStackCard({ service }: { service: Service }) {
 
   return (
     <article
-      className="relative grid grid-cols-1 overflow-hidden rounded-[32px] text-ink ring-1 ring-black/5 shadow-[0_36px_70px_-34px_rgba(90,60,40,0.38)] md:h-[560px] md:grid-cols-2"
+      className="relative grid grid-cols-1 overflow-hidden rounded-[32px] text-ink ring-1 ring-black/5 shadow-[0_36px_70px_-34px_rgba(90,60,40,0.38)] md:h-[480px] md:grid-cols-2"
       style={{
         ["--accent" as string]: colors.highlight,
         background:
