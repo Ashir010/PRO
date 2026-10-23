@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef } from "react";
-import Link from "next/link";
 import {
   motion,
   useScroll,
@@ -127,7 +126,7 @@ function ServiceStackCard({ service }: { service: Service }) {
       />
 
       {/* Text */}
-      <div className="relative z-10 flex flex-col justify-between gap-6 p-7 sm:p-9 md:p-10">
+      <div className="relative z-10 flex flex-col justify-center gap-8 p-7 sm:p-9 md:p-10">
         <div className="flex items-center justify-between">
           <span
             className="inline-flex h-9 min-w-[2.25rem] items-center justify-center rounded-full border px-2 font-display text-[0.85rem] font-semibold tabular-nums"
@@ -153,14 +152,6 @@ function ServiceStackCard({ service }: { service: Service }) {
             {service.description}
           </p>
         </div>
-
-        <Link
-          href="#contact"
-          className="ul-link inline-flex w-fit items-center gap-1.5 text-[0.9rem] font-semibold text-ink"
-        >
-          Discuss this project
-          <span aria-hidden="true">→</span>
-        </Link>
       </div>
 
       {/* Media — dark tile inset in the light glossy card */}
