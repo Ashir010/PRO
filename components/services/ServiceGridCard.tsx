@@ -52,7 +52,7 @@ export function ServiceGridCard({ service }: { service: Service }) {
           <h3 className="font-display mt-1 text-[1.05rem] font-semibold leading-tight text-white">
             {service.title}
           </h3>
-          <p className="mt-1 line-clamp-1 text-[0.75rem] text-white/60">
+          <p className="mt-1.5 line-clamp-2 text-[0.78rem] leading-snug text-white/65">
             {service.description}
           </p>
           <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
