@@ -55,19 +55,12 @@ export function ServiceGridCard({ service }: { service: Service }) {
           <p className="mt-1.5 line-clamp-2 text-[0.78rem] leading-snug text-white/65">
             {service.description}
           </p>
-          <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
+          <div className="mt-3">
             <Link
               href={`/services/${service.slug}`}
               className="inline-flex items-center rounded-full border border-white/30 px-3 py-1 text-[0.72rem] font-semibold text-white transition-colors duration-200 hover:bg-white hover:text-[#0A0A0A]"
             >
               Read more
-            </Link>
-            <Link
-              href="#contact"
-              className="ul-link inline-flex items-center gap-1.5 text-[0.8rem] font-semibold text-white"
-            >
-              Discuss this project
-              <span aria-hidden="true">→</span>
             </Link>
           </div>
         </div>
