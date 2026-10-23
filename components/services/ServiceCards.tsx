@@ -31,7 +31,7 @@ export function ServiceCards() {
                 className="group relative block overflow-hidden rounded-[18px] outline-none ring-offset-2 ring-offset-peach transition-[transform,box-shadow] duration-300 ease-[var(--ease-signature)] hover:-translate-y-1.5 hover:shadow-[0_26px_50px_-28px_rgba(10,10,10,0.5)] focus-visible:-translate-y-1.5"
                 style={{ ["--accent" as string]: colors.highlight }}
               >
-                <div className="relative aspect-[16/9]">
+                <div className="relative aspect-[3/2]">
                   <ServiceArt
                     slug={service.slug}
                     accent={colors.highlight}
