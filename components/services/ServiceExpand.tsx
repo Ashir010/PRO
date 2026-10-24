@@ -127,19 +127,22 @@ function ExpandOverlay({
       : { sx: 1, sy: 1, x: 0, y: 0 },
   );
 
-  const noFlip = reduced || !rect;
+  // Animate the grow even under reduced motion (explicitly requested); only a
+  // direct deep-link (no source card) skips the FLIP and just fades in.
+  const noFlip = !rect;
 
   const scaleX = useTransform(progress, [0, 1], [noFlip ? 1 : from.sx, 1]);
   const scaleY = useTransform(progress, [0, 1], [noFlip ? 1 : from.sy, 1]);
   const x = useTransform(progress, [0, 1], [noFlip ? 0 : from.x, 0]);
   const y = useTransform(progress, [0, 1], [noFlip ? 0 : from.y, 0]);
-  const radius = useTransform(progress, [0, 1], [noFlip ? 24 : 28, 0]);
+  const radius = useTransform(progress, [0, 1], [noFlip ? 26 : 26, 0]);
   const bgOpacity = useTransform(progress, [0, 0.2, 1], noFlip ? [0, 1, 1] : [1, 1, 1]);
-  const backdropOpacity = useTransform(progress, [0, 1], [0, 0.5]);
-  const contentOpacity = useTransform(progress, [0.35, 1], [0, 1]);
-  const contentY = useTransform(progress, [0.35, 1], [noFlip ? 0 : 24, 0]);
+  const backdropOpacity = useTransform(progress, [0, 1], [0, 0.55]);
+  const contentOpacity = useTransform(progress, [0.45, 1], [0, 1]);
+  const contentY = useTransform(progress, [0.45, 1], [34, 0]);
+  const contentScale = useTransform(progress, [0.45, 1], [0.985, 1]);
 
-  const tween = { duration: reduced ? 0.25 : DURATION, ease: EASE };
+  const tween = { duration: reduced ? 0.5 : DURATION, ease: EASE };
 
   // Open + scroll lock
   useEffect(() => {
@@ -240,7 +243,7 @@ function ExpandOverlay({
       <motion.div
         aria-hidden="true"
         onClick={() => beginClose()}
-        className="absolute inset-0 bg-black"
+        className="absolute inset-0 bg-black backdrop-blur-[3px]"
         style={{ opacity: backdropOpacity }}
       />
 
@@ -257,13 +260,14 @@ function ExpandOverlay({
           borderRadius: radius,
           opacity: bgOpacity,
           background: CARD_BG,
+          boxShadow: "0 50px 140px -40px rgba(40,24,12,0.55)",
         }}
       />
 
-      {/* Content (not scaled; fades/slides in) */}
+      {/* Content (fades + slides + settles in) */}
       <motion.div
         className="absolute inset-0"
-        style={{ opacity: contentOpacity, y: contentY }}
+        style={{ opacity: contentOpacity, y: contentY, scale: contentScale }}
       >
         <div
           ref={scrollRef}
