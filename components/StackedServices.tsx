@@ -11,6 +11,7 @@ import {
 import { services, type Service } from "@/data/services";
 import { ServiceArt } from "@/components/media/ServiceArt";
 import { usePrefersReducedMotion } from "@/lib/hooks/usePrefersReducedMotion";
+import { useServiceExpand } from "@/components/services/ServiceExpand";
 
 const TOTAL = services.length;
 
@@ -118,6 +119,7 @@ function StickyCard({
  */
 function ServiceStackCard({ service }: { service: Service }) {
   const { colors } = service;
+  const { open } = useServiceExpand();
 
   return (
     <article
@@ -165,13 +167,17 @@ function ServiceStackCard({ service }: { service: Service }) {
             {service.description}
           </p>
           <div className="mt-6 flex flex-col items-start gap-4">
-            <Link
-              href={`/services/${service.slug}`}
+            <button
+              type="button"
+              onClick={(e) => {
+                const card = (e.currentTarget as HTMLElement).closest("article");
+                open(service.slug, card ? card.getBoundingClientRect() : null);
+              }}
               className="inline-flex items-center gap-1.5 rounded-full bg-ink px-5 py-2.5 text-[0.9rem] font-semibold text-peach transition-opacity duration-300 hover:opacity-85"
             >
               Read more
               <span aria-hidden="true">→</span>
-            </Link>
+            </button>
             <Link
               href="#contact"
               className="ul-link inline-flex items-center gap-1.5 text-[0.9rem] font-semibold text-ink"

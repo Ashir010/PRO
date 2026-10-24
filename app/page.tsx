@@ -4,10 +4,11 @@ import { ServiceCards } from "@/components/services/ServiceCards";
 import { StackedServices } from "@/components/StackedServices";
 import { Contact } from "@/components/contact/Contact";
 import { Footer } from "@/components/Footer";
+import { ServiceExpandProvider } from "@/components/services/ServiceExpand";
 
 export default function Home() {
   return (
-    <>
+    <ServiceExpandProvider>
       <Header />
       <main className="flex-1 pt-[var(--header-h)]">
         <Hero />
@@ -16,6 +17,6 @@ export default function Home() {
         <Contact />
       </main>
       <Footer />
-    </>
+    </ServiceExpandProvider>
   );
 }
