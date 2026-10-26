@@ -12,7 +12,6 @@ import {
   animate,
   motion,
   useMotionValue,
-  useSpring,
   useTransform,
 } from "motion/react";
 import { services, type Service } from "@/data/services";
@@ -25,8 +24,9 @@ import { ServiceDetailContent } from "@/components/services/ServiceDetailContent
    CLOSE_PX    : scroll distance (px) past the bottom that maps to a full close
    CLOSE_COMMIT: fraction of CLOSE_PX after which the close finishes on its own
 --------------------------------------------------------------------------- */
-const DURATION = 0.7;
-const EASE = [0.65, 0, 0.35, 1] as const;
+const DURATION = 0.56;
+// easeOutExpo-style: responds instantly, then glides to rest (no sluggish start)
+const EASE = [0.16, 1, 0.3, 1] as const;
 const CLOSE_PX = 180; // scroll distance past the bottom that maps to a full close
 const CLOSE_COMMIT = 0.3; // fraction of CLOSE_PX after which the close finishes
 
@@ -117,10 +117,10 @@ function ExpandOverlay({
   onClosed: () => void;
 }) {
   const reduced = usePrefersReducedMotion();
-  const progress = useMotionValue(0); // 0 = card, 1 = full screen
-  // Spring-smoothed value that actually drives the visuals, so the scroll-tied
-  // shrink and the open/close stay fluid (no jitter from raw wheel deltas).
-  const sp = useSpring(progress, { stiffness: 320, damping: 38, restDelta: 0.0005 });
+  // Single motion value drives every transform directly (0 = card, 1 = full
+  // screen). The open/close tween and the scroll gesture both write to it, so
+  // there's no second spring lagging behind — the motion tracks intent exactly.
+  const progress = useMotionValue(0);
   const scrollRef = useRef<HTMLDivElement>(null);
   const closing = useRef(false);
 
@@ -140,16 +140,20 @@ function ExpandOverlay({
   // direct deep-link (no source card) skips the FLIP and just fades in.
   const noFlip = !rect;
 
-  const scaleX = useTransform(sp, [0, 1], [noFlip ? 1 : from.sx, 1]);
-  const scaleY = useTransform(sp, [0, 1], [noFlip ? 1 : from.sy, 1]);
-  const x = useTransform(sp, [0, 1], [noFlip ? 0 : from.x, 0]);
-  const y = useTransform(sp, [0, 1], [noFlip ? 0 : from.y, 0]);
-  const radius = useTransform(sp, [0, 1], [noFlip ? 26 : 26, 0]);
-  const bgOpacity = useTransform(sp, [0, 0.2, 1], noFlip ? [0, 1, 1] : [1, 1, 1]);
-  const backdropOpacity = useTransform(sp, [0, 1], [0, 0.55]);
-  const contentOpacity = useTransform(sp, [0.45, 1], [0, 1]);
-  const contentY = useTransform(sp, [0.45, 1], [34, 0]);
-  const contentScale = useTransform(sp, [0.45, 1], [0.985, 1]);
+  const scaleX = useTransform(progress, [0, 1], [noFlip ? 1 : from.sx, 1]);
+  const scaleY = useTransform(progress, [0, 1], [noFlip ? 1 : from.sy, 1]);
+  const x = useTransform(progress, [0, 1], [noFlip ? 0 : from.x, 0]);
+  const y = useTransform(progress, [0, 1], [noFlip ? 0 : from.y, 0]);
+  const radius = useTransform(progress, [0, 1], [26, 0]);
+  const bgOpacity = useTransform(
+    progress,
+    [0, 0.2, 1],
+    noFlip ? [0, 1, 1] : [1, 1, 1],
+  );
+  const backdropOpacity = useTransform(progress, [0, 1], [0, 0.5]);
+  const contentOpacity = useTransform(progress, [0.4, 0.95], [0, 1]);
+  const contentY = useTransform(progress, [0.4, 0.95], [28, 0]);
+  const contentScale = useTransform(progress, [0.4, 0.95], [0.99, 1]);
 
   const tween = { duration: reduced ? 0.5 : DURATION, ease: EASE };
 
@@ -171,8 +175,9 @@ function ExpandOverlay({
       if (closing.current) return;
       closing.current = true;
       if (!fromHistory && location.hash.startsWith("#view-")) history.back();
-      // let the spring-smoothed visuals catch up before unmounting
-      animate(progress, 0, tween).then(() => setTimeout(onClosed, 90));
+      // transforms track `progress` 1:1, so the card is fully home when the
+      // tween resolves — unmount immediately, no settle buffer needed.
+      animate(progress, 0, tween).then(onClosed);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [onClosed],
@@ -253,7 +258,7 @@ function ExpandOverlay({
       <motion.div
         aria-hidden="true"
         onClick={() => beginClose()}
-        className="absolute inset-0 bg-black backdrop-blur-[3px]"
+        className="absolute inset-0 bg-black"
         style={{ opacity: backdropOpacity }}
       />
 
@@ -276,7 +281,7 @@ function ExpandOverlay({
 
       {/* Content (fades + slides + settles in) */}
       <motion.div
-        className="absolute inset-0"
+        className="absolute inset-0 will-change-[transform,opacity]"
         style={{ opacity: contentOpacity, y: contentY, scale: contentScale }}
       >
         <div
