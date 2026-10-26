@@ -39,7 +39,10 @@ export type Service = {
   number: string; // "01".."06"
   title: string;
   teamLabel: string;
-  description: string; // ~two lines
+  description: string; // ~two lines — card teaser
+  /** Longer copy for the detail / "Read more" view; one entry per paragraph.
+   *  Falls back to `description` when omitted. */
+  longDescription?: string[];
   deliverables: [Deliverable, Deliverable, Deliverable];
   highlight: { text: string; accent: string }; // accent is a substring of text
   colors: ServiceColors;
@@ -60,7 +63,11 @@ export const services: Service[] = [
     title: "3D Videos",
     teamLabel: "3D Video Team",
     description:
-      "Visual explanations of products, technologies, industrial mechanisms and processes — so complex ideas land fast with the people who matter.",
+      "We create high-quality 3D animations that bring products, spaces, and complex ideas to life, helping brands showcase their innovations with clarity and visual impact.",
+    longDescription: [
+      "At ProMotion, we produce 3D visual content for industries including manufacturing, real estate, automotive, energy, technology, and consumer products. From industrial machinery and product demonstrations to architectural visualisations and technical explainers, we transform concepts into compelling visuals.",
+      "Whether you're introducing a new product, demonstrating a complex process, or presenting a project before it's built, our 3D production helps communicate your vision effectively.",
+    ],
     deliverables: [
       { icon: "cube", label: "Exploded views", caption: "See every component" },
       { icon: "gears", label: "Mechanism demos", caption: "How it moves and works" },
@@ -90,7 +97,11 @@ export const services: Service[] = [
     title: "SaaS & Motion Graphics",
     teamLabel: "SaaS & Tech Video Team",
     description:
-      "Motion graphics and explainers for software, digital tools and technical concepts — focused on clarity and concise storytelling.",
+      "We turn complex software, digital products, and technical concepts into engaging motion graphics and explainer videos that make your technology easier to understand.",
+    longDescription: [
+      "We work with SaaS companies, tech startups, and digital businesses to create product explainers, animated UI demonstrations, feature walkthroughs, launch videos, and promotional content.",
+      "Through clean animation, thoughtful storytelling, and engaging visual design, we help businesses showcase how their products work, communicate key features, and present technical solutions in a way their audience can easily understand.",
+    ],
     deliverables: [
       { icon: "window", label: "Product walkthroughs", caption: "Show the software working" },
       { icon: "spark", label: "Concept explainers", caption: "Make the abstract clear" },
@@ -120,7 +131,11 @@ export const services: Service[] = [
     title: "Editing & Post-Production",
     teamLabel: "Post-Production Team",
     description:
-      "From focused editing tasks to advanced finishing, built around the footage you supply — at whatever depth your project needs.",
+      "From clean, professional edits to advanced visual storytelling, we transform raw footage into polished videos tailored to your brand, audience, and creative vision.",
+    longDescription: [
+      "Our post-production services cover everything from short-form social content and promotional videos to high-end commercial edits.",
+      "We offer professional colour grading, motion graphics, speed ramping, visual effects, tracking, masking, sound design, and advanced transitions. Whether you need straightforward editing or complex, effects-driven production, we adapt our approach to your creative requirements.",
+    ],
     deliverables: [
       { icon: "scissors", label: "Editing & pacing", caption: "Shape the narrative" },
       { icon: "captions", label: "Captions & grading", caption: "Subtitles and colour" },
@@ -150,7 +165,11 @@ export const services: Service[] = [
     title: "Podcast Production",
     teamLabel: "Podcast Production Team",
     description:
-      "Recording through editing, publishing and promotion — professional lighting and multiple cameras, handled end to end.",
+      "From recording to the final edit, we handle every stage of podcast production, delivering professional, engaging content ready for YouTube and social media.",
+    longDescription: [
+      "We provide complete podcast production solutions for businesses, creators, industry professionals, and personal brands.",
+      "Our services include multi-camera filming, professional audio recording, lighting, editing, sound enhancement, and colour grading. We also repurpose long-form episodes into engaging short clips, reels, and promotional content, helping you reach audiences across multiple platforms.",
+    ],
     deliverables: [
       { icon: "mic", label: "Multi-cam capture", caption: "Lit, multiple cameras" },
       { icon: "scissors", label: "Editing & delivery", caption: "Episodes, ready to ship" },
@@ -183,7 +202,11 @@ export const services: Service[] = [
     title: "UGC & Social Media",
     teamLabel: "UGC & Social Team",
     description:
-      "Engaging video that helps brands communicate products and connect with audiences through thoughtful, relatable storytelling.",
+      "We create engaging, platform-ready content that helps brands showcase their products, connect with audiences, and build a stronger social media presence.",
+    longDescription: [
+      "We produce user-generated-style videos, product showcases, branded reels, promotional content, and short-form videos for Instagram, TikTok, YouTube Shorts, and other digital platforms.",
+      "From concept development and creative direction to editing and final delivery, we focus on creating content that feels authentic, captures attention, and communicates your brand's message effectively.",
+    ],
     deliverables: [
       { icon: "mobile", label: "Short-form content", caption: "Made for the feed" },
       { icon: "heart", label: "Brand stories", caption: "Relatable and specific" },
@@ -213,7 +236,11 @@ export const services: Service[] = [
     title: "Videography & On-Site Shoots",
     teamLabel: "Videography Team",
     description:
-      "The team travels to your location — cafes, sports clubs, dealerships, industrial sites — for professional filming tailored to each environment.",
+      "We provide professional on-location video production for brands and businesses, capturing everything from commercial projects and corporate films to events and promotional content.",
+    longDescription: [
+      "Our production team handles on-site filming for businesses across industries including manufacturing, automotive, healthcare, hospitality, sports, and real estate.",
+      "From corporate films and facility walkthroughs to product shoots, events, interviews, and promotional campaigns, we provide professional camera work, creative direction, and post-production to deliver content that represents your brand at its best.",
+    ],
     deliverables: [
       { icon: "camera", label: "On-location shoots", caption: "We travel to you" },
       { icon: "pin", label: "Tailored to the space", caption: "Built for each site" },

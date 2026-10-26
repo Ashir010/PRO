@@ -88,9 +88,16 @@ export default async function ServiceDetailPage({
                 {service.title}
               </h1>
 
-              <p className="mt-5 max-w-[48ch] text-[length:var(--text-body-lg)] text-muted">
-                {service.description}
-              </p>
+              {(service.longDescription ?? [service.description]).map(
+                (para, i) => (
+                  <p
+                    key={i}
+                    className={`${i === 0 ? "mt-5" : "mt-4"} max-w-[52ch] text-[length:var(--text-body-lg)] text-muted`}
+                  >
+                    {para}
+                  </p>
+                ),
+              )}
 
               <p className="eyebrow mt-10 text-faint">What&apos;s included</p>
               <ul className="mt-4 grid list-none gap-4 p-0 sm:grid-cols-2">
