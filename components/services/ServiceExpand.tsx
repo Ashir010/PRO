@@ -8,7 +8,13 @@ import {
   useRef,
   useState,
 } from "react";
-import { animate, motion, useMotionValue, useTransform } from "motion/react";
+import {
+  animate,
+  motion,
+  useMotionValue,
+  useSpring,
+  useTransform,
+} from "motion/react";
 import { services, type Service } from "@/data/services";
 import { usePrefersReducedMotion } from "@/lib/hooks/usePrefersReducedMotion";
 import { ServiceDetailContent } from "@/components/services/ServiceDetailContent";
@@ -21,8 +27,8 @@ import { ServiceDetailContent } from "@/components/services/ServiceDetailContent
 --------------------------------------------------------------------------- */
 const DURATION = 0.7;
 const EASE = [0.65, 0, 0.35, 1] as const;
-const CLOSE_PX = 420;
-const CLOSE_COMMIT = 0.35;
+const CLOSE_PX = 180; // scroll distance past the bottom that maps to a full close
+const CLOSE_COMMIT = 0.3; // fraction of CLOSE_PX after which the close finishes
 
 const CARD_BG = "linear-gradient(155deg,#FFFFFF 0%,#FBF3EC 52%,#F3E6DB 100%)";
 
@@ -112,6 +118,9 @@ function ExpandOverlay({
 }) {
   const reduced = usePrefersReducedMotion();
   const progress = useMotionValue(0); // 0 = card, 1 = full screen
+  // Spring-smoothed value that actually drives the visuals, so the scroll-tied
+  // shrink and the open/close stay fluid (no jitter from raw wheel deltas).
+  const sp = useSpring(progress, { stiffness: 320, damping: 38, restDelta: 0.0005 });
   const scrollRef = useRef<HTMLDivElement>(null);
   const closing = useRef(false);
 
@@ -131,16 +140,16 @@ function ExpandOverlay({
   // direct deep-link (no source card) skips the FLIP and just fades in.
   const noFlip = !rect;
 
-  const scaleX = useTransform(progress, [0, 1], [noFlip ? 1 : from.sx, 1]);
-  const scaleY = useTransform(progress, [0, 1], [noFlip ? 1 : from.sy, 1]);
-  const x = useTransform(progress, [0, 1], [noFlip ? 0 : from.x, 0]);
-  const y = useTransform(progress, [0, 1], [noFlip ? 0 : from.y, 0]);
-  const radius = useTransform(progress, [0, 1], [noFlip ? 26 : 26, 0]);
-  const bgOpacity = useTransform(progress, [0, 0.2, 1], noFlip ? [0, 1, 1] : [1, 1, 1]);
-  const backdropOpacity = useTransform(progress, [0, 1], [0, 0.55]);
-  const contentOpacity = useTransform(progress, [0.45, 1], [0, 1]);
-  const contentY = useTransform(progress, [0.45, 1], [34, 0]);
-  const contentScale = useTransform(progress, [0.45, 1], [0.985, 1]);
+  const scaleX = useTransform(sp, [0, 1], [noFlip ? 1 : from.sx, 1]);
+  const scaleY = useTransform(sp, [0, 1], [noFlip ? 1 : from.sy, 1]);
+  const x = useTransform(sp, [0, 1], [noFlip ? 0 : from.x, 0]);
+  const y = useTransform(sp, [0, 1], [noFlip ? 0 : from.y, 0]);
+  const radius = useTransform(sp, [0, 1], [noFlip ? 26 : 26, 0]);
+  const bgOpacity = useTransform(sp, [0, 0.2, 1], noFlip ? [0, 1, 1] : [1, 1, 1]);
+  const backdropOpacity = useTransform(sp, [0, 1], [0, 0.55]);
+  const contentOpacity = useTransform(sp, [0.45, 1], [0, 1]);
+  const contentY = useTransform(sp, [0.45, 1], [34, 0]);
+  const contentScale = useTransform(sp, [0.45, 1], [0.985, 1]);
 
   const tween = { duration: reduced ? 0.5 : DURATION, ease: EASE };
 
@@ -162,7 +171,8 @@ function ExpandOverlay({
       if (closing.current) return;
       closing.current = true;
       if (!fromHistory && location.hash.startsWith("#view-")) history.back();
-      animate(progress, 0, tween).then(onClosed);
+      // let the spring-smoothed visuals catch up before unmounting
+      animate(progress, 0, tween).then(() => setTimeout(onClosed, 90));
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [onClosed],
