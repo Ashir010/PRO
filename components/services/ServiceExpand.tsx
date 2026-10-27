@@ -21,14 +21,15 @@ import { ServiceDetailContent } from "@/components/services/ServiceDetailContent
 /* ---- Tunables -------------------------------------------------------------
    DURATION    : open/close animation length (seconds)
    EASE        : easing for open/close
-   CLOSE_PX    : scroll distance (px) past the bottom that maps to a full close
-   CLOSE_COMMIT: fraction of CLOSE_PX after which the close finishes on its own
+   CLOSE_PX    : overscroll distance (px) that maps to the view fully collapsed
+   CLOSE_COMMIT: pull fraction needed on release to finish the close (else it
+                 springs back open) — drag-to-dismiss, not an instant snap
 --------------------------------------------------------------------------- */
 const DURATION = 0.56;
 // easeOutExpo-style: responds instantly, then glides to rest (no sluggish start)
 const EASE = [0.16, 1, 0.3, 1] as const;
-const CLOSE_PX = 180; // scroll distance past the bottom that maps to a full close
-const CLOSE_COMMIT = 0.3; // fraction of CLOSE_PX after which the close finishes
+const CLOSE_PX = 520; // overscroll px for a full collapse (gradual, "in parts")
+const CLOSE_COMMIT = 0.5; // release past half-way finishes; below springs back
 
 const CARD_BG = "linear-gradient(155deg,#FFFFFF 0%,#FBF3EC 52%,#F3E6DB 100%)";
 
@@ -206,15 +207,27 @@ function ExpandOverlay({
     let resetTimer: ReturnType<typeof setTimeout>;
     const atTop = () => el.scrollTop <= 2;
     const atBottom = () => el.scrollTop + el.clientHeight >= el.scrollHeight - 2;
+    // Shrink the view in step with the gesture. Only a full pull (f >= 1)
+    // auto-finishes mid-scroll; anything short waits for the gesture to settle.
     const apply = () => {
       const f = Math.min(1, accum / CLOSE_PX);
       progress.set(1 - f);
-      if (f >= CLOSE_COMMIT) beginClose();
+      if (f >= 1) {
+        clearTimeout(resetTimer);
+        beginClose();
+      }
     };
-    const springBack = () => {
+    // Gesture ended: commit the close only if pulled past CLOSE_COMMIT,
+    // otherwise glide the view back open. This is what makes it "in parts".
+    const settle = () => {
       if (closing.current) return;
+      const f = Math.min(1, accum / CLOSE_PX);
+      if (f >= CLOSE_COMMIT) {
+        beginClose();
+        return;
+      }
       accum = 0;
-      animate(progress, 1, { duration: 0.3, ease: [0.22, 1, 0.36, 1] });
+      animate(progress, 1, { duration: 0.35, ease: [0.22, 1, 0.36, 1] });
     };
     const onWheel = (e: WheelEvent) => {
       if (closing.current) return;
@@ -225,11 +238,14 @@ function ExpandOverlay({
         e.preventDefault();
         apply();
         clearTimeout(resetTimer);
-        resetTimer = setTimeout(springBack, 150);
+        resetTimer = setTimeout(settle, 170); // settle when scrolling pauses
       } else if (accum > 0) {
         // scrolling back toward the content re-expands the view
         accum = Math.max(0, accum - Math.abs(e.deltaY));
+        e.preventDefault();
         apply();
+        clearTimeout(resetTimer);
+        resetTimer = setTimeout(settle, 170);
       }
     };
     let startY = 0;
@@ -247,7 +263,7 @@ function ExpandOverlay({
         apply();
       }
     };
-    const onTouchEnd = () => springBack();
+    const onTouchEnd = () => settle();
     el.addEventListener("wheel", onWheel, { passive: false });
     el.addEventListener("touchstart", onTouchStart, { passive: true });
     el.addEventListener("touchmove", onTouchMove, { passive: true });
