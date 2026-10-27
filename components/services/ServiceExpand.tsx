@@ -21,15 +21,15 @@ import { ServiceDetailContent } from "@/components/services/ServiceDetailContent
 /* ---- Tunables -------------------------------------------------------------
    DURATION    : open/close animation length (seconds)
    EASE        : easing for open/close
-   CLOSE_PX    : overscroll distance (px) that maps to the view fully collapsed
-   CLOSE_COMMIT: pull fraction needed on release to finish the close (else it
-                 springs back open) — drag-to-dismiss, not an instant snap
+   CLOSE_PX    : overscroll distance (px) that maps to the view fully slid away
+   CLOSE_COMMIT: pull fraction needed on release to finish the dismiss (else it
+                 slides back into place) — drag-to-dismiss, not an instant snap
 --------------------------------------------------------------------------- */
 const DURATION = 0.56;
 // easeOutExpo-style: responds instantly, then glides to rest (no sluggish start)
 const EASE = [0.16, 1, 0.3, 1] as const;
-const CLOSE_PX = 520; // overscroll px for a full collapse (gradual, "in parts")
-const CLOSE_COMMIT = 0.5; // release past half-way finishes; below springs back
+const CLOSE_PX = 360; // overscroll px that fully slides the view away
+const CLOSE_COMMIT = 0.4; // release past this finishes; below slides back
 
 const CARD_BG = "linear-gradient(155deg,#FFFFFF 0%,#FBF3EC 52%,#F3E6DB 100%)";
 
@@ -125,6 +125,12 @@ function ExpandOverlay({
   const scrollRef = useRef<HTMLDivElement>(null);
   const closing = useRef(false);
 
+  // Dismiss slide: 0 = in place, 1 = slid fully off the bottom and faded out.
+  const exit = useMotionValue(0);
+  const [vh] = useState(() =>
+    typeof window !== "undefined" ? window.innerHeight : 800,
+  );
+
   // FLIP geometry captured once at open time (ignore resize mid-animation)
   const [from] = useState(() =>
     rect
@@ -151,7 +157,13 @@ function ExpandOverlay({
     [0, 0.2, 1],
     noFlip ? [0, 1, 1] : [1, 1, 1],
   );
-  const backdropOpacity = useTransform(progress, [0, 1], [0, 0.5]);
+  // Backdrop fades in with the open, then back out as the view slides away.
+  const backdropOpacity = useTransform(
+    () => Math.min(1, progress.get()) * 0.5 * (1 - exit.get()),
+  );
+  // Dismiss: the whole view slides down and fades (no card-shrink distortion).
+  const exitY = useTransform(exit, [0, 1], [0, vh]);
+  const exitOpacity = useTransform(exit, [0, 0.85], [1, 0]);
   const contentOpacity = useTransform(progress, [0.4, 0.95], [0, 1]);
   const contentY = useTransform(progress, [0.4, 0.95], [28, 0]);
   const contentScale = useTransform(progress, [0.4, 0.95], [0.99, 1]);
@@ -176,9 +188,10 @@ function ExpandOverlay({
       if (closing.current) return;
       closing.current = true;
       if (!fromHistory && location.hash.startsWith("#view-")) history.back();
-      // transforms track `progress` 1:1, so the card is fully home when the
-      // tween resolves — unmount immediately, no settle buffer needed.
-      animate(progress, 0, tween).then(onClosed);
+      // Slide the whole view down and fade it out, then unmount. Starts from the
+      // current `exit` value, so a scroll-dismiss finishes smoothly from where
+      // the gesture left off.
+      animate(exit, 1, { duration: 0.42, ease: [0.4, 0, 0.2, 1] }).then(onClosed);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [onClosed],
@@ -198,8 +211,8 @@ function ExpandOverlay({
     };
   }, [beginClose]);
 
-  // Scroll-to-close: overscrolling past EITHER edge shrinks the page back into
-  // the card — pull down at the bottom, or pull up at the top.
+  // Scroll-to-dismiss: overscrolling past EITHER edge slides the view away —
+  // pull down at the bottom, or pull up at the top.
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
@@ -207,18 +220,18 @@ function ExpandOverlay({
     let resetTimer: ReturnType<typeof setTimeout>;
     const atTop = () => el.scrollTop <= 2;
     const atBottom = () => el.scrollTop + el.clientHeight >= el.scrollHeight - 2;
-    // Shrink the view in step with the gesture. Only a full pull (f >= 1)
-    // auto-finishes mid-scroll; anything short waits for the gesture to settle.
+    // Slide the view with the gesture. A full pull (f >= 1) finishes mid-scroll;
+    // anything short waits for the gesture to settle before deciding.
     const apply = () => {
       const f = Math.min(1, accum / CLOSE_PX);
-      progress.set(1 - f);
+      exit.set(f);
       if (f >= 1) {
         clearTimeout(resetTimer);
         beginClose();
       }
     };
-    // Gesture ended: commit the close only if pulled past CLOSE_COMMIT,
-    // otherwise glide the view back open. This is what makes it "in parts".
+    // Gesture ended: finish the dismiss only if pulled past CLOSE_COMMIT,
+    // otherwise slide the view back into place.
     const settle = () => {
       if (closing.current) return;
       const f = Math.min(1, accum / CLOSE_PX);
@@ -227,7 +240,7 @@ function ExpandOverlay({
         return;
       }
       accum = 0;
-      animate(progress, 1, { duration: 0.35, ease: [0.22, 1, 0.36, 1] });
+      animate(exit, 0, { duration: 0.35, ease: [0.22, 1, 0.36, 1] });
     };
     const onWheel = (e: WheelEvent) => {
       if (closing.current) return;
@@ -275,7 +288,7 @@ function ExpandOverlay({
       el.removeEventListener("touchend", onTouchEnd);
       clearTimeout(resetTimer);
     };
-  }, [beginClose, progress]);
+  }, [beginClose, exit]);
 
   return (
     <div className="fixed inset-0 z-[100]">
@@ -286,52 +299,58 @@ function ExpandOverlay({
         style={{ opacity: backdropOpacity }}
       />
 
-      {/* Growing card background (transform + opacity only) */}
-      <motion.div
-        aria-hidden="true"
-        className="absolute inset-0 will-change-transform"
-        style={{
-          transformOrigin: "0 0",
-          x,
-          y,
-          scaleX,
-          scaleY,
-          borderRadius: radius,
-          opacity: bgOpacity,
-          background: CARD_BG,
-          boxShadow: "0 50px 140px -40px rgba(40,24,12,0.55)",
-        }}
-      />
-
-      {/* Content (fades + slides + settles in) */}
+      {/* Sliding group — card + content move and fade together on dismiss */}
       <motion.div
         className="absolute inset-0 will-change-[transform,opacity]"
-        style={{ opacity: contentOpacity, y: contentY, scale: contentScale }}
+        style={{ y: exitY, opacity: exitOpacity }}
       >
-        <div
-          ref={scrollRef}
-          role="dialog"
-          aria-modal="true"
-          aria-label={`${service.title} details`}
-          className="h-full overflow-y-auto overscroll-contain"
+        {/* Growing card background (transform + opacity only) */}
+        <motion.div
+          aria-hidden="true"
+          className="absolute inset-0 will-change-transform"
+          style={{
+            transformOrigin: "0 0",
+            x,
+            y,
+            scaleX,
+            scaleY,
+            borderRadius: radius,
+            opacity: bgOpacity,
+            background: CARD_BG,
+            boxShadow: "0 50px 140px -40px rgba(40,24,12,0.55)",
+          }}
+        />
+
+        {/* Content (fades + slides + settles in) */}
+        <motion.div
+          className="absolute inset-0 will-change-[transform,opacity]"
+          style={{ opacity: contentOpacity, y: contentY, scale: contentScale }}
         >
-          <div className="sticky top-0 z-10 flex justify-end px-4 pt-[calc(var(--header-h)+0.75rem)]">
-            <button
-              type="button"
-              onClick={() => beginClose()}
-              aria-label="Close"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-ink text-peach shadow-lg transition-opacity duration-200 hover:opacity-85"
-            >
-              <span aria-hidden="true" className="text-[1.1rem] leading-none">
-                ✕
-              </span>
-            </button>
+          <div
+            ref={scrollRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label={`${service.title} details`}
+            className="h-full overflow-y-auto overscroll-contain"
+          >
+            <div className="sticky top-0 z-10 flex justify-end px-4 pt-[calc(var(--header-h)+0.75rem)]">
+              <button
+                type="button"
+                onClick={() => beginClose()}
+                aria-label="Close"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-ink text-peach shadow-lg transition-opacity duration-200 hover:opacity-85"
+              >
+                <span aria-hidden="true" className="text-[1.1rem] leading-none">
+                  ✕
+                </span>
+              </button>
+            </div>
+            <ServiceDetailContent
+              service={service}
+              onDiscuss={() => beginClose()}
+            />
           </div>
-          <ServiceDetailContent
-            service={service}
-            onDiscuss={() => beginClose()}
-          />
-        </div>
+        </motion.div>
       </motion.div>
     </div>
   );
