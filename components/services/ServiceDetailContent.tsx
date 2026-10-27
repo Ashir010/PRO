@@ -120,7 +120,7 @@ export function ServiceDetailContent({
       </div>
 
       <p className="mt-14 border-t border-hairline pt-8 text-caption text-faint">
-        Scroll down to close · or press Esc
+        Scroll up or down to close · or press Esc
       </p>
     </div>
   );

@@ -197,16 +197,18 @@ function ExpandOverlay({
     };
   }, [beginClose]);
 
-  // Scroll-to-close: at the bottom, extra downward scroll shrinks the page.
+  // Scroll-to-close: overscrolling past EITHER edge shrinks the page back into
+  // the card — pull down at the bottom, or pull up at the top.
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
     let accum = 0;
     let resetTimer: ReturnType<typeof setTimeout>;
+    const atTop = () => el.scrollTop <= 2;
     const atBottom = () => el.scrollTop + el.clientHeight >= el.scrollHeight - 2;
     const apply = () => {
       const f = Math.min(1, accum / CLOSE_PX);
-      progress.set(1 - f * (reduced ? 1 : 1));
+      progress.set(1 - f);
       if (f >= CLOSE_COMMIT) beginClose();
     };
     const springBack = () => {
@@ -216,14 +218,17 @@ function ExpandOverlay({
     };
     const onWheel = (e: WheelEvent) => {
       if (closing.current) return;
-      if (e.deltaY > 0 && atBottom()) {
-        accum += e.deltaY;
+      const pastEdge =
+        (e.deltaY > 0 && atBottom()) || (e.deltaY < 0 && atTop());
+      if (pastEdge) {
+        accum += Math.abs(e.deltaY);
         e.preventDefault();
         apply();
         clearTimeout(resetTimer);
         resetTimer = setTimeout(springBack, 150);
-      } else if (e.deltaY < 0 && accum > 0) {
-        accum = Math.max(0, accum + e.deltaY);
+      } else if (accum > 0) {
+        // scrolling back toward the content re-expands the view
+        accum = Math.max(0, accum - Math.abs(e.deltaY));
         apply();
       }
     };
@@ -235,7 +240,10 @@ function ExpandOverlay({
       if (closing.current) return;
       const dy = startY - e.touches[0].clientY; // finger up (scroll down) => positive
       if (dy > 0 && atBottom()) {
-        accum = dy;
+        accum = dy; // pulled up past the bottom
+        apply();
+      } else if (dy < 0 && atTop()) {
+        accum = -dy; // pulled down past the top
         apply();
       }
     };
@@ -251,7 +259,7 @@ function ExpandOverlay({
       el.removeEventListener("touchend", onTouchEnd);
       clearTimeout(resetTimer);
     };
-  }, [beginClose, progress, reduced]);
+  }, [beginClose, progress]);
 
   return (
     <div className="fixed inset-0 z-[100]">
