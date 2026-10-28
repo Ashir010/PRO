@@ -159,12 +159,10 @@ body {
   will-change: transform;
   transform: translateZ(0);
 }
-.site-glow__blob {
-  filter: blur(58px);
-}
-.site-glow__core {
-  filter: blur(40px);
-}
+/* No blur() on purpose — a full-screen blurred *fixed* layer is the single
+   biggest scroll cost on weaker GPUs (it re-rasterizes as the page scrolls).
+   The radial gradients below are already soft (they fade to transparent), so
+   the glow needs no runtime filter at all and scrolling stays cheap. */
 
 .hg1 {
   width: max(44rem, 72vw);
@@ -173,9 +171,9 @@ body {
   top: 40%;
   background: radial-gradient(
     closest-side,
-    rgba(226, 98, 52, 0.74),
-    rgba(152, 52, 22, 0.28) 55%,
-    transparent 76%
+    rgba(226, 98, 52, 0.72),
+    rgba(152, 52, 22, 0.26) 46%,
+    transparent 100%
   );
   animation: hgFloat1 26s ease-in-out infinite alternate;
 }
@@ -186,9 +184,9 @@ body {
   top: 10%;
   background: radial-gradient(
     closest-side,
-    rgba(255, 150, 66, 0.64),
-    rgba(182, 76, 28, 0.24) 55%,
-    transparent 75%
+    rgba(255, 150, 66, 0.62),
+    rgba(182, 76, 28, 0.22) 46%,
+    transparent 100%
   );
   animation: hgFloat2 32s ease-in-out infinite alternate;
 }
@@ -199,8 +197,8 @@ body {
   bottom: -14%;
   background: radial-gradient(
     closest-side,
-    rgba(158, 44, 18, 0.6),
-    transparent 72%
+    rgba(158, 44, 18, 0.56),
+    transparent 100%
   );
   animation: hgFloat3 30s ease-in-out infinite alternate;
 }
@@ -211,9 +209,9 @@ body {
   top: 50%;
   background: radial-gradient(
     closest-side,
-    rgba(255, 206, 138, 0.92),
-    rgba(255, 130, 50, 0.52) 42%,
-    transparent 70%
+    rgba(255, 206, 138, 0.9),
+    rgba(255, 130, 50, 0.5) 40%,
+    transparent 100%
   );
   animation: hgCore 22s ease-in-out infinite alternate;
 }

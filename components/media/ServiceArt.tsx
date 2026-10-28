@@ -69,21 +69,6 @@ export function ServiceArt({
           <stop offset="0" stopColor="#FFFFFF" stopOpacity="0.5" />
           <stop offset="1" stopColor="#FFFFFF" stopOpacity="0" />
         </linearGradient>
-        <filter
-          id={`${p}-shadow`}
-          x="-40%"
-          y="-40%"
-          width="180%"
-          height="180%"
-        >
-          <feDropShadow
-            dx="0"
-            dy="12"
-            stdDeviation="16"
-            floodColor="#000000"
-            floodOpacity="0.5"
-          />
-        </filter>
       </defs>
 
       <rect width="400" height="500" fill={`url(#${p}-bg)`} />
@@ -100,7 +85,7 @@ const SCENES: Record<string, Scene> = {
   // 3D — stacked glossy isometric slabs with a dropped focal node
   "3d-videos": (p, a) => (
     <>
-      <g filter={`url(#${p}-shadow)`}>
+      <g>
         {[
           { cy: 316, s: 0.78, o: 0.5 },
           { cy: 258, s: 0.9, o: 0.72 },
@@ -154,7 +139,7 @@ const SCENES: Record<string, Scene> = {
   // SaaS — floating interface panel with a motion orb
   "saas-motion-graphics": (p, a) => (
     <>
-      <g filter={`url(#${p}-shadow)`}>
+      <g>
         <rect
           x="92"
           y="150"
@@ -213,7 +198,7 @@ const SCENES: Record<string, Scene> = {
   // Editing — glossy timeline, waveform and a glowing playhead
   "editing-post-production": (p, a) => (
     <>
-      <g filter={`url(#${p}-shadow)`}>
+      <g>
         {/* clip track */}
         {[
           { x: 70, w: 86, accent: false },
@@ -268,7 +253,7 @@ const SCENES: Record<string, Scene> = {
         <path d="M268 206q26 44 0 88" strokeOpacity="0.5" />
         <path d="M290 188q40 62 0 124" strokeOpacity="0.25" />
       </g>
-      <g filter={`url(#${p}-shadow)`}>
+      <g>
         {/* mic body */}
         <rect
           x="172"
@@ -312,7 +297,7 @@ const SCENES: Record<string, Scene> = {
   // UGC — floating phone with a short-form reel
   "ugc-social": (p, a) => (
     <>
-      <g filter={`url(#${p}-shadow)`}>
+      <g>
         <rect
           x="150"
           y="120"
@@ -370,7 +355,7 @@ const SCENES: Record<string, Scene> = {
   "videography-on-site": (p, a) => (
     <>
       <circle cx="200" cy="250" r="96" fill={`url(#${p}-focal)`} opacity="0.5" />
-      <g filter={`url(#${p}-shadow)`}>
+      <g>
         <circle
           cx="200"
           cy="250"
