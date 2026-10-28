@@ -31,6 +31,13 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 const CLOSE_PX = 360; // overscroll px that fully slides the view away
 const CLOSE_COMMIT = 0.4; // release past this finishes; below slides back
 
+// Slide-away dismiss: a gentle downward drift + fade (the fade leads, so the
+// travel stays short and the whole thing settles softly rather than slamming).
+const DISMISS_SEC = 0.5; // dismiss length (seconds)
+const DISMISS_EASE = [0.33, 0, 0.2, 1] as const; // soft start, gentle tail
+const DISMISS_DRIFT = 0.42; // how far the view drifts, as a fraction of viewport height
+const FADE_END = 0.9; // the view is fully faded by this point in the drift
+
 const CARD_BG = "linear-gradient(155deg,#FFFFFF 0%,#FBF3EC 52%,#F3E6DB 100%)";
 
 type Rect = { top: number; left: number; width: number; height: number };
@@ -162,8 +169,8 @@ function ExpandOverlay({
     () => Math.min(1, progress.get()) * 0.5 * (1 - exit.get()),
   );
   // Dismiss: the whole view slides down and fades (no card-shrink distortion).
-  const exitY = useTransform(exit, [0, 1], [0, vh]);
-  const exitOpacity = useTransform(exit, [0, 0.85], [1, 0]);
+  const exitY = useTransform(exit, [0, 1], [0, Math.round(vh * DISMISS_DRIFT)]);
+  const exitOpacity = useTransform(exit, [0, FADE_END], [1, 0]);
   const contentOpacity = useTransform(progress, [0.4, 0.95], [0, 1]);
   const contentY = useTransform(progress, [0.4, 0.95], [28, 0]);
   const contentScale = useTransform(progress, [0.4, 0.95], [0.99, 1]);
@@ -191,7 +198,10 @@ function ExpandOverlay({
       // Slide the whole view down and fade it out, then unmount. Starts from the
       // current `exit` value, so a scroll-dismiss finishes smoothly from where
       // the gesture left off.
-      animate(exit, 1, { duration: 0.42, ease: [0.4, 0, 0.2, 1] }).then(onClosed);
+      animate(exit, 1, {
+        duration: reduced ? 0.42 : DISMISS_SEC,
+        ease: DISMISS_EASE,
+      }).then(onClosed);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [onClosed],
