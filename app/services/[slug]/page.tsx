@@ -145,9 +145,6 @@ export default async function ServiceDetailPage({
                   accent={colors.highlight}
                   className="absolute inset-0 h-full w-full"
                 />
-                <span className="eyebrow absolute bottom-3 left-3 rounded-full bg-black/55 px-2.5 py-1 text-[0.6rem] text-white/80">
-                  Placeholder
-                </span>
               </div>
             </div>
           </div>
