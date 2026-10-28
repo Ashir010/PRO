@@ -8,7 +8,7 @@ export function Contact() {
     <section
       id="contact"
       aria-label="Contact ProMotion"
-      className="bg-night text-[#F4EEE8]"
+      className="text-[#F4EEE8]"
       style={
         { scrollMarginTop: "var(--header-h)", ["--accent" as string]: "#E8643C" } as React.CSSProperties
       }

@@ -35,12 +35,11 @@ export function StackedServices() {
   return (
     <section
       aria-label="A closer look at each team"
-      className="bg-peach"
       style={{ scrollMarginTop: "var(--header-h)" }}
     >
       <div className="shell pb-6 pt-4 lg:pt-8">
-        <p className="eyebrow text-muted">A closer look</p>
-        <h2 className="font-display mt-4 max-w-[20ch] text-[length:var(--text-title)] font-semibold leading-[1.08] tracking-[-0.02em] text-ink">
+        <p className="eyebrow text-white/55">A closer look</p>
+        <h2 className="font-display mt-4 max-w-[20ch] text-[length:var(--text-title)] font-semibold leading-[1.08] tracking-[-0.02em] text-white">
           Each team, in focus.
         </h2>
       </div>

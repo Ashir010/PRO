@@ -5,10 +5,12 @@ import { StackedServices } from "@/components/StackedServices";
 import { Contact } from "@/components/contact/Contact";
 import { Footer } from "@/components/Footer";
 import { ServiceExpandProvider } from "@/components/services/ServiceExpand";
+import { GlowBackground } from "@/components/media/GlowBackground";
 
 export default function Home() {
   return (
     <ServiceExpandProvider>
+      <GlowBackground />
       <Header />
       <main className="flex-1 pt-[var(--header-h)]">
         <Hero />

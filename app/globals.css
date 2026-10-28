@@ -29,7 +29,7 @@
 }
 
 :root {
-  color-scheme: light;
+  color-scheme: dark;
   --header-h: 60px;
   --accent: var(--color-vermilion); /* overridden per panel via inline style */
 }
@@ -39,8 +39,8 @@ html {
 }
 
 body {
-  background: var(--color-peach);
-  color: var(--color-ink);
+  background: #0a0605; /* dark base; the fixed .site-glow paints the amber over it */
+  color: #ece6e0;
   font-family: var(--font-sans);
   font-size: var(--text-body);
   line-height: 1.6;
@@ -128,15 +128,16 @@ body {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Hero — flowing amber "liquid light" background (pure CSS).          */
+/*  Site background — flowing amber "liquid light" (pure CSS).          */
 /*  Recreated from a reference loop: soft warm blobs drift on near-     */
 /*  black while a brighter core ribbon weaves through, screen-blended   */
-/*  for an additive glow. Transform-only; the reduced-motion rule above */
-/*  freezes it to a static glow.                                        */
+/*  for an additive glow. Fixed behind every section; transform-only,   */
+/*  and the reduced-motion rule above freezes it to a static glow.      */
 /* ------------------------------------------------------------------ */
-.hero-glow {
-  position: absolute;
+.site-glow {
+  position: fixed;
   inset: 0;
+  z-index: -1; /* behind all page content, above the body backdrop */
   overflow: hidden;
   isolation: isolate; /* contain the screen blending to this layer */
   background: radial-gradient(
@@ -147,8 +148,8 @@ body {
     #070403 100%
   );
 }
-.hero-glow__blob,
-.hero-glow__core {
+.site-glow__blob,
+.site-glow__core {
   position: absolute;
   display: block;
   border-radius: 50%;
@@ -156,10 +157,10 @@ body {
   will-change: transform;
   transform: translateZ(0);
 }
-.hero-glow__blob {
+.site-glow__blob {
   filter: blur(70px);
 }
-.hero-glow__core {
+.site-glow__core {
   filter: blur(44px);
 }
 

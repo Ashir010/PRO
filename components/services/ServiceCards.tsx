@@ -14,8 +14,8 @@ export function ServiceCards() {
       className="shell pb-20 pt-8 lg:pb-28 lg:pt-10"
       style={{ scrollMarginTop: "var(--header-h)" }}
     >
-      <p className="eyebrow text-muted">What we do</p>
-      <h2 className="font-display mt-4 max-w-[20ch] text-[length:var(--text-title)] font-semibold leading-[1.08] tracking-[-0.02em] text-ink">
+      <p className="eyebrow text-white/55">What we do</p>
+      <h2 className="font-display mt-4 max-w-[20ch] text-[length:var(--text-title)] font-semibold leading-[1.08] tracking-[-0.02em] text-white">
         Each discipline, its own team.
       </h2>
 

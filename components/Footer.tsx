@@ -5,7 +5,7 @@ export function Footer() {
   const year = 2026; // static: avoids a dynamic render under cacheComponents
 
   return (
-    <footer className="bg-night text-[#B9B2AB]">
+    <footer className="text-[#B9B2AB]">
       <div className="shell flex flex-col gap-10 border-t border-white/10 py-14 md:flex-row md:items-start md:justify-between">
         <div className="max-w-[26rem]">
           <Logo tone="light" />
