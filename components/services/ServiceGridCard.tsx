@@ -13,7 +13,7 @@ export function ServiceGridCard({ service }: { service: Service }) {
     <Link
       href={`#stack-${service.slug}`}
       aria-label={`${service.title} — jump to card`}
-      className="group relative block overflow-hidden rounded-[18px] outline-none ring-1 ring-white/10 ring-offset-2 ring-offset-[#1B0416] transition-[transform,box-shadow] duration-300 ease-[var(--ease-signature)] hover:-translate-y-1.5 hover:shadow-[0_26px_60px_-24px_rgba(0,0,0,0.75)] focus-visible:-translate-y-1.5"
+      className="group relative block overflow-hidden rounded-[18px] outline-none ring-1 ring-[#DC4D01]/15 ring-offset-2 ring-offset-white transition-[transform,box-shadow] duration-300 ease-[var(--ease-signature)] hover:-translate-y-1.5 hover:shadow-[0_26px_60px_-24px_rgba(105,44,11,0.32)] focus-visible:-translate-y-1.5"
       style={{ ["--accent" as string]: colors.highlight }}
     >
       <div className="relative aspect-[3/2]">
@@ -25,7 +25,7 @@ export function ServiceGridCard({ service }: { service: Service }) {
 
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 bg-[linear-gradient(125deg,rgba(231,176,222,0.16),transparent_32%,transparent_70%,rgba(255,90,10,0.14))] opacity-70"
+          className="pointer-events-none absolute inset-0 bg-[linear-gradient(125deg,rgba(255,255,255,0.5),transparent_32%,transparent_70%,rgba(220,77,1,0.12))] opacity-70"
         />
 
         {/* legibility scrim */}
@@ -34,7 +34,7 @@ export function ServiceGridCard({ service }: { service: Service }) {
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(180deg, rgba(27,4,22,0) 36%, rgba(27,4,22,0.64) 66%, rgba(27,4,22,0.94) 100%)",
+              "linear-gradient(180deg, rgba(255,255,255,0) 36%, rgba(255,255,255,0.78) 66%, rgba(255,255,255,0.96) 100%)",
           }}
         />
 
@@ -44,7 +44,7 @@ export function ServiceGridCard({ service }: { service: Service }) {
           style={{
             background: colors.bg,
             color: colors.text,
-            borderColor: "rgba(255,255,255,0.18)",
+            borderColor: "rgba(27,21,16,0.1)",
           }}
         >
           {service.number}
@@ -52,13 +52,13 @@ export function ServiceGridCard({ service }: { service: Service }) {
 
         {/* content */}
         <div className="absolute inset-x-0 bottom-0 p-4">
-          <p className="eyebrow text-[0.65rem] text-white/70">
+          <p className="eyebrow text-[0.65rem] text-muted">
             {service.teamLabel}
           </p>
-          <h3 className="font-display mt-1 text-[1.05rem] font-semibold leading-tight text-white">
+          <h3 className="font-display mt-1 text-[1.05rem] font-semibold leading-tight text-ink">
             {service.title}
           </h3>
-          <p className="mt-1.5 line-clamp-2 text-[0.78rem] leading-snug text-white/85">
+          <p className="mt-1.5 line-clamp-2 text-[0.78rem] leading-snug text-muted">
             {service.description}
           </p>
         </div>

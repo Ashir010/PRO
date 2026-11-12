@@ -5,12 +5,12 @@
 /* ------------------------------------------------------------------ */
 @theme {
   /* Canvas + ink */
-  --color-peach: #1b0416; /* dark surface, retained token name for existing utilities */
-  --color-ink: #fff7fd; /* high-contrast text */
-  --color-muted: #e7b0de; /* restrained text on plum */
-  --color-hairline: #7b3b83; /* hairlines on dark surfaces */
-  --color-night: #1b0416; /* deepest section background */
-  --color-vermilion: #ff5a0a; /* high-attention brand accent */
+  --color-peach: #ffffff; /* clean page canvas, retained token name for existing utilities */
+  --color-ink: #1b1510; /* high-contrast editorial ink */
+  --color-muted: #685b54; /* restrained text on white */
+  --color-hairline: #e8dcd5; /* warm-neutral hairlines */
+  --color-night: #1b1510; /* deepest structural tone */
+  --color-vermilion: #dc4d01; /* single high-attention brand accent */
 
   /* Fonts (wired in layout.tsx via next/font) */
   --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
@@ -29,7 +29,7 @@
 }
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
   --header-h: 60px;
   --accent: var(--color-vermilion); /* overridden per panel via inline style */
 }
@@ -39,8 +39,8 @@ html {
 }
 
 body {
-  background: #1b0416;
-  color: #fff7fd;
+  background: #ffffff;
+  color: #1b1510;
   font-family: var(--font-sans);
   font-size: var(--text-body);
   line-height: 1.6;
@@ -142,10 +142,10 @@ body {
   isolation: isolate; /* contain the screen blending to this layer */
   background: radial-gradient(
     135% 125% at 62% 118%,
-    #400849 0%,
-    #2b0631 36%,
-    #1b041f 66%,
-    #1b0416 100%
+    #ffffff 0%,
+    #fff4ed 40%,
+    #ffffff 72%,
+    #ffffff 100%
   );
 }
 .site-glow__blob,
@@ -171,8 +171,8 @@ body {
   top: 40%;
   background: radial-gradient(
     closest-side,
-    rgba(231, 176, 222, 0.45),
-    rgba(102, 28, 108, 0.28) 46%,
+    rgba(220, 77, 1, 0.16),
+    rgba(220, 77, 1, 0.04) 46%,
     transparent 100%
   );
   animation: hgFloat1 26s ease-in-out infinite alternate;
@@ -184,8 +184,8 @@ body {
   top: 10%;
   background: radial-gradient(
     closest-side,
-    rgba(64, 8, 73, 0.84),
-    rgba(231, 176, 222, 0.16) 46%,
+    rgba(220, 77, 1, 0.12),
+    rgba(220, 77, 1, 0.03) 46%,
     transparent 100%
   );
   animation: hgFloat2 32s ease-in-out infinite alternate;
@@ -197,7 +197,7 @@ body {
   bottom: -14%;
   background: radial-gradient(
     closest-side,
-    rgba(112, 31, 106, 0.55),
+    rgba(220, 77, 1, 0.1),
     transparent 100%
   );
   animation: hgFloat3 30s ease-in-out infinite alternate;
@@ -209,8 +209,8 @@ body {
   top: 50%;
   background: radial-gradient(
     closest-side,
-    rgba(255, 90, 10, 0.64),
-    rgba(231, 176, 222, 0.32) 40%,
+    rgba(220, 77, 1, 0.38),
+    rgba(220, 77, 1, 0.12) 40%,
     transparent 100%
   );
   animation: hgCore 22s ease-in-out infinite alternate;

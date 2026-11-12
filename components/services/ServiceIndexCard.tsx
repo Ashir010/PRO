@@ -10,7 +10,7 @@ export function ServiceIndexCard({ service }: { service: Service }) {
     <Link
       href={`#${service.slug}`}
       aria-label={`${service.title} — jump to section`}
-      className="group flex h-full flex-col rounded-xl border border-hairline bg-[#29042D]/85 p-5 transition-[transform,box-shadow,background-color] duration-300 ease-[var(--ease-signature)] hover:-translate-y-1 hover:bg-[#400849] hover:shadow-[0_18px_40px_-26px_rgba(0,0,0,0.7)] focus-visible:-translate-y-1"
+      className="group flex h-full flex-col rounded-xl border border-hairline bg-white p-5 transition-[transform,box-shadow,background-color] duration-300 ease-[var(--ease-signature)] hover:-translate-y-1 hover:bg-[#FFF4ED] hover:shadow-[0_18px_40px_-26px_rgba(105,44,11,0.25)] focus-visible:-translate-y-1"
       style={{ ["--accent" as string]: service.colors.highlight }}
     >
       <div className="flex items-baseline justify-between">

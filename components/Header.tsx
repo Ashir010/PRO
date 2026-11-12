@@ -18,7 +18,7 @@ export function Header() {
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${
         scrolled
-          ? "border-b border-[#E7B0DE]/15 bg-[#1B0416]/75 shadow-[0_12px_40px_rgba(27,4,22,0.25)] backdrop-blur-md"
+          ? "border-b border-[#E8DCD5] bg-white/85 shadow-[0_12px_40px_rgba(105,44,11,0.08)] backdrop-blur-md"
           : "border-b border-transparent"
       }`}
       style={{ height: "var(--header-h)" }}
@@ -31,19 +31,19 @@ export function Header() {
         <nav aria-label="Primary" className="flex items-center gap-6 sm:gap-8">
           <Link
             href="#services"
-            className="ul-link hidden text-[0.95rem] text-white/70 transition-colors hover:text-white sm:inline-flex"
+            className="ul-link hidden text-[0.95rem] text-ink/70 transition-colors hover:text-ink sm:inline-flex"
           >
             Services
           </Link>
           <Link
             href="#contact"
-            className="ul-link hidden text-[0.95rem] text-white/70 transition-colors hover:text-white sm:inline-flex"
+            className="ul-link hidden text-[0.95rem] text-ink/70 transition-colors hover:text-ink sm:inline-flex"
           >
             Contact
           </Link>
           <Link
             href="#contact"
-            className="inline-flex items-center rounded-full bg-[#FF5A0A] px-4 py-2 text-[0.9rem] font-semibold text-[#1B0416] transition-opacity duration-300 hover:opacity-90"
+            className="inline-flex items-center rounded-full bg-[#DC4D01] px-4 py-2 text-[0.9rem] font-semibold text-[#160B06] transition-opacity duration-300 hover:opacity-90"
           >
             Start a project
           </Link>

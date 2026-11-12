@@ -11,9 +11,9 @@ import {
 
 type Status = "idle" | "submitting" | "success" | "notConfigured" | "error";
 
-const ERROR_COLOR = "#FFB8B8";
+const ERROR_COLOR = "#B83E00";
 const INPUT =
-  "w-full rounded-md border border-white/20 bg-white/5 px-3.5 py-2.5 text-[0.975rem] text-white placeholder:text-white/40 focus:border-white/40";
+  "w-full rounded-md border border-hairline bg-white px-3.5 py-2.5 text-[0.975rem] text-ink placeholder:text-muted/70 focus:border-[#DC4D01]";
 
 const empty: ContactPayload = {
   name: "",
@@ -114,7 +114,7 @@ export function ContactForm() {
         <button
           type="button"
           onClick={() => setStatus("idle")}
-          className="ul-link mt-4 block text-[0.9rem] font-semibold text-white"
+          className="ul-link mt-4 block text-[0.9rem] font-semibold text-ink"
         >
           Back to the form
         </button>
@@ -218,11 +218,11 @@ export function ContactForm() {
           type="submit"
           disabled={submitting}
           aria-busy={submitting}
-          className="inline-flex items-center rounded-full bg-[#FF5A0A] px-6 py-3 text-[0.95rem] font-semibold text-[#1B0416] transition-opacity duration-300 hover:opacity-85 disabled:opacity-60"
+          className="inline-flex items-center rounded-full bg-[#DC4D01] px-6 py-3 text-[0.95rem] font-semibold text-[#160B06] transition-opacity duration-300 hover:opacity-85 disabled:opacity-60"
         >
           {submitting ? "Sending…" : "Send enquiry"}
         </button>
-        <p className="text-caption text-white/50">
+        <p className="text-caption text-muted">
           No phone number needed. We reply by email.
         </p>
       </div>
@@ -270,7 +270,7 @@ function FieldShell({
 }) {
   return (
     <div>
-      <label htmlFor={name} className="mb-1.5 block text-[0.85rem] font-medium text-white/90">
+      <label htmlFor={name} className="mb-1.5 block text-[0.85rem] font-medium text-ink">
         {label} <span style={{ color: ERROR_COLOR }}>*</span>
       </label>
       {children}
@@ -291,9 +291,9 @@ function Notice({
   children: React.ReactNode;
 }) {
   return (
-    <div role="status" className="rounded-xl border border-white/15 bg-white/5 p-6">
-      <h3 className="font-display text-[1.3rem] font-semibold text-white">{heading}</h3>
-      <p className="mt-2 text-[0.975rem] text-white/70">{children}</p>
+    <div role="status" className="rounded-xl border border-hairline bg-[#FFF4ED] p-6">
+      <h3 className="font-display text-[1.3rem] font-semibold text-ink">{heading}</h3>
+      <p className="mt-2 text-[0.975rem] text-muted">{children}</p>
     </div>
   );
 }

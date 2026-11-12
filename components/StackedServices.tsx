@@ -38,8 +38,8 @@ export function StackedServices() {
       style={{ scrollMarginTop: "var(--header-h)" }}
     >
       <div className="shell pb-6 pt-4 lg:pt-8">
-        <p className="eyebrow text-white/55">A closer look</p>
-        <h2 className="font-display mt-4 max-w-[20ch] text-[length:var(--text-title)] font-semibold leading-[1.08] tracking-[-0.02em] text-white">
+        <p className="eyebrow text-muted">A closer look</p>
+        <h2 className="font-display mt-4 max-w-[20ch] text-[length:var(--text-title)] font-semibold leading-[1.08] tracking-[-0.02em] text-ink">
           Each team, in focus.
         </h2>
       </div>
@@ -126,7 +126,7 @@ function ServiceStackCard({ service }: { service: Service }) {
       style={{
         ["--accent" as string]: colors.highlight,
         background:
-          "linear-gradient(155deg,#521057 0%,#400849 54%,#1B0416 100%)",
+          "linear-gradient(155deg,#FFFFFF 0%,#FFF4ED 54%,#FFE7D9 100%)",
       }}
     >
       {/* glossy top highlight */}
@@ -135,7 +135,7 @@ function ServiceStackCard({ service }: { service: Service }) {
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            "linear-gradient(180deg,rgba(231,176,222,0.2) 0%,rgba(231,176,222,0) 40%)",
+            "linear-gradient(180deg,rgba(220,77,1,0.08) 0%,rgba(220,77,1,0) 40%)",
         }}
       />
 
@@ -172,7 +172,7 @@ function ServiceStackCard({ service }: { service: Service }) {
                 const card = (e.currentTarget as HTMLElement).closest("article");
                 open(service.slug, card ? card.getBoundingClientRect() : null);
               }}
-              className="inline-flex items-center gap-1.5 rounded-full bg-[#FF5A0A] px-5 py-2.5 text-[0.9rem] font-semibold text-[#1B0416] transition-opacity duration-300 hover:opacity-85"
+              className="inline-flex items-center gap-1.5 rounded-full bg-[#DC4D01] px-5 py-2.5 text-[0.9rem] font-semibold text-[#160B06] transition-opacity duration-300 hover:opacity-85"
             >
               Read more
               <span aria-hidden="true">→</span>
@@ -190,7 +190,7 @@ function ServiceStackCard({ service }: { service: Service }) {
 
       {/* Media — dark tile inset in the light glossy card */}
       <div className="relative z-10 p-4 sm:p-5">
-        <div className="relative h-full min-h-[220px] overflow-hidden rounded-[22px] bg-gradient-to-br from-[#400849] to-[#1B0416] shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] md:min-h-0">
+        <div className="relative h-full min-h-[220px] overflow-hidden rounded-[22px] bg-gradient-to-br from-[#FFF4ED] to-white shadow-[inset_0_1px_0_rgba(255,255,255,0.8)] md:min-h-0">
           <ServiceArt
             slug={service.slug}
             accent={colors.highlight}

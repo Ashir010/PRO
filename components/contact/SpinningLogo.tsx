@@ -12,7 +12,7 @@ export function SpinningLogo() {
     <motion.div
       aria-hidden="true"
       className="h-16 w-16"
-      style={{ color: "#FFF7FD", ["--accent" as string]: "#FF5A0A" }}
+      style={{ color: "#1B1510", ["--accent" as string]: "#DC4D01" }}
       animate={reduced ? undefined : { rotate: 360 }}
       transition={
         reduced ? undefined : { duration: 24, ease: "linear", repeat: Infinity }

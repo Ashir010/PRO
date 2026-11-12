@@ -44,7 +44,7 @@ export function Logo({
   className?: string;
   tone?: "ink" | "light";
 }) {
-  const color = tone === "light" ? "#FFF7FD" : "#1B0416";
+  const color = tone === "light" ? "#1B1510" : "#1B1510";
   return (
     <span
       className={`inline-flex items-center gap-2.5 ${className}`}

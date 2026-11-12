@@ -96,7 +96,7 @@ export function ServiceDetailContent({
             <Link
               href="/#contact"
               onClick={onDiscuss}
-              className="inline-flex items-center gap-1.5 rounded-full bg-[#FF5A0A] px-6 py-3 text-[0.95rem] font-semibold text-[#1B0416] transition-opacity duration-300 hover:opacity-85"
+              className="inline-flex items-center gap-1.5 rounded-full bg-[#DC4D01] px-6 py-3 text-[0.95rem] font-semibold text-[#160B06] transition-opacity duration-300 hover:opacity-85"
             >
               Discuss this project
               <span aria-hidden="true">→</span>
@@ -106,7 +106,7 @@ export function ServiceDetailContent({
 
         {/* Visual */}
         <div className="lg:pt-2">
-          <div className="relative mx-auto aspect-[4/5] w-full max-w-[26rem] overflow-hidden rounded-[24px] bg-gradient-to-br from-[#400849] to-[#1B0416] lg:max-w-none">
+          <div className="relative mx-auto aspect-[4/5] w-full max-w-[26rem] overflow-hidden rounded-[24px] bg-gradient-to-br from-[#FFF4ED] to-white lg:max-w-none">
             <ServiceArt
               slug={service.slug}
               accent={colors.highlight}
