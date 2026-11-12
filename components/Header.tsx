@@ -18,7 +18,7 @@ export function Header() {
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${
         scrolled
-          ? "border-b border-white/10 bg-black/40 backdrop-blur-md"
+          ? "border-b border-[#E7B0DE]/15 bg-[#1B0416]/75 shadow-[0_12px_40px_rgba(27,4,22,0.25)] backdrop-blur-md"
           : "border-b border-transparent"
       }`}
       style={{ height: "var(--header-h)" }}

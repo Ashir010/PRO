@@ -23,6 +23,11 @@ export function ServiceGridCard({ service }: { service: Service }) {
           className="absolute inset-0 h-full w-full transition-transform duration-500 ease-[var(--ease-signature)] group-hover:scale-[1.05]"
         />
 
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 bg-[linear-gradient(125deg,rgba(231,176,222,0.16),transparent_32%,transparent_70%,rgba(255,90,10,0.14))] opacity-70"
+        />
+
         {/* legibility scrim */}
         <div
           aria-hidden="true"
