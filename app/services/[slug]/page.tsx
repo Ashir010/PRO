@@ -60,10 +60,15 @@ export default async function ServiceDetailPage({
   return (
     <>
       <Header />
-      <main className="flex-1 pt-[var(--header-h)]">
+      <main className="flex-1 pt-[var(--header-h)]" style={{ background: colors.bg, color: colors.text }}>
         <section
           className="shell py-14 lg:py-20"
-          style={{ ["--accent" as string]: colors.highlight }}
+          style={{
+            ["--accent" as string]: colors.highlight,
+            ["--color-ink" as string]: colors.text,
+            ["--color-muted" as string]: colors.muted,
+            ["--color-hairline" as string]: colors.line,
+          }}
         >
           <Link
             href="/#services"
@@ -129,7 +134,8 @@ export default async function ServiceDetailPage({
               <div className="mt-8">
                 <Link
                   href="/#contact"
-                  className="inline-flex items-center gap-1.5 rounded-full bg-[#DC4D01] px-6 py-3 text-[0.95rem] font-semibold text-[#160B06] transition-opacity duration-300 hover:opacity-85"
+                  className="inline-flex items-center gap-1.5 rounded-full px-6 py-3 text-[0.95rem] font-semibold transition-opacity duration-300 hover:opacity-85"
+                  style={{ background: colors.dark ? "#FFFFFF" : "#171827", color: colors.dark ? colors.bg : "#FFFFFF" }}
                 >
                   Discuss this project
                   <span aria-hidden="true">→</span>
@@ -139,7 +145,7 @@ export default async function ServiceDetailPage({
 
             {/* Visual */}
             <div className="lg:pt-2">
-              <div className="relative mx-auto aspect-[4/5] w-full max-w-[26rem] overflow-hidden rounded-[24px] bg-gradient-to-br from-[#FFF4ED] to-white lg:max-w-none">
+              <div className="relative mx-auto aspect-[4/5] w-full max-w-[26rem] overflow-hidden rounded-[24px] lg:max-w-none" style={{ background: colors.dark ? "#171827" : "#FFFFFF" }}>
                 <ServiceArt
                   slug={service.slug}
                   accent={colors.highlight}

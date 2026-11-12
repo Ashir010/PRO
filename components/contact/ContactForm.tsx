@@ -13,7 +13,7 @@ type Status = "idle" | "submitting" | "success" | "notConfigured" | "error";
 
 const ERROR_COLOR = "#B83E00";
 const INPUT =
-  "w-full rounded-md border border-hairline bg-white px-3.5 py-2.5 text-[0.975rem] text-ink placeholder:text-muted/70 focus:border-[#DC4D01]";
+  "w-full rounded-md border border-hairline bg-white px-3.5 py-2.5 text-[0.975rem] text-ink placeholder:text-muted/70 focus:border-[#E66B4B]";
 
 const empty: ContactPayload = {
   name: "",
@@ -218,7 +218,7 @@ export function ContactForm() {
           type="submit"
           disabled={submitting}
           aria-busy={submitting}
-          className="inline-flex items-center rounded-full bg-[#DC4D01] px-6 py-3 text-[0.95rem] font-semibold text-[#160B06] transition-opacity duration-300 hover:opacity-85 disabled:opacity-60"
+          className="inline-flex items-center rounded-full bg-[#171827] px-6 py-3 text-[0.95rem] font-semibold text-white transition-opacity duration-300 hover:opacity-85 disabled:opacity-60"
         >
           {submitting ? "Sending…" : "Send enquiry"}
         </button>
@@ -291,7 +291,7 @@ function Notice({
   children: React.ReactNode;
 }) {
   return (
-    <div role="status" className="rounded-xl border border-hairline bg-[#FFF4ED] p-6">
+    <div role="status" className="rounded-xl border border-hairline bg-white p-6">
       <h3 className="font-display text-[1.3rem] font-semibold text-ink">{heading}</h3>
       <p className="mt-2 text-[0.975rem] text-muted">{children}</p>
     </div>

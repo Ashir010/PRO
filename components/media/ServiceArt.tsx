@@ -32,41 +32,41 @@ export function ServiceArt({
       <defs>
         {/* warm charcoal base */}
         <linearGradient id={`${p}-bg`} x1="0" y1="0" x2="0.65" y2="1">
-          <stop offset="0" stopColor="#FFF4ED" />
-          <stop offset="0.55" stopColor="#FCE0D1" />
-          <stop offset="1" stopColor="#F9CDB5" />
+          <stop offset="0" stopColor="#F7F5F0" />
+          <stop offset="0.55" stopColor="#F7F5F0" />
+          <stop offset="1" stopColor="#F7F5F0" />
         </linearGradient>
         {/* accent wash from the upper third */}
         <radialGradient id={`${p}-glow`} cx="0.52" cy="0.34" r="0.72">
-          <stop offset="0" stopColor={accent} stopOpacity="0.5" />
-          <stop offset="0.45" stopColor={accent} stopOpacity="0.14" />
+          <stop offset="0" stopColor={accent} stopOpacity="0" />
+          <stop offset="0.45" stopColor={accent} stopOpacity="0" />
           <stop offset="1" stopColor={accent} stopOpacity="0" />
         </radialGradient>
         {/* edge vignette for depth */}
         <radialGradient id={`${p}-vignette`} cx="0.5" cy="0.46" r="0.75">
           <stop offset="0.55" stopColor="#000000" stopOpacity="0" />
-          <stop offset="1" stopColor="#000000" stopOpacity="0.55" />
+          <stop offset="1" stopColor="#000000" stopOpacity="0" />
         </radialGradient>
         {/* focal accent halo (fills a circle's bounding box) */}
         <radialGradient id={`${p}-focal`} cx="0.5" cy="0.5" r="0.5">
-          <stop offset="0" stopColor={accent} stopOpacity="0.95" />
-          <stop offset="0.35" stopColor={accent} stopOpacity="0.45" />
-          <stop offset="1" stopColor={accent} stopOpacity="0" />
+          <stop offset="0" stopColor={accent} stopOpacity="0.9" />
+          <stop offset="0.35" stopColor={accent} stopOpacity="0.9" />
+          <stop offset="1" stopColor={accent} stopOpacity="0.9" />
         </radialGradient>
         {/* neutral glossy slab */}
         <linearGradient id={`${p}-slab`} x1="0" y1="0" x2="0.9" y2="1">
-          <stop offset="0" stopColor="#F4A77D" />
-          <stop offset="0.5" stopColor="#DC4D01" />
-          <stop offset="1" stopColor="#A83600" />
+          <stop offset="0" stopColor="#171827" />
+          <stop offset="0.5" stopColor="#171827" />
+          <stop offset="1" stopColor="#171827" />
         </linearGradient>
         {/* accent-tinted fill */}
         <linearGradient id={`${p}-accent`} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor={accent} stopOpacity="0.95" />
-          <stop offset="1" stopColor={accent} stopOpacity="0.55" />
+          <stop offset="1" stopColor={accent} stopOpacity="0.95" />
         </linearGradient>
         {/* top sheen */}
         <linearGradient id={`${p}-sheen`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#FFFFFF" stopOpacity="0.5" />
+          <stop offset="0" stopColor="#FFFFFF" stopOpacity="0" />
           <stop offset="1" stopColor="#FFFFFF" stopOpacity="0" />
         </linearGradient>
       </defs>
@@ -98,7 +98,7 @@ const SCENES: Record<string, Scene> = {
               <path
                 d={`M200 ${cy - h} ${200 + w} ${cy} 200 ${cy + h} ${200 - w} ${cy}Z`}
                 fill={`url(#${p}-slab)`}
-                stroke="#1B1510"
+                stroke="#242424"
                 strokeOpacity={i === 2 ? 0.45 : 0.18}
                 strokeWidth="2"
               />
@@ -147,7 +147,7 @@ const SCENES: Record<string, Scene> = {
           height="200"
           rx="16"
           fill={`url(#${p}-slab)`}
-          stroke="#1B1510"
+          stroke="#242424"
           strokeOpacity="0.16"
           strokeWidth="2"
         />
@@ -164,15 +164,15 @@ const SCENES: Record<string, Scene> = {
         {/* top bar */}
         <path
           d="M92 186h216"
-          stroke="#1B1510"
+          stroke="#242424"
           strokeOpacity="0.16"
           strokeWidth="2"
         />
-        <circle cx="112" cy="168" r="4" fill="#1B1510" opacity="0.45" />
-        <circle cx="128" cy="168" r="4" fill="#1B1510" opacity="0.3" />
+        <circle cx="112" cy="168" r="4" fill="#242424" opacity="0.45" />
+        <circle cx="128" cy="168" r="4" fill="#242424" opacity="0.3" />
         <circle cx="144" cy="168" r="4" fill={a} />
         {/* content lines */}
-        <g stroke="#1B1510" strokeOpacity="0.28" strokeWidth="6" strokeLinecap="round">
+        <g stroke="#242424" strokeOpacity="0.28" strokeWidth="6" strokeLinecap="round">
           <path d="M120 214h70" />
           <path d="M120 236h120" />
           <path d="M120 258h96" />
@@ -213,13 +213,13 @@ const SCENES: Record<string, Scene> = {
             height="46"
             rx="8"
             fill={c.accent ? `url(#${p}-accent)` : `url(#${p}-slab)`}
-            stroke="#1B1510"
+            stroke="#242424"
             strokeOpacity={c.accent ? 0 : 0.16}
             strokeWidth="2"
           />
         ))}
         {/* waveform as filled mirrored bars */}
-        <g fill="#1B1510" opacity="0.5">
+        <g fill="#242424" opacity="0.5">
           {Array.from({ length: 26 }).map((_, n) => {
             const x = 80 + n * 9.6;
             const h = 8 + ((n * 17) % 40);
@@ -262,7 +262,7 @@ const SCENES: Record<string, Scene> = {
           height="118"
           rx="28"
           fill={`url(#${p}-slab)`}
-          stroke="#1B1510"
+          stroke="#242424"
           strokeOpacity="0.2"
           strokeWidth="2"
         />
@@ -276,13 +276,13 @@ const SCENES: Record<string, Scene> = {
           fill={`url(#${p}-sheen)`}
           opacity="0.14"
         />
-        <g stroke="#1B1510" strokeOpacity="0.22" strokeWidth="2">
+        <g stroke="#242424" strokeOpacity="0.22" strokeWidth="2">
           <path d="M180 178h40M180 196h40M180 214h40M180 232h40" />
         </g>
         {/* yoke + stand */}
         <path
           d="M200 268v42M176 310h48"
-          stroke="#1B1510"
+          stroke="#242424"
           strokeOpacity="0.4"
           strokeWidth="3"
           strokeLinecap="round"
@@ -305,7 +305,7 @@ const SCENES: Record<string, Scene> = {
           height="260"
           rx="22"
           fill={`url(#${p}-slab)`}
-          stroke="#1B1510"
+          stroke="#242424"
           strokeOpacity="0.2"
           strokeWidth="2"
         />
@@ -316,7 +316,7 @@ const SCENES: Record<string, Scene> = {
           width="80"
           height="232"
           rx="14"
-          fill="#FFF4ED"
+          fill="#F7F5F0"
         />
         <rect
           x="160"
@@ -328,9 +328,9 @@ const SCENES: Record<string, Scene> = {
           opacity="0.1"
         />
         {/* notch */}
-        <rect x="186" y="126" width="28" height="5" rx="2.5" fill="#1B1510" opacity="0.3" />
+        <rect x="186" y="126" width="28" height="5" rx="2.5" fill="#242424" opacity="0.3" />
         {/* caption lines */}
-        <g stroke="#1B1510" strokeWidth="5" strokeLinecap="round">
+        <g stroke="#242424" strokeWidth="5" strokeLinecap="round">
           <path d="M172 336h44" strokeOpacity="0.5" />
           <path d="M172 350h28" strokeOpacity="0.28" />
         </g>
@@ -361,14 +361,14 @@ const SCENES: Record<string, Scene> = {
           cy="250"
           r="86"
           fill={`url(#${p}-slab)`}
-          stroke="#1B1510"
+          stroke="#242424"
           strokeOpacity="0.2"
           strokeWidth="2"
         />
         {/* aperture blades */}
         <g
           fill="none"
-          stroke="#1B1510"
+          stroke="#242424"
           strokeOpacity="0.4"
           strokeWidth="2.5"
           strokeLinejoin="round"
@@ -388,7 +388,7 @@ const SCENES: Record<string, Scene> = {
           })}
         </g>
         {/* lens centre */}
-        <circle cx="200" cy="250" r="30" fill="#FFF4ED" />
+        <circle cx="200" cy="250" r="30" fill="#F7F5F0" />
         <circle
           cx="200"
           cy="250"

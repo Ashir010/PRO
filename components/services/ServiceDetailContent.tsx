@@ -40,12 +40,16 @@ export function ServiceDetailContent({
   return (
     <div
       className="shell py-12 lg:py-16"
-      style={{ ["--accent" as string]: colors.highlight }}
+      style={{
+        ["--accent" as string]: colors.highlight,
+        background: colors.bg,
+        color: colors.text,
+      }}
     >
       <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
         {/* Text */}
         <div className="min-w-0">
-          <p className="eyebrow flex items-center gap-2 text-muted">
+          <p className="eyebrow flex items-center gap-2" style={{ color: colors.muted }}>
             <span
               aria-hidden="true"
               className="inline-block h-1.5 w-1.5 rounded-full"
@@ -54,37 +58,38 @@ export function ServiceDetailContent({
             {service.teamLabel} · {service.number} / 06
           </p>
 
-          <h2 className="font-display mt-4 text-[length:var(--text-display)] font-semibold leading-[1.04] tracking-[-0.025em] text-ink">
+          <h2 className="font-display mt-4 text-[length:var(--text-display)] font-semibold leading-[1.04] tracking-[-0.025em]">
             {service.title}
           </h2>
 
           {(service.longDescription ?? [service.description]).map((para, i) => (
             <p
               key={i}
-              className={`${i === 0 ? "mt-5" : "mt-4"} max-w-[52ch] text-[length:var(--text-body-lg)] text-muted`}
+              className={`${i === 0 ? "mt-5" : "mt-4"} max-w-[52ch] text-[length:var(--text-body-lg)]`}
+              style={{ color: colors.muted }}
             >
               {para}
             </p>
           ))}
 
-          <p className="eyebrow mt-10 text-faint">What&apos;s included</p>
+          <p className="eyebrow mt-10" style={{ color: colors.muted }}>What&apos;s included</p>
           <ul className="mt-4 grid list-none gap-4 p-0 sm:grid-cols-2">
             {service.deliverables.map((d) => (
               <li key={d.label} className="flex gap-3">
-                <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] border border-hairline text-ink">
+                <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] border" style={{ borderColor: colors.line }}>
                   <Icon name={d.icon} className="h-5 w-5" />
                 </span>
                 <span className="min-w-0">
-                  <span className="block text-[0.95rem] font-semibold text-ink">
+                  <span className="block text-[0.95rem] font-semibold">
                     {d.label}
                   </span>
-                  <span className="text-[0.85rem] text-muted">{d.caption}</span>
+                  <span className="text-[0.85rem]" style={{ color: colors.muted }}>{d.caption}</span>
                 </span>
               </li>
             ))}
           </ul>
 
-          <p className="font-display mt-10 text-[length:var(--text-highlight)] font-medium leading-snug text-ink">
+          <p className="font-display mt-10 text-[length:var(--text-highlight)] font-medium leading-snug">
             <Highlight
               text={service.highlight.text}
               accent={service.highlight.accent}
@@ -96,7 +101,8 @@ export function ServiceDetailContent({
             <Link
               href="/#contact"
               onClick={onDiscuss}
-              className="inline-flex items-center gap-1.5 rounded-full bg-[#DC4D01] px-6 py-3 text-[0.95rem] font-semibold text-[#160B06] transition-opacity duration-300 hover:opacity-85"
+              className="inline-flex items-center gap-1.5 rounded-full px-6 py-3 text-[0.95rem] font-semibold transition-opacity duration-300 hover:opacity-85"
+              style={{ background: colors.dark ? "#FFFFFF" : "#171827", color: colors.dark ? colors.bg : "#FFFFFF" }}
             >
               Discuss this project
               <span aria-hidden="true">→</span>
@@ -106,7 +112,7 @@ export function ServiceDetailContent({
 
         {/* Visual */}
         <div className="lg:pt-2">
-          <div className="relative mx-auto aspect-[4/5] w-full max-w-[26rem] overflow-hidden rounded-[24px] bg-gradient-to-br from-[#FFF4ED] to-white lg:max-w-none">
+          <div className="relative mx-auto aspect-[4/5] w-full max-w-[26rem] overflow-hidden rounded-[24px] lg:max-w-none" style={{ background: colors.dark ? "#171827" : "#FFFFFF" }}>
             <ServiceArt
               slug={service.slug}
               accent={colors.highlight}
@@ -116,7 +122,7 @@ export function ServiceDetailContent({
         </div>
       </div>
 
-      <p className="mt-14 border-t border-hairline pt-8 text-caption text-faint">
+      <p className="mt-14 border-t pt-8 text-caption" style={{ borderColor: colors.line, color: colors.muted }}>
         Scroll up or down to close · or press Esc
       </p>
     </div>

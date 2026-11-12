@@ -18,32 +18,32 @@ export function Header() {
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${
         scrolled
-          ? "border-b border-[#E8DCD5] bg-white/85 shadow-[0_12px_40px_rgba(105,44,11,0.08)] backdrop-blur-md"
-          : "border-b border-transparent"
+          ? "border-b border-[#E5E1DA] bg-[#F7F5F0]"
+          : "border-b border-transparent bg-[#F7F5F0]"
       }`}
       style={{ height: "var(--header-h)" }}
     >
       <div className="shell flex h-full items-center justify-between gap-4">
         <Link href="#top" aria-label="ProMotion — back to top" className="rounded-sm">
-          <Logo tone="light" />
+          <Logo tone="ink" />
         </Link>
 
         <nav aria-label="Primary" className="flex items-center gap-6 sm:gap-8">
           <Link
             href="#services"
-            className="ul-link hidden text-[0.95rem] text-ink/70 transition-colors hover:text-ink sm:inline-flex"
+            className="ul-link hidden text-[0.95rem] text-[#242424] transition-colors hover:text-[#E66B4B] sm:inline-flex"
           >
             Services
           </Link>
           <Link
             href="#contact"
-            className="ul-link hidden text-[0.95rem] text-ink/70 transition-colors hover:text-ink sm:inline-flex"
+            className="ul-link hidden text-[0.95rem] text-[#242424] transition-colors hover:text-[#E66B4B] sm:inline-flex"
           >
             Contact
           </Link>
           <Link
             href="#contact"
-            className="inline-flex items-center rounded-full bg-[#DC4D01] px-4 py-2 text-[0.9rem] font-semibold text-[#160B06] transition-opacity duration-300 hover:opacity-90"
+            className="inline-flex items-center rounded-full bg-[#171827] px-4 py-2 text-[0.9rem] font-semibold text-white transition-opacity duration-300 hover:opacity-90"
           >
             Start a project
           </Link>

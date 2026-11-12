@@ -38,8 +38,6 @@ const DISMISS_EASE = [0.33, 0, 0.2, 1] as const; // soft start, gentle tail
 const DISMISS_DRIFT = 0.42; // how far the view drifts, as a fraction of viewport height
 const FADE_END = 0.9; // the view is fully faded by this point in the drift
 
-const CARD_BG = "linear-gradient(155deg,#FFFFFF 0%,#FFF4ED 54%,#FFE7D9 100%)";
-
 type Rect = { top: number; left: number; width: number; height: number };
 
 type ExpandApi = { open: (slug: string, rect: Rect | null) => void };
@@ -326,7 +324,7 @@ function ExpandOverlay({
             scaleY,
             borderRadius: radius,
             opacity: bgOpacity,
-            background: CARD_BG,
+            background: service.colors.bg,
             boxShadow: "0 50px 140px -40px rgba(0,0,0,0.78)",
           }}
         />
@@ -348,7 +346,7 @@ function ExpandOverlay({
                 type="button"
                 onClick={() => beginClose()}
                 aria-label="Close"
-                className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#DC4D01] text-[#160B06] shadow-lg transition-opacity duration-200 hover:opacity-85"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#171827] text-white shadow-lg transition-opacity duration-200 hover:opacity-85"
               >
                 <span aria-hidden="true" className="text-[1.1rem] leading-none">
                   ✕

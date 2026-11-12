@@ -44,7 +44,10 @@ export function ServicePanel({ service }: { service: Service }) {
               />
               <figcaption
                 className="absolute bottom-2.5 left-2.5 rounded-full px-2.5 py-1 text-[0.6875rem] font-medium"
-                style={{ background: "rgba(255,255,255,0.9)", color: "#1B1510" }}
+                style={{
+                  background: colors.dark ? "#171827" : "#FFFFFF",
+                  color: colors.dark ? "#FFFFFF" : "#242424",
+                }}
               >
                 {service.media.caption}
               </figcaption>
@@ -87,8 +90,8 @@ export function ServicePanel({ service }: { service: Service }) {
               href="#contact"
               className="group inline-flex items-center gap-1.5 rounded-full px-5 py-2.5 text-[0.9rem] font-semibold transition-opacity duration-300 hover:opacity-85"
               style={{
-                background: "#DC4D01",
-                color: "#160B06",
+                background: colors.dark ? "#FFFFFF" : "#171827",
+                color: colors.dark ? colors.bg : "#FFFFFF",
               }}
             >
               Discuss this project

@@ -13,7 +13,7 @@ export function ServiceGridCard({ service }: { service: Service }) {
     <Link
       href={`#stack-${service.slug}`}
       aria-label={`${service.title} — jump to card`}
-      className="group relative block overflow-hidden rounded-[18px] outline-none ring-1 ring-[#DC4D01]/15 ring-offset-2 ring-offset-white transition-[transform,box-shadow] duration-300 ease-[var(--ease-signature)] hover:-translate-y-1.5 hover:shadow-[0_26px_60px_-24px_rgba(105,44,11,0.32)] focus-visible:-translate-y-1.5"
+      className="group relative block overflow-hidden rounded-[18px] outline-none ring-1 ring-[#E5E1DA] ring-offset-2 ring-offset-[#F7F5F0] transition-[transform,box-shadow] duration-300 ease-[var(--ease-signature)] hover:-translate-y-1.5 hover:shadow-[0_26px_60px_-24px_rgba(36,36,36,0.22)] focus-visible:-translate-y-1.5"
       style={{ ["--accent" as string]: colors.highlight }}
     >
       <div className="relative aspect-[3/2]">
@@ -23,20 +23,7 @@ export function ServiceGridCard({ service }: { service: Service }) {
           className="absolute inset-0 h-full w-full transition-transform duration-500 ease-[var(--ease-signature)] group-hover:scale-[1.05]"
         />
 
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 bg-[linear-gradient(125deg,rgba(255,255,255,0.5),transparent_32%,transparent_70%,rgba(220,77,1,0.12))] opacity-70"
-        />
-
-        {/* legibility scrim */}
-        <div
-          aria-hidden="true"
-          className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(180deg, rgba(255,255,255,0) 36%, rgba(255,255,255,0.78) 66%, rgba(255,255,255,0.96) 100%)",
-          }}
-        />
+        <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-[58%] bg-[#F7F5F0]/95" />
 
         {/* branded number badge */}
         <span

@@ -10,7 +10,7 @@ export function Contact() {
       aria-label="Contact ProMotion"
       className="text-ink"
       style={
-        { scrollMarginTop: "var(--header-h)", ["--accent" as string]: "#DC4D01" } as React.CSSProperties
+        { scrollMarginTop: "var(--header-h)", ["--accent" as string]: "#E66B4B" } as React.CSSProperties
       }
     >
       <div className="shell grid grid-cols-1 gap-x-14 gap-y-10 py-20 lg:grid-cols-[0.9fr_1.1fr] lg:py-28">

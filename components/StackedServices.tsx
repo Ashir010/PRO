@@ -122,23 +122,14 @@ function ServiceStackCard({ service }: { service: Service }) {
 
   return (
     <article
-      className="relative grid grid-cols-1 overflow-hidden rounded-[32px] text-ink ring-1 ring-white/10 shadow-[0_36px_70px_-34px_rgba(0,0,0,0.7)] md:h-[480px] md:grid-cols-2"
+      className="relative grid grid-cols-1 overflow-hidden rounded-[32px] shadow-[0_36px_70px_-34px_rgba(36,36,36,0.24)] md:h-[480px] md:grid-cols-2"
       style={{
         ["--accent" as string]: colors.highlight,
-        background:
-          "linear-gradient(155deg,#FFFFFF 0%,#FFF4ED 54%,#FFE7D9 100%)",
+        background: colors.bg,
+        color: colors.text,
+        boxShadow: `inset 0 0 0 1px ${colors.line}, 0 36px 70px -34px rgba(36,36,36,0.24)`,
       }}
     >
-      {/* glossy top highlight */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            "linear-gradient(180deg,rgba(220,77,1,0.08) 0%,rgba(220,77,1,0) 40%)",
-        }}
-      />
-
       {/* Text */}
       <div className="relative z-10 flex flex-col justify-center gap-8 p-7 sm:p-9 md:p-10">
         <div className="flex items-center justify-between">
@@ -147,22 +138,22 @@ function ServiceStackCard({ service }: { service: Service }) {
             style={{
               background: colors.bg,
               color: colors.text,
-              borderColor: "rgba(255,255,255,0.16)",
+              borderColor: colors.line,
             }}
           >
             {service.number}
           </span>
-          <span className="eyebrow text-ink/40">
+          <span className="eyebrow" style={{ color: colors.muted }}>
             {service.number} / {String(TOTAL).padStart(2, "0")}
           </span>
         </div>
 
         <div>
-          <p className="eyebrow text-ink/55">{service.teamLabel}</p>
-          <h3 className="font-display mt-2 text-[clamp(1.6rem,2.6vw,2.4rem)] font-semibold leading-tight text-ink">
+          <p className="eyebrow" style={{ color: colors.muted }}>{service.teamLabel}</p>
+          <h3 className="font-display mt-2 text-[clamp(1.6rem,2.6vw,2.4rem)] font-semibold leading-tight">
             {service.title}
           </h3>
-          <p className="mt-3 max-w-[42ch] text-[0.975rem] leading-snug text-ink/65">
+          <p className="mt-3 max-w-[42ch] text-[0.975rem] leading-snug" style={{ color: colors.muted }}>
             {service.description}
           </p>
           <div className="mt-6 flex flex-col items-start gap-4">
@@ -172,14 +163,19 @@ function ServiceStackCard({ service }: { service: Service }) {
                 const card = (e.currentTarget as HTMLElement).closest("article");
                 open(service.slug, card ? card.getBoundingClientRect() : null);
               }}
-              className="inline-flex items-center gap-1.5 rounded-full bg-[#DC4D01] px-5 py-2.5 text-[0.9rem] font-semibold text-[#160B06] transition-opacity duration-300 hover:opacity-85"
+              className="inline-flex items-center gap-1.5 rounded-full px-5 py-2.5 text-[0.9rem] font-semibold transition-opacity duration-300 hover:opacity-85"
+              style={{
+                background: colors.dark ? "#FFFFFF" : "#171827",
+                color: colors.dark ? colors.bg : "#FFFFFF",
+              }}
             >
               Read more
               <span aria-hidden="true">→</span>
             </button>
             <Link
               href="#contact"
-              className="ul-link inline-flex items-center gap-1.5 text-[0.9rem] font-semibold text-ink"
+              className="ul-link inline-flex items-center gap-1.5 text-[0.9rem] font-semibold"
+              style={{ color: colors.text }}
             >
               Discuss this project
               <span aria-hidden="true">→</span>
@@ -190,7 +186,10 @@ function ServiceStackCard({ service }: { service: Service }) {
 
       {/* Media — dark tile inset in the light glossy card */}
       <div className="relative z-10 p-4 sm:p-5">
-        <div className="relative h-full min-h-[220px] overflow-hidden rounded-[22px] bg-gradient-to-br from-[#FFF4ED] to-white shadow-[inset_0_1px_0_rgba(255,255,255,0.8)] md:min-h-0">
+        <div
+          className="relative h-full min-h-[220px] overflow-hidden rounded-[22px] md:min-h-0"
+          style={{ background: colors.dark ? "#171827" : "#FFFFFF" }}
+        >
           <ServiceArt
             slug={service.slug}
             accent={colors.highlight}
