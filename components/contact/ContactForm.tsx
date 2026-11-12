@@ -11,7 +11,7 @@ import {
 
 type Status = "idle" | "submitting" | "success" | "notConfigured" | "error";
 
-const ERROR_COLOR = "#F6A592";
+const ERROR_COLOR = "#FFB8B8";
 const INPUT =
   "w-full rounded-md border border-white/20 bg-white/5 px-3.5 py-2.5 text-[0.975rem] text-white placeholder:text-white/40 focus:border-white/40";
 
@@ -218,7 +218,7 @@ export function ContactForm() {
           type="submit"
           disabled={submitting}
           aria-busy={submitting}
-          className="inline-flex items-center rounded-full bg-[#F4EEE8] px-6 py-3 text-[0.95rem] font-semibold text-ink transition-opacity duration-300 hover:opacity-85 disabled:opacity-60"
+          className="inline-flex items-center rounded-full bg-[#D4FF24] px-6 py-3 text-[0.95rem] font-semibold text-[#030407] transition-opacity duration-300 hover:opacity-85 disabled:opacity-60"
         >
           {submitting ? "Sending…" : "Send enquiry"}
         </button>

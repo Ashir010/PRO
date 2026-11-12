@@ -13,7 +13,7 @@ export function ServiceGridCard({ service }: { service: Service }) {
     <Link
       href={`#stack-${service.slug}`}
       aria-label={`${service.title} — jump to card`}
-      className="group relative block overflow-hidden rounded-[18px] outline-none ring-1 ring-white/10 ring-offset-2 ring-offset-[#0a0605] transition-[transform,box-shadow] duration-300 ease-[var(--ease-signature)] hover:-translate-y-1.5 hover:shadow-[0_26px_60px_-24px_rgba(0,0,0,0.75)] focus-visible:-translate-y-1.5"
+      className="group relative block overflow-hidden rounded-[18px] outline-none ring-1 ring-white/10 ring-offset-2 ring-offset-[#030407] transition-[transform,box-shadow] duration-300 ease-[var(--ease-signature)] hover:-translate-y-1.5 hover:shadow-[0_26px_60px_-24px_rgba(0,0,0,0.75)] focus-visible:-translate-y-1.5"
       style={{ ["--accent" as string]: colors.highlight }}
     >
       <div className="relative aspect-[3/2]">
@@ -29,7 +29,7 @@ export function ServiceGridCard({ service }: { service: Service }) {
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(180deg, rgba(10,8,6,0) 36%, rgba(10,8,6,0.6) 66%, rgba(10,8,6,0.9) 100%)",
+              "linear-gradient(180deg, rgba(3,4,7,0) 36%, rgba(3,4,7,0.6) 66%, rgba(3,4,7,0.92) 100%)",
           }}
         />
 

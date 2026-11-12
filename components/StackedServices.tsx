@@ -122,11 +122,11 @@ function ServiceStackCard({ service }: { service: Service }) {
 
   return (
     <article
-      className="relative grid grid-cols-1 overflow-hidden rounded-[32px] text-ink ring-1 ring-black/5 shadow-[0_36px_70px_-34px_rgba(90,60,40,0.38)] md:h-[480px] md:grid-cols-2"
+      className="relative grid grid-cols-1 overflow-hidden rounded-[32px] text-ink ring-1 ring-white/10 shadow-[0_36px_70px_-34px_rgba(0,0,0,0.7)] md:h-[480px] md:grid-cols-2"
       style={{
         ["--accent" as string]: colors.highlight,
         background:
-          "linear-gradient(155deg,#FFFFFF 0%,#FBF3EC 52%,#F3E6DB 100%)",
+          "linear-gradient(155deg,#123F98 0%,#0A1A3B 54%,#030407 100%)",
       }}
     >
       {/* glossy top highlight */}
@@ -135,7 +135,7 @@ function ServiceStackCard({ service }: { service: Service }) {
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            "linear-gradient(180deg,rgba(255,255,255,0.8) 0%,rgba(255,255,255,0) 40%)",
+            "linear-gradient(180deg,rgba(166,201,255,0.2) 0%,rgba(166,201,255,0) 40%)",
         }}
       />
 
@@ -147,7 +147,7 @@ function ServiceStackCard({ service }: { service: Service }) {
             style={{
               background: colors.bg,
               color: colors.text,
-              borderColor: "rgba(10,10,10,0.08)",
+              borderColor: "rgba(255,255,255,0.16)",
             }}
           >
             {service.number}
@@ -172,7 +172,7 @@ function ServiceStackCard({ service }: { service: Service }) {
                 const card = (e.currentTarget as HTMLElement).closest("article");
                 open(service.slug, card ? card.getBoundingClientRect() : null);
               }}
-              className="inline-flex items-center gap-1.5 rounded-full bg-ink px-5 py-2.5 text-[0.9rem] font-semibold text-peach transition-opacity duration-300 hover:opacity-85"
+              className="inline-flex items-center gap-1.5 rounded-full bg-[#D4FF24] px-5 py-2.5 text-[0.9rem] font-semibold text-[#030407] transition-opacity duration-300 hover:opacity-85"
             >
               Read more
               <span aria-hidden="true">→</span>
@@ -190,7 +190,7 @@ function ServiceStackCard({ service }: { service: Service }) {
 
       {/* Media — dark tile inset in the light glossy card */}
       <div className="relative z-10 p-4 sm:p-5">
-        <div className="relative h-full min-h-[220px] overflow-hidden rounded-[22px] bg-gradient-to-br from-[#1b1510] to-[#050505] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] md:min-h-0">
+        <div className="relative h-full min-h-[220px] overflow-hidden rounded-[22px] bg-gradient-to-br from-[#1558C9] to-[#030407] shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] md:min-h-0">
           <ServiceArt
             slug={service.slug}
             accent={colors.highlight}
