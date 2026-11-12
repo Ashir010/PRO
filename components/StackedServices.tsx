@@ -126,7 +126,7 @@ function ServiceStackCard({ service }: { service: Service }) {
       style={{
         ["--accent" as string]: colors.highlight,
         background:
-          "linear-gradient(155deg,#123F98 0%,#0A1A3B 54%,#030407 100%)",
+          "linear-gradient(155deg,#521057 0%,#400849 54%,#1B0416 100%)",
       }}
     >
       {/* glossy top highlight */}
@@ -135,7 +135,7 @@ function ServiceStackCard({ service }: { service: Service }) {
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            "linear-gradient(180deg,rgba(166,201,255,0.2) 0%,rgba(166,201,255,0) 40%)",
+            "linear-gradient(180deg,rgba(231,176,222,0.2) 0%,rgba(231,176,222,0) 40%)",
         }}
       />
 
@@ -172,7 +172,7 @@ function ServiceStackCard({ service }: { service: Service }) {
                 const card = (e.currentTarget as HTMLElement).closest("article");
                 open(service.slug, card ? card.getBoundingClientRect() : null);
               }}
-              className="inline-flex items-center gap-1.5 rounded-full bg-[#D4FF24] px-5 py-2.5 text-[0.9rem] font-semibold text-[#030407] transition-opacity duration-300 hover:opacity-85"
+              className="inline-flex items-center gap-1.5 rounded-full bg-[#FF5A0A] px-5 py-2.5 text-[0.9rem] font-semibold text-[#1B0416] transition-opacity duration-300 hover:opacity-85"
             >
               Read more
               <span aria-hidden="true">→</span>
@@ -190,7 +190,7 @@ function ServiceStackCard({ service }: { service: Service }) {
 
       {/* Media — dark tile inset in the light glossy card */}
       <div className="relative z-10 p-4 sm:p-5">
-        <div className="relative h-full min-h-[220px] overflow-hidden rounded-[22px] bg-gradient-to-br from-[#1558C9] to-[#030407] shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] md:min-h-0">
+        <div className="relative h-full min-h-[220px] overflow-hidden rounded-[22px] bg-gradient-to-br from-[#400849] to-[#1B0416] shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] md:min-h-0">
           <ServiceArt
             slug={service.slug}
             accent={colors.highlight}

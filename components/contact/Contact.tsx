@@ -8,9 +8,9 @@ export function Contact() {
     <section
       id="contact"
       aria-label="Contact ProMotion"
-      className="text-[#F4F8FF]"
+      className="text-[#FFF7FD]"
       style={
-        { scrollMarginTop: "var(--header-h)", ["--accent" as string]: "#D4FF24" } as React.CSSProperties
+        { scrollMarginTop: "var(--header-h)", ["--accent" as string]: "#FF5A0A" } as React.CSSProperties
       }
     >
       <div className="shell grid grid-cols-1 gap-x-14 gap-y-10 py-20 lg:grid-cols-[0.9fr_1.1fr] lg:py-28">
@@ -22,7 +22,7 @@ export function Contact() {
           <h2 className="font-display mt-5 text-[length:var(--text-title)] font-semibold leading-[1.06] tracking-[-0.02em] text-white">
             {site.contact.heading}
           </h2>
-          <p className="mt-5 max-w-[42ch] text-[length:var(--text-body-lg)] text-[#B7C8EB]">
+          <p className="mt-5 max-w-[42ch] text-[length:var(--text-body-lg)] text-[#E7B0DE]">
             {site.contact.support}
           </p>
         </div>

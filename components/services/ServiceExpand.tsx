@@ -38,7 +38,7 @@ const DISMISS_EASE = [0.33, 0, 0.2, 1] as const; // soft start, gentle tail
 const DISMISS_DRIFT = 0.42; // how far the view drifts, as a fraction of viewport height
 const FADE_END = 0.9; // the view is fully faded by this point in the drift
 
-const CARD_BG = "linear-gradient(155deg,#123F98 0%,#0A1A3B 54%,#030407 100%)";
+const CARD_BG = "linear-gradient(155deg,#521057 0%,#400849 54%,#1B0416 100%)";
 
 type Rect = { top: number; left: number; width: number; height: number };
 
@@ -348,7 +348,7 @@ function ExpandOverlay({
                 type="button"
                 onClick={() => beginClose()}
                 aria-label="Close"
-                className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#D4FF24] text-[#030407] shadow-lg transition-opacity duration-200 hover:opacity-85"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#FF5A0A] text-[#1B0416] shadow-lg transition-opacity duration-200 hover:opacity-85"
               >
                 <span aria-hidden="true" className="text-[1.1rem] leading-none">
                   ✕

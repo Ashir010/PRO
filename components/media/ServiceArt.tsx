@@ -32,9 +32,9 @@ export function ServiceArt({
       <defs>
         {/* warm charcoal base */}
         <linearGradient id={`${p}-bg`} x1="0" y1="0" x2="0.65" y2="1">
-          <stop offset="0" stopColor="#123F98" />
-          <stop offset="0.55" stopColor="#0A1A3B" />
-          <stop offset="1" stopColor="#030407" />
+          <stop offset="0" stopColor="#521057" />
+          <stop offset="0.55" stopColor="#400849" />
+          <stop offset="1" stopColor="#1B0416" />
         </linearGradient>
         {/* accent wash from the upper third */}
         <radialGradient id={`${p}-glow`} cx="0.52" cy="0.34" r="0.72">
@@ -55,9 +55,9 @@ export function ServiceArt({
         </radialGradient>
         {/* neutral glossy slab */}
         <linearGradient id={`${p}-slab`} x1="0" y1="0" x2="0.9" y2="1">
-          <stop offset="0" stopColor="#315DA7" />
-          <stop offset="0.5" stopColor="#15376F" />
-          <stop offset="1" stopColor="#07132C" />
+          <stop offset="0" stopColor="#A85B9E" />
+          <stop offset="0.5" stopColor="#6B1E70" />
+          <stop offset="1" stopColor="#240426" />
         </linearGradient>
         {/* accent-tinted fill */}
         <linearGradient id={`${p}-accent`} x1="0" y1="0" x2="0" y2="1">
@@ -98,7 +98,7 @@ const SCENES: Record<string, Scene> = {
               <path
                 d={`M200 ${cy - h} ${200 + w} ${cy} 200 ${cy + h} ${200 - w} ${cy}Z`}
                 fill={`url(#${p}-slab)`}
-                stroke="#DCE9FF"
+                stroke="#E7B0DE"
                 strokeOpacity={i === 2 ? 0.45 : 0.18}
                 strokeWidth="2"
               />
@@ -147,7 +147,7 @@ const SCENES: Record<string, Scene> = {
           height="200"
           rx="16"
           fill={`url(#${p}-slab)`}
-          stroke="#DCE9FF"
+          stroke="#E7B0DE"
           strokeOpacity="0.16"
           strokeWidth="2"
         />
@@ -164,15 +164,15 @@ const SCENES: Record<string, Scene> = {
         {/* top bar */}
         <path
           d="M92 186h216"
-          stroke="#DCE9FF"
+          stroke="#E7B0DE"
           strokeOpacity="0.16"
           strokeWidth="2"
         />
-        <circle cx="112" cy="168" r="4" fill="#DCE9FF" opacity="0.45" />
-        <circle cx="128" cy="168" r="4" fill="#DCE9FF" opacity="0.3" />
+        <circle cx="112" cy="168" r="4" fill="#E7B0DE" opacity="0.45" />
+        <circle cx="128" cy="168" r="4" fill="#E7B0DE" opacity="0.3" />
         <circle cx="144" cy="168" r="4" fill={a} />
         {/* content lines */}
-        <g stroke="#DCE9FF" strokeOpacity="0.28" strokeWidth="6" strokeLinecap="round">
+        <g stroke="#E7B0DE" strokeOpacity="0.28" strokeWidth="6" strokeLinecap="round">
           <path d="M120 214h70" />
           <path d="M120 236h120" />
           <path d="M120 258h96" />
@@ -213,13 +213,13 @@ const SCENES: Record<string, Scene> = {
             height="46"
             rx="8"
             fill={c.accent ? `url(#${p}-accent)` : `url(#${p}-slab)`}
-            stroke="#DCE9FF"
+            stroke="#E7B0DE"
             strokeOpacity={c.accent ? 0 : 0.16}
             strokeWidth="2"
           />
         ))}
         {/* waveform as filled mirrored bars */}
-        <g fill="#DCE9FF" opacity="0.5">
+        <g fill="#E7B0DE" opacity="0.5">
           {Array.from({ length: 26 }).map((_, n) => {
             const x = 80 + n * 9.6;
             const h = 8 + ((n * 17) % 40);
@@ -262,7 +262,7 @@ const SCENES: Record<string, Scene> = {
           height="118"
           rx="28"
           fill={`url(#${p}-slab)`}
-          stroke="#DCE9FF"
+          stroke="#E7B0DE"
           strokeOpacity="0.2"
           strokeWidth="2"
         />
@@ -276,13 +276,13 @@ const SCENES: Record<string, Scene> = {
           fill={`url(#${p}-sheen)`}
           opacity="0.14"
         />
-        <g stroke="#DCE9FF" strokeOpacity="0.22" strokeWidth="2">
+        <g stroke="#E7B0DE" strokeOpacity="0.22" strokeWidth="2">
           <path d="M180 178h40M180 196h40M180 214h40M180 232h40" />
         </g>
         {/* yoke + stand */}
         <path
           d="M200 268v42M176 310h48"
-          stroke="#DCE9FF"
+          stroke="#E7B0DE"
           strokeOpacity="0.4"
           strokeWidth="3"
           strokeLinecap="round"
@@ -305,7 +305,7 @@ const SCENES: Record<string, Scene> = {
           height="260"
           rx="22"
           fill={`url(#${p}-slab)`}
-          stroke="#DCE9FF"
+          stroke="#E7B0DE"
           strokeOpacity="0.2"
           strokeWidth="2"
         />
@@ -316,7 +316,7 @@ const SCENES: Record<string, Scene> = {
           width="80"
           height="232"
           rx="14"
-          fill="#06132C"
+          fill="#240426"
         />
         <rect
           x="160"
@@ -328,9 +328,9 @@ const SCENES: Record<string, Scene> = {
           opacity="0.1"
         />
         {/* notch */}
-        <rect x="186" y="126" width="28" height="5" rx="2.5" fill="#DCE9FF" opacity="0.3" />
+        <rect x="186" y="126" width="28" height="5" rx="2.5" fill="#E7B0DE" opacity="0.3" />
         {/* caption lines */}
-        <g stroke="#DCE9FF" strokeWidth="5" strokeLinecap="round">
+        <g stroke="#E7B0DE" strokeWidth="5" strokeLinecap="round">
           <path d="M172 336h44" strokeOpacity="0.5" />
           <path d="M172 350h28" strokeOpacity="0.28" />
         </g>
@@ -361,14 +361,14 @@ const SCENES: Record<string, Scene> = {
           cy="250"
           r="86"
           fill={`url(#${p}-slab)`}
-          stroke="#DCE9FF"
+          stroke="#E7B0DE"
           strokeOpacity="0.2"
           strokeWidth="2"
         />
         {/* aperture blades */}
         <g
           fill="none"
-          stroke="#DCE9FF"
+          stroke="#E7B0DE"
           strokeOpacity="0.4"
           strokeWidth="2.5"
           strokeLinejoin="round"
@@ -388,7 +388,7 @@ const SCENES: Record<string, Scene> = {
           })}
         </g>
         {/* lens centre */}
-        <circle cx="200" cy="250" r="30" fill="#06132C" />
+        <circle cx="200" cy="250" r="30" fill="#240426" />
         <circle
           cx="200"
           cy="250"

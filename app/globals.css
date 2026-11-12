@@ -5,12 +5,12 @@
 /* ------------------------------------------------------------------ */
 @theme {
   /* Canvas + ink */
-  --color-peach: #030407; /* dark surface, retained token name for existing utilities */
-  --color-ink: #f4f8ff; /* high-contrast text */
-  --color-muted: #b7c8eb; /* restrained text on blue-black */
-  --color-hairline: #315da7; /* hairlines on dark surfaces */
-  --color-night: #030407; /* deepest section background */
-  --color-vermilion: #d4ff24; /* high-attention brand accent */
+  --color-peach: #1b0416; /* dark surface, retained token name for existing utilities */
+  --color-ink: #fff7fd; /* high-contrast text */
+  --color-muted: #e7b0de; /* restrained text on plum */
+  --color-hairline: #7b3b83; /* hairlines on dark surfaces */
+  --color-night: #1b0416; /* deepest section background */
+  --color-vermilion: #ff5a0a; /* high-attention brand accent */
 
   /* Fonts (wired in layout.tsx via next/font) */
   --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
@@ -39,8 +39,8 @@ html {
 }
 
 body {
-  background: #030407;
-  color: #f4f8ff;
+  background: #1b0416;
+  color: #fff7fd;
   font-family: var(--font-sans);
   font-size: var(--text-body);
   line-height: 1.6;
@@ -142,10 +142,10 @@ body {
   isolation: isolate; /* contain the screen blending to this layer */
   background: radial-gradient(
     135% 125% at 62% 118%,
-    #1558c9 0%,
-    #0c2b69 36%,
-    #06132c 66%,
-    #030407 100%
+    #400849 0%,
+    #2b0631 36%,
+    #1b041f 66%,
+    #1b0416 100%
   );
 }
 .site-glow__blob,
@@ -171,8 +171,8 @@ body {
   top: 40%;
   background: radial-gradient(
     closest-side,
-    rgba(21, 88, 201, 0.68),
-    rgba(15, 57, 132, 0.2) 46%,
+    rgba(231, 176, 222, 0.45),
+    rgba(102, 28, 108, 0.28) 46%,
     transparent 100%
   );
   animation: hgFloat1 26s ease-in-out infinite alternate;
@@ -184,8 +184,8 @@ body {
   top: 10%;
   background: radial-gradient(
     closest-side,
-    rgba(63, 124, 233, 0.58),
-    rgba(21, 88, 201, 0.2) 46%,
+    rgba(64, 8, 73, 0.84),
+    rgba(231, 176, 222, 0.16) 46%,
     transparent 100%
   );
   animation: hgFloat2 32s ease-in-out infinite alternate;
@@ -197,7 +197,7 @@ body {
   bottom: -14%;
   background: radial-gradient(
     closest-side,
-    rgba(11, 50, 121, 0.62),
+    rgba(112, 31, 106, 0.55),
     transparent 100%
   );
   animation: hgFloat3 30s ease-in-out infinite alternate;
@@ -209,8 +209,8 @@ body {
   top: 50%;
   background: radial-gradient(
     closest-side,
-    rgba(212, 255, 36, 0.68),
-    rgba(21, 88, 201, 0.44) 40%,
+    rgba(255, 90, 10, 0.64),
+    rgba(231, 176, 222, 0.32) 40%,
     transparent 100%
   );
   animation: hgCore 22s ease-in-out infinite alternate;
