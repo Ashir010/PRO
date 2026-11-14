@@ -28,7 +28,7 @@ export function Hero() {
         <div className="absolute bottom-[10%] left-[4%] h-24 w-24 rounded-full border border-[#E66B4B]/25 bg-[#E66B4B]/10" />
       </div>
 
-      <div className="shell relative z-10 isolate flex min-h-[clamp(34rem,70vh,44rem)] flex-col justify-center py-[clamp(6rem,10vh,8rem)]">
+      <div className="shell relative z-10 isolate flex min-h-[clamp(34rem,70vh,44rem)] flex-col justify-start pb-20 pt-[calc(var(--header-h)+3rem)]">
         <p className="eyebrow text-[#E66B4B]">Creative production studio</p>
 
         <h1 className="font-display mt-6 max-w-[19ch] text-[length:var(--text-display)] font-semibold leading-[1.02] tracking-[-0.025em] text-[#242424]">
