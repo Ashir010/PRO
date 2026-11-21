@@ -1,29 +1,33 @@
-/**
- * Shared, dependency-free validation for the contact form.
- * Imported by both the client form and the server route handler so the rules
- * can never drift apart.
- */
-
-import { regions } from "@/data/services";
+/** Shared contact-form validation for the client and contact route. */
 
 export type ContactPayload = {
+  service: string;
+  projectSize: string;
+  budget: string;
+  projectDetails: string;
   name: string;
   email: string;
-  region: string;
-  message: string;
-  /** honeypot — must be empty for a real human */
+  whatsapp: string;
+  /** Honeypot: this must remain empty for a real visitor. */
   company?: string;
 };
 
 export type FieldErrors = Partial<
-  Record<"name" | "email" | "region" | "message", string>
+  Record<"service" | "projectSize" | "budget" | "projectDetails" | "name" | "email" | "whatsapp", string>
 >;
 
-// Pragmatic email check — intentionally permissive, server does the same.
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const PHONE_RE = /^[+()\-\s\d]{7,24}$/;
 
 export function validateContact(input: Partial<ContactPayload>): FieldErrors {
   const errors: FieldErrors = {};
+
+  if (!(input.service ?? "").trim()) errors.service = "Please choose the work you need.";
+  if (!(input.projectSize ?? "").trim()) errors.projectSize = "Please choose a project size.";
+  if (!(input.budget ?? "").trim()) errors.budget = "Please choose a budget range.";
+
+  const details = (input.projectDetails ?? "").trim();
+  if (details.length > 4000) errors.projectDetails = "That project description is too long.";
 
   const name = (input.name ?? "").trim();
   if (name.length < 2) errors.name = "Please enter your name.";
@@ -31,18 +35,10 @@ export function validateContact(input: Partial<ContactPayload>): FieldErrors {
 
   const email = (input.email ?? "").trim();
   if (!email) errors.email = "Please enter your email.";
-  else if (!EMAIL_RE.test(email) || email.length > 254)
-    errors.email = "Please enter a valid email address.";
+  else if (!EMAIL_RE.test(email) || email.length > 254) errors.email = "Please enter a valid email address.";
 
-  const region = (input.region ?? "").trim();
-  if (!region) errors.region = "Please choose a region.";
-  else if (!regions.includes(region as (typeof regions)[number]))
-    errors.region = "Please choose a region from the list.";
-
-  const message = (input.message ?? "").trim();
-  if (message.length < 10)
-    errors.message = "Please add a little more detail (10+ characters).";
-  else if (message.length > 4000) errors.message = "That message is too long.";
+  const whatsapp = (input.whatsapp ?? "").trim();
+  if (whatsapp && !PHONE_RE.test(whatsapp)) errors.whatsapp = "Please enter a valid WhatsApp number.";
 
   return errors;
 }

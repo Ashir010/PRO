@@ -125,6 +125,68 @@ body {
   .ul-link:focus-visible::after {
     transform: scaleX(1);
   }
+
+  .primary-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    background: #171827;
+    padding: 0.75rem 1.5rem;
+    color: #ffffff;
+    font-size: 0.95rem;
+    font-weight: 600;
+    line-height: 1.5;
+    transition: opacity 0.25s var(--ease-signature), transform 0.25s var(--ease-signature);
+  }
+  .primary-button:hover:not(:disabled) {
+    opacity: 0.86;
+  }
+  .primary-button:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+  .primary-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+  }
+}
+
+@keyframes contactStepIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes contactCheckmark {
+  0% { opacity: 0; transform: scale(0.55); }
+  70% { transform: scale(1.1); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes contactStepInBack {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.contact-step-in {
+  animation: contactStepIn 420ms var(--ease-signature) both;
+}
+.contact-step-in--back {
+  animation-name: contactStepInBack;
+}
+.contact-checkmark {
+  animation: contactCheckmark 520ms var(--ease-signature) both;
 }
 
 /* ------------------------------------------------------------------ */

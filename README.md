@@ -91,8 +91,9 @@ The 4:5 box already prevents layout shift. Keep the `alt` text.
 
 ## Contact form & email delivery
 
-Fields: **Name, Email, Region, Message** (+ a hidden honeypot). Validation is
-shared client+server (`lib/validation.ts`). The route
+Fields: **service, project size, budget, project details, name, email, and
+optional WhatsApp number** (+ a hidden honeypot). Validation is shared
+client+server (`lib/validation.ts`). The route
 `app/api/contact/route.ts` validates server-side, rejects the honeypot, applies
 a best-effort in-memory rate limit, and **never fakes a send** — until a provider
 is configured it returns HTTP 503 `{ configured: false }` and the UI says so.
