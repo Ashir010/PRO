@@ -195,7 +195,7 @@ export function ContactForm() {
               : [...current.referenceMaterials, material],
           }))} onBack={back} onContinue={() => {
             setDirection("forward");
-            setStep("projectSize");
+            setStep("region");
           }} onAddService={() => {
             setDirection("back");
             setAddingService(true);
