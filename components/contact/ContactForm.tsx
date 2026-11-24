@@ -172,7 +172,10 @@ export function ContactForm() {
             referenceMaterials: current.referenceMaterials.includes(material)
               ? current.referenceMaterials.filter((item) => item !== material)
               : [...current.referenceMaterials, material],
-          }))} onBack={back} onContinue={next} />
+          }))} onBack={back} onContinue={() => {
+            setDirection("forward");
+            setStep("projectSize");
+          }} />
         ) : step === "projectSize" ? (
           <ChoiceStep headingRef={headingRef} heading={steps[1].heading} description={steps[1].description} options={steps[1].options} selected={values.projectSize} onSelect={(value) => update("projectSize", value)} onBack={back} onContinue={next} />
         ) : step === "budget" ? (
