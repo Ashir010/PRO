@@ -17,11 +17,12 @@ const steps = [
   { key: "budget", heading: "What's your approximate budget?", description: "This helps us understand the scale of your project.", options: ["Under $500", "$500 – $1,000", "$1,000 – $3,000", "$3,000 – $5,000", "$5,000+", "Let's discuss"] },
 ] as const;
 
-type FlowStep = "service" | "visualization" | "videoType" | "references" | "saasPlatform" | "saasVideoType" | "saasAssets" | "projectSize" | "budget" | "projectDetails" | "region" | "contact";
+type FlowStep = "service" | "visualization" | "videoType" | "references" | "saasPlatform" | "saasVideoType" | "saasAssets" | "editingFootage" | "editingServices" | "footageDuration" | "projectSize" | "budget" | "projectDetails" | "region" | "contact";
 
 const baseSteps: FlowStep[] = ["service", "projectSize", "budget", "projectDetails", "region", "contact"];
 const visualizationSteps: FlowStep[] = ["service", "visualization", "videoType", "references", "projectSize", "budget", "projectDetails", "region", "contact"];
 const saasSteps: FlowStep[] = ["service", "saasPlatform", "saasVideoType", "saasAssets", "projectSize", "budget", "projectDetails", "region", "contact"];
+const editingSteps: FlowStep[] = ["service", "editingFootage", "editingServices", "footageDuration", "projectSize", "budget", "projectDetails", "region", "contact"];
 
 const empty: ContactPayload = {
   service: "",
@@ -40,6 +41,10 @@ const empty: ContactPayload = {
   saasPlatformOther: "",
   saasVideoType: "",
   saasAssets: [],
+  editingFootageType: "",
+  editingFootageOther: "",
+  editingServices: [],
+  footageDuration: "",
   name: "",
   email: "",
   whatsapp: "",
@@ -61,7 +66,7 @@ export function ContactForm() {
   useEffect(() => { headingRef.current?.focus(); }, [step, status]);
 
   const update = (field: keyof ContactPayload, value: string) => {
-    if (field === "service") setSelectedService(value);
+    if (field === "service" && !addingService) setSelectedService(value);
     setValues((current) => {
       if (field === "service" && addingService) {
         const additionalServices = current.additionalServices.includes(value)
@@ -70,6 +75,7 @@ export function ContactForm() {
         return { ...current, additionalServices };
       }
       if (field === "service") {
+        if (value === current.service) return current;
         return {
           ...current,
           service: value,
@@ -82,6 +88,10 @@ export function ContactForm() {
           saasPlatformOther: "",
           saasVideoType: "",
           saasAssets: [],
+          editingFootageType: "",
+          editingFootageOther: "",
+          editingServices: [],
+          footageDuration: "",
         };
       }
       if (field === "visualizationType" && value !== "Other") {
@@ -92,6 +102,9 @@ export function ContactForm() {
       }
       if (field === "saasPlatformType" && value !== "Other") {
         return { ...current, saasPlatformType: value, saasPlatformOther: "" };
+      }
+      if (field === "editingFootageType" && value !== "Other") {
+        return { ...current, editingFootageType: value, editingFootageOther: "" };
       }
       return { ...current, [field]: value };
     });
@@ -108,7 +121,9 @@ export function ContactForm() {
     ? visualizationSteps
     : selectedService === "SaaS & Motion Graphics"
       ? saasSteps
-      : baseSteps;
+      : selectedService === "Video Editing & Post-Production"
+        ? editingSteps
+        : baseSteps;
   const stepIndex = flowSteps.indexOf(step);
 
   const next = () => {
@@ -125,7 +140,9 @@ export function ContactForm() {
           ? "visualization"
           : selectedService === "SaaS & Motion Graphics"
             ? "saasPlatform"
-            : "projectSize",
+            : selectedService === "Video Editing & Post-Production"
+              ? "editingFootage"
+              : "projectSize",
       );
       return;
     }
@@ -146,6 +163,12 @@ export function ContactForm() {
     }
     if (step === "saasVideoType" && !values.saasVideoType) return;
     if (step === "saasAssets" && values.saasAssets.length === 0) return;
+    if (step === "editingFootage") {
+      if (!values.editingFootageType) return;
+      if (values.editingFootageType === "Other" && !values.editingFootageOther.trim()) return;
+    }
+    if (step === "editingServices" && values.editingServices.length === 0) return;
+    if (step === "footageDuration" && !values.footageDuration) return;
     if (step === "region" && !values.country) {
       setErrors((current) => ({ ...current, country: "Please select your country." }));
       return;
@@ -253,6 +276,23 @@ export function ContactForm() {
             setDirection("back");
             setAddingService(true);
             setAddServiceReturnStep("saasAssets");
+            setSelectedService("");
+            setStep("service");
+          }} />
+        ) : step === "editingFootage" ? (
+          <EditingFootageStep headingRef={headingRef} values={values} onChange={update} onBack={back} onContinue={next} />
+        ) : step === "editingServices" ? (
+          <EditingServicesStep headingRef={headingRef} values={values} onToggle={(service) => setValues((current) => ({
+            ...current,
+            editingServices: current.editingServices.includes(service)
+              ? current.editingServices.filter((item) => item !== service)
+              : [...current.editingServices, service],
+          }))} onBack={back} onContinue={next} />
+        ) : step === "footageDuration" ? (
+          <FootageDurationStep headingRef={headingRef} values={values} onChange={update} onBack={back} onContinue={next} onAddService={() => {
+            setDirection("back");
+            setAddingService(true);
+            setAddServiceReturnStep("footageDuration");
             setSelectedService("");
             setStep("service");
           }} />
@@ -454,6 +494,83 @@ function SaasAssetsStep({ headingRef, values, onToggle, onBack, onContinue, onAd
       <div className="flex items-center gap-5">
         <button type="button" onClick={onAddService} className="ul-link text-[0.9rem] font-semibold text-ink">Add another service</button>
         <button type="button" onClick={onContinue} disabled={values.saasAssets.length === 0} className="primary-button">Continue</button>
+      </div>
+    </div>
+  </StepFrame>;
+}
+
+const editingFootageOptions = [
+  "Corporate / business videos",
+  "Promotional videos",
+  "Real estate videos",
+  "Podcasts / interviews",
+  "Social media content",
+  "Events / documentaries",
+  "Other",
+] as const;
+
+const editingServiceOptions = [
+  "Professional video editing",
+  "Colour grading",
+  "Sound design & mixing",
+  "Motion graphics & visual effects",
+  "Subtitles & captions",
+  "Complete post-production",
+] as const;
+
+const footageDurationOptions = [
+  "Under 30 minutes",
+  "30–60 minutes",
+  "1–3 hours",
+  "3–10 hours",
+  "10+ hours",
+  "Not sure yet",
+] as const;
+
+function EditingFootageStep({ headingRef, values, onChange, onBack, onContinue }: { headingRef: React.RefObject<HTMLHeadingElement | null>; values: ContactPayload; onChange: (field: keyof ContactPayload, value: string) => void; onBack: () => void; onContinue: () => void }) {
+  const valid = Boolean(values.editingFootageType) && (values.editingFootageType !== "Other" || Boolean(values.editingFootageOther.trim()));
+  return <StepFrame headingRef={headingRef} heading="What type of footage do you need edited?" description="" onBack={onBack}>
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      {editingFootageOptions.map((option) => {
+        const selected = values.editingFootageType === option;
+        return <button key={option} type="button" aria-pressed={selected} onClick={() => onChange("editingFootageType", option)} className={`min-h-16 rounded-md border px-5 py-4 text-left text-[0.975rem] font-semibold transition-all duration-200 active:translate-y-px ${selected ? "border-[#171827] bg-[#171827] text-white" : "border-hairline bg-white text-ink hover:border-[#E66B4B] hover:bg-[#F7F5F0]"}`}>{option}</button>;
+      })}
+    </div>
+    {values.editingFootageType === "Other" ? (
+      <div className="mt-5">
+        <label htmlFor="editingFootageOther" className="sr-only">Other footage type</label>
+        <input id="editingFootageOther" name="editingFootageOther" value={values.editingFootageOther} onChange={(event) => onChange("editingFootageOther", event.target.value)} placeholder="Tell us what type of footage you have..." className={INPUT} />
+      </div>
+    ) : null}
+    <StepActions onBack={onBack} onContinue={onContinue} disabled={!valid} />
+  </StepFrame>;
+}
+
+function EditingServicesStep({ headingRef, values, onToggle, onBack, onContinue }: { headingRef: React.RefObject<HTMLHeadingElement | null>; values: ContactPayload; onToggle: (service: string) => void; onBack: () => void; onContinue: () => void }) {
+  return <StepFrame headingRef={headingRef} heading="What editing services are you looking for?" description="" onBack={onBack}>
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      {editingServiceOptions.map((option) => {
+        const selected = values.editingServices.includes(option);
+        return <button key={option} type="button" aria-pressed={selected} onClick={() => onToggle(option)} className={`min-h-16 rounded-md border px-5 py-4 text-left text-[0.975rem] font-semibold transition-all duration-200 active:translate-y-px ${selected ? "border-[#171827] bg-[#171827] text-white" : "border-hairline bg-white text-ink hover:border-[#E66B4B] hover:bg-[#F7F5F0]"}`}>{option}</button>;
+      })}
+    </div>
+    <StepActions onBack={onBack} onContinue={onContinue} disabled={values.editingServices.length === 0} />
+  </StepFrame>;
+}
+
+function FootageDurationStep({ headingRef, values, onChange, onBack, onContinue, onAddService }: { headingRef: React.RefObject<HTMLHeadingElement | null>; values: ContactPayload; onChange: (field: keyof ContactPayload, value: string) => void; onBack: () => void; onContinue: () => void; onAddService: () => void }) {
+  return <StepFrame headingRef={headingRef} heading="How much footage or content do you have?" description="" onBack={onBack}>
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      {footageDurationOptions.map((option) => {
+        const selected = values.footageDuration === option;
+        return <button key={option} type="button" aria-pressed={selected} onClick={() => onChange("footageDuration", option)} className={`min-h-16 rounded-md border px-5 py-4 text-left text-[0.975rem] font-semibold transition-all duration-200 active:translate-y-px ${selected ? "border-[#171827] bg-[#171827] text-white" : "border-hairline bg-white text-ink hover:border-[#E66B4B] hover:bg-[#F7F5F0]"}`}>{option}</button>;
+      })}
+    </div>
+    <div className="mt-7 flex flex-wrap items-center justify-between gap-4">
+      <button type="button" onClick={onBack} className="ul-link text-[0.9rem] font-semibold text-ink">Back</button>
+      <div className="flex items-center gap-5">
+        <button type="button" onClick={onAddService} className="ul-link text-[0.9rem] font-semibold text-ink">Add another service</button>
+        <button type="button" onClick={onContinue} disabled={!values.footageDuration} className="primary-button">Continue</button>
       </div>
     </div>
   </StepFrame>;

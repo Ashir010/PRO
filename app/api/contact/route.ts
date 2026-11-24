@@ -59,6 +59,12 @@ export async function POST(request: Request) {
     saasAssets: Array.isArray(body.saasAssets)
       ? body.saasAssets.filter((item): item is string => typeof item === "string")
       : [],
+    editingFootageType: String(body.editingFootageType ?? ""),
+    editingFootageOther: String(body.editingFootageOther ?? ""),
+    editingServices: Array.isArray(body.editingServices)
+      ? body.editingServices.filter((item): item is string => typeof item === "string")
+      : [],
+    footageDuration: String(body.footageDuration ?? ""),
     name: String(body.name ?? ""),
     email: String(body.email ?? ""),
     whatsapp: String(body.whatsapp ?? ""),
@@ -109,7 +115,6 @@ export async function POST(request: Request) {
                 `3D video type: ${payload.videoType}`,
                 `3D video type details: ${payload.videoTypeOther || "Not provided"}`,
                 `Reference materials: ${payload.referenceMaterials.join(", ") || "Not provided"}`,
-                `Additional services: ${payload.additionalServices.join(", ") || "Not provided"}`,
               ]
             : []),
           ...(payload.service === "SaaS & Motion Graphics"
@@ -120,6 +125,15 @@ export async function POST(request: Request) {
                 `Current assets: ${payload.saasAssets.join(", ") || "Not provided"}`,
               ]
             : []),
+          ...(payload.service === "Video Editing & Post-Production"
+            ? [
+                `Editing footage: ${payload.editingFootageType}`,
+                `Editing footage details: ${payload.editingFootageOther || "Not provided"}`,
+                `Editing services: ${payload.editingServices.join(", ") || "Not provided"}`,
+                `Footage duration: ${payload.footageDuration}`,
+              ]
+            : []),
+          `Additional services: ${payload.additionalServices.join(", ") || "Not provided"}`,
           "",
           "Project details:",
           payload.projectDetails || "Not provided",

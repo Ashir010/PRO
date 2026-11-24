@@ -17,6 +17,10 @@ export type ContactPayload = {
   saasPlatformOther: string;
   saasVideoType: string;
   saasAssets: string[];
+  editingFootageType: string;
+  editingFootageOther: string;
+  editingServices: string[];
+  footageDuration: string;
   name: string;
   email: string;
   whatsapp: string;
@@ -25,7 +29,7 @@ export type ContactPayload = {
 };
 
 export type FieldErrors = Partial<
-  Record<"service" | "projectSize" | "budget" | "projectDetails" | "country" | "city" | "visualizationType" | "visualizationOther" | "videoType" | "videoTypeOther" | "referenceMaterials" | "saasPlatformType" | "saasPlatformOther" | "saasVideoType" | "saasAssets" | "name" | "email" | "whatsapp", string>
+  Record<"service" | "projectSize" | "budget" | "projectDetails" | "country" | "city" | "visualizationType" | "visualizationOther" | "videoType" | "videoTypeOther" | "referenceMaterials" | "saasPlatformType" | "saasPlatformOther" | "saasVideoType" | "saasAssets" | "editingFootageType" | "editingFootageOther" | "editingServices" | "footageDuration" | "name" | "email" | "whatsapp", string>
 >;
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -57,6 +61,15 @@ export function validateContact(input: Partial<ContactPayload>): FieldErrors {
     }
     if (!(input.saasVideoType ?? "").trim()) errors.saasVideoType = "Please choose the type of video.";
     if (!(input.saasAssets ?? []).length) errors.saasAssets = "Please choose at least one asset.";
+  }
+
+  if ((input.service ?? "") === "Video Editing & Post-Production") {
+    if (!(input.editingFootageType ?? "").trim()) errors.editingFootageType = "Please choose the type of footage.";
+    if (input.editingFootageType === "Other" && !(input.editingFootageOther ?? "").trim()) {
+      errors.editingFootageOther = "Please tell us what type of footage you have.";
+    }
+    if (!(input.editingServices ?? []).length) errors.editingServices = "Please choose at least one editing service.";
+    if (!(input.footageDuration ?? "").trim()) errors.footageDuration = "Please choose how much footage you have.";
   }
 
   const details = (input.projectDetails ?? "").trim();
