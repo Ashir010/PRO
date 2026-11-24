@@ -21,6 +21,21 @@ export type ContactPayload = {
   editingFootageOther: string;
   editingServices: string[];
   footageDuration: string;
+  podcastType: string;
+  podcastTypeOther: string;
+  podcastServices: string[];
+  episodeFrequency: string;
+  ugcPlatforms: string[];
+  ugcContentTypes: string[];
+  ugcContentVolume: string;
+  shootType: string;
+  productionRequirements: string[];
+  shootLocation: string;
+  shootDate: string;
+  shootDuration: string;
+  customProjectDescription: string;
+  expectedDeliverables: string[];
+  customProjectReferences: string;
   name: string;
   email: string;
   whatsapp: string;
@@ -29,7 +44,7 @@ export type ContactPayload = {
 };
 
 export type FieldErrors = Partial<
-  Record<"service" | "projectSize" | "budget" | "projectDetails" | "country" | "city" | "visualizationType" | "visualizationOther" | "videoType" | "videoTypeOther" | "referenceMaterials" | "saasPlatformType" | "saasPlatformOther" | "saasVideoType" | "saasAssets" | "editingFootageType" | "editingFootageOther" | "editingServices" | "footageDuration" | "name" | "email" | "whatsapp", string>
+  Record<"service" | "projectSize" | "budget" | "projectDetails" | "country" | "city" | "visualizationType" | "visualizationOther" | "videoType" | "videoTypeOther" | "referenceMaterials" | "saasPlatformType" | "saasPlatformOther" | "saasVideoType" | "saasAssets" | "editingFootageType" | "editingFootageOther" | "editingServices" | "footageDuration" | "podcastType" | "podcastTypeOther" | "podcastServices" | "episodeFrequency" | "ugcPlatforms" | "ugcContentTypes" | "ugcContentVolume" | "shootType" | "productionRequirements" | "shootLocation" | "shootDate" | "shootDuration" | "customProjectDescription" | "expectedDeliverables" | "customProjectReferences" | "name" | "email" | "whatsapp", string>
 >;
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -70,6 +85,43 @@ export function validateContact(input: Partial<ContactPayload>): FieldErrors {
     }
     if (!(input.editingServices ?? []).length) errors.editingServices = "Please choose at least one editing service.";
     if (!(input.footageDuration ?? "").trim()) errors.footageDuration = "Please choose how much footage you have.";
+  }
+
+  if ((input.service ?? "") === "Podcast Production") {
+    if (!(input.podcastType ?? "").trim()) errors.podcastType = "Please choose the type of podcast.";
+    if (input.podcastType === "Other" && !(input.podcastTypeOther ?? "").trim()) {
+      errors.podcastTypeOther = "Please tell us what type of podcast you're planning.";
+    }
+    if (!(input.podcastServices ?? []).length) errors.podcastServices = "Please choose at least one production service.";
+    if (!(input.episodeFrequency ?? "").trim()) errors.episodeFrequency = "Please choose your episode release frequency.";
+  }
+
+  if ((input.service ?? "") === "UGC & Social Media Content") {
+    if (!(input.ugcPlatforms ?? []).length) errors.ugcPlatforms = "Please choose at least one platform.";
+    if (!(input.ugcContentTypes ?? []).length) errors.ugcContentTypes = "Please choose at least one content type.";
+    if (!(input.ugcContentVolume ?? "").trim()) errors.ugcContentVolume = "Please choose how much content you need.";
+  }
+
+  if ((input.service ?? "") === "Videography & On-Site Shoots") {
+    if (!(input.shootType ?? "").trim()) errors.shootType = "Please choose the type of shoot.";
+    if (!(input.productionRequirements ?? []).length) errors.productionRequirements = "Please choose at least one production requirement.";
+    if (!(input.shootLocation ?? "").trim()) errors.shootLocation = "Please enter the shoot location.";
+    if (!(input.shootDate ?? "").trim()) errors.shootDate = "Please select a preferred shoot date.";
+    else {
+      const selectedDate = new Date(`${input.shootDate}T00:00:00`);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      if (!Number.isNaN(selectedDate.getTime()) && selectedDate < today) {
+        errors.shootDate = "Please choose today or a future shoot date.";
+      }
+    }
+    if (!(input.shootDuration ?? "").trim()) errors.shootDuration = "Please choose the shoot duration.";
+  }
+
+  if ((input.service ?? "") === "Something Else") {
+    if (!(input.customProjectDescription ?? "").trim()) {
+      errors.customProjectDescription = "Please describe the service or project you have in mind.";
+    }
   }
 
   const details = (input.projectDetails ?? "").trim();

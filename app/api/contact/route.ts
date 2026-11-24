@@ -65,6 +65,31 @@ export async function POST(request: Request) {
       ? body.editingServices.filter((item): item is string => typeof item === "string")
       : [],
     footageDuration: String(body.footageDuration ?? ""),
+    podcastType: String(body.podcastType ?? ""),
+    podcastTypeOther: String(body.podcastTypeOther ?? ""),
+    podcastServices: Array.isArray(body.podcastServices)
+      ? body.podcastServices.filter((item): item is string => typeof item === "string")
+      : [],
+    episodeFrequency: String(body.episodeFrequency ?? ""),
+    ugcPlatforms: Array.isArray(body.ugcPlatforms)
+      ? body.ugcPlatforms.filter((item): item is string => typeof item === "string")
+      : [],
+    ugcContentTypes: Array.isArray(body.ugcContentTypes)
+      ? body.ugcContentTypes.filter((item): item is string => typeof item === "string")
+      : [],
+    ugcContentVolume: String(body.ugcContentVolume ?? ""),
+    shootType: String(body.shootType ?? ""),
+    productionRequirements: Array.isArray(body.productionRequirements)
+      ? body.productionRequirements.filter((item): item is string => typeof item === "string")
+      : [],
+    shootLocation: String(body.shootLocation ?? ""),
+    shootDate: String(body.shootDate ?? ""),
+    shootDuration: String(body.shootDuration ?? ""),
+    customProjectDescription: String(body.customProjectDescription ?? ""),
+    expectedDeliverables: Array.isArray(body.expectedDeliverables)
+      ? body.expectedDeliverables.filter((item): item is string => typeof item === "string")
+      : [],
+    customProjectReferences: String(body.customProjectReferences ?? ""),
     name: String(body.name ?? ""),
     email: String(body.email ?? ""),
     whatsapp: String(body.whatsapp ?? ""),
@@ -131,6 +156,37 @@ export async function POST(request: Request) {
                 `Editing footage details: ${payload.editingFootageOther || "Not provided"}`,
                 `Editing services: ${payload.editingServices.join(", ") || "Not provided"}`,
                 `Footage duration: ${payload.footageDuration}`,
+              ]
+            : []),
+          ...(payload.service === "Podcast Production"
+            ? [
+                `Podcast type: ${payload.podcastType}`,
+                `Podcast type details: ${payload.podcastTypeOther || "Not provided"}`,
+                `Production services: ${payload.podcastServices.join(", ") || "Not provided"}`,
+                `Episode frequency: ${payload.episodeFrequency}`,
+              ]
+            : []),
+          ...(payload.service === "UGC & Social Media Content"
+            ? [
+                `UGC platforms: ${payload.ugcPlatforms.join(", ") || "Not provided"}`,
+                `UGC content types: ${payload.ugcContentTypes.join(", ") || "Not provided"}`,
+                `UGC content volume: ${payload.ugcContentVolume}`,
+              ]
+            : []),
+          ...(payload.service === "Videography & On-Site Shoots"
+            ? [
+                `Shoot type: ${payload.shootType}`,
+                `Production requirements: ${payload.productionRequirements.join(", ") || "Not provided"}`,
+                `Shoot location: ${payload.shootLocation}`,
+                `Preferred shoot date: ${payload.shootDate}`,
+                `Shoot duration: ${payload.shootDuration}`,
+              ]
+            : []),
+          ...(payload.service === "Something Else"
+            ? [
+                `Custom project description: ${payload.customProjectDescription}`,
+                `Expected deliverables: ${payload.expectedDeliverables.join(", ") || "Not provided"}`,
+                `Custom project references: ${payload.customProjectReferences || "Not provided"}`,
               ]
             : []),
           `Additional services: ${payload.additionalServices.join(", ") || "Not provided"}`,

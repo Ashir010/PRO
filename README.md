@@ -96,7 +96,13 @@ name, email, and optional WhatsApp number** (+ a hidden honeypot). When 3D Video
 is selected, the enquiry also includes visualization, 3D video type, and reference
 materials fields. When SaaS & Motion Graphics is selected, it includes platform type,
 SaaS video type, and current assets. When Video Editing & Post-Production is selected,
-it includes footage type, editing services, and footage duration. Validation is shared
+it includes footage type, editing services, and footage duration. When Podcast Production
+is selected, it includes podcast type, production services, and episode frequency.
+When UGC & Social Media Content is selected, it includes platforms, content types,
+and content volume. When Videography & On-Site Shoots is selected, it includes shoot
+type, production requirements, location, preferred date, and duration. When Something Else
+is selected, it includes the custom project description, expected deliverables, and references.
+Validation is shared
 client+server (`lib/validation.ts`). The route
 `app/api/contact/route.ts` validates server-side, rejects the honeypot, applies
 a best-effort in-memory rate limit, and **never fakes a send** — until a provider

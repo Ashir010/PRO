@@ -17,12 +17,16 @@ const steps = [
   { key: "budget", heading: "What's your approximate budget?", description: "This helps us understand the scale of your project.", options: ["Under $500", "$500 – $1,000", "$1,000 – $3,000", "$3,000 – $5,000", "$5,000+", "Let's discuss"] },
 ] as const;
 
-type FlowStep = "service" | "visualization" | "videoType" | "references" | "saasPlatform" | "saasVideoType" | "saasAssets" | "editingFootage" | "editingServices" | "footageDuration" | "projectSize" | "budget" | "projectDetails" | "region" | "contact";
+type FlowStep = "service" | "visualization" | "videoType" | "references" | "saasPlatform" | "saasVideoType" | "saasAssets" | "editingFootage" | "editingServices" | "footageDuration" | "podcastType" | "podcastServices" | "episodeFrequency" | "ugcPlatforms" | "ugcContentTypes" | "ugcContentVolume" | "shootType" | "productionRequirements" | "shootSchedule" | "customProject" | "customDeliverables" | "customReferences" | "projectSize" | "budget" | "projectDetails" | "region" | "contact";
 
 const baseSteps: FlowStep[] = ["service", "projectSize", "budget", "projectDetails", "region", "contact"];
 const visualizationSteps: FlowStep[] = ["service", "visualization", "videoType", "references", "projectSize", "budget", "projectDetails", "region", "contact"];
 const saasSteps: FlowStep[] = ["service", "saasPlatform", "saasVideoType", "saasAssets", "projectSize", "budget", "projectDetails", "region", "contact"];
 const editingSteps: FlowStep[] = ["service", "editingFootage", "editingServices", "footageDuration", "projectSize", "budget", "projectDetails", "region", "contact"];
+const podcastSteps: FlowStep[] = ["service", "podcastType", "podcastServices", "episodeFrequency", "projectSize", "budget", "projectDetails", "region", "contact"];
+const ugcSteps: FlowStep[] = ["service", "ugcPlatforms", "ugcContentTypes", "ugcContentVolume", "projectSize", "budget", "projectDetails", "region", "contact"];
+const videographySteps: FlowStep[] = ["service", "shootType", "productionRequirements", "shootSchedule", "projectSize", "budget", "projectDetails", "region", "contact"];
+const customSteps: FlowStep[] = ["service", "customProject", "customDeliverables", "customReferences", "projectSize", "budget", "projectDetails", "region", "contact"];
 
 const empty: ContactPayload = {
   service: "",
@@ -45,6 +49,21 @@ const empty: ContactPayload = {
   editingFootageOther: "",
   editingServices: [],
   footageDuration: "",
+  podcastType: "",
+  podcastTypeOther: "",
+  podcastServices: [],
+  episodeFrequency: "",
+  ugcPlatforms: [],
+  ugcContentTypes: [],
+  ugcContentVolume: "",
+  shootType: "",
+  productionRequirements: [],
+  shootLocation: "",
+  shootDate: "",
+  shootDuration: "",
+  customProjectDescription: "",
+  expectedDeliverables: [],
+  customProjectReferences: "",
   name: "",
   email: "",
   whatsapp: "",
@@ -92,6 +111,13 @@ export function ContactForm() {
           editingFootageOther: "",
           editingServices: [],
           footageDuration: "",
+          podcastType: "",
+          podcastTypeOther: "",
+          podcastServices: [],
+          episodeFrequency: "",
+          ugcPlatforms: [],
+          ugcContentTypes: [],
+          ugcContentVolume: "",
         };
       }
       if (field === "visualizationType" && value !== "Other") {
@@ -105,6 +131,9 @@ export function ContactForm() {
       }
       if (field === "editingFootageType" && value !== "Other") {
         return { ...current, editingFootageType: value, editingFootageOther: "" };
+      }
+      if (field === "podcastType" && value !== "Other") {
+        return { ...current, podcastType: value, podcastTypeOther: "" };
       }
       return { ...current, [field]: value };
     });
@@ -123,7 +152,15 @@ export function ContactForm() {
       ? saasSteps
       : selectedService === "Video Editing & Post-Production"
         ? editingSteps
-        : baseSteps;
+        : selectedService === "Podcast Production"
+          ? podcastSteps
+          : selectedService === "UGC & Social Media Content"
+            ? ugcSteps
+            : selectedService === "Videography & On-Site Shoots"
+              ? videographySteps
+              : selectedService === "Something Else"
+                ? customSteps
+                : baseSteps;
   const stepIndex = flowSteps.indexOf(step);
 
   const next = () => {
@@ -142,7 +179,15 @@ export function ContactForm() {
             ? "saasPlatform"
             : selectedService === "Video Editing & Post-Production"
               ? "editingFootage"
-              : "projectSize",
+              : selectedService === "Podcast Production"
+                ? "podcastType"
+                : selectedService === "UGC & Social Media Content"
+                  ? "ugcPlatforms"
+                  : selectedService === "Videography & On-Site Shoots"
+                    ? "shootType"
+                    : selectedService === "Something Else"
+                      ? "customProject"
+                      : "projectSize",
       );
       return;
     }
@@ -169,6 +214,23 @@ export function ContactForm() {
     }
     if (step === "editingServices" && values.editingServices.length === 0) return;
     if (step === "footageDuration" && !values.footageDuration) return;
+    if (step === "podcastType") {
+      if (!values.podcastType) return;
+      if (values.podcastType === "Other" && !values.podcastTypeOther.trim()) return;
+    }
+    if (step === "podcastServices" && values.podcastServices.length === 0) return;
+    if (step === "episodeFrequency" && !values.episodeFrequency) return;
+    if (step === "ugcPlatforms" && values.ugcPlatforms.length === 0) return;
+    if (step === "ugcContentTypes" && values.ugcContentTypes.length === 0) return;
+    if (step === "ugcContentVolume" && !values.ugcContentVolume) return;
+    if (step === "shootType" && !values.shootType) return;
+    if (step === "productionRequirements" && values.productionRequirements.length === 0) return;
+    if (step === "shootSchedule") {
+      if (!values.shootLocation.trim()) return;
+      if (!values.shootDate) return;
+      if (!values.shootDuration) return;
+    }
+    if (step === "customProject" && !values.customProjectDescription.trim()) return;
     if (step === "region" && !values.country) {
       setErrors((current) => ({ ...current, country: "Please select your country." }));
       return;
@@ -293,6 +355,79 @@ export function ContactForm() {
             setDirection("back");
             setAddingService(true);
             setAddServiceReturnStep("footageDuration");
+            setSelectedService("");
+            setStep("service");
+          }} />
+        ) : step === "podcastType" ? (
+          <PodcastTypeStep headingRef={headingRef} values={values} onChange={update} onBack={back} onContinue={next} />
+        ) : step === "podcastServices" ? (
+          <PodcastServicesStep headingRef={headingRef} values={values} onToggle={(service) => setValues((current) => ({
+            ...current,
+            podcastServices: current.podcastServices.includes(service)
+              ? current.podcastServices.filter((item) => item !== service)
+              : [...current.podcastServices, service],
+          }))} onBack={back} onContinue={next} />
+        ) : step === "episodeFrequency" ? (
+          <EpisodeFrequencyStep headingRef={headingRef} values={values} onChange={update} onBack={back} onContinue={next} onAddService={() => {
+            setDirection("back");
+            setAddingService(true);
+            setAddServiceReturnStep("episodeFrequency");
+            setSelectedService("");
+            setStep("service");
+          }} />
+        ) : step === "ugcPlatforms" ? (
+          <UgcPlatformsStep headingRef={headingRef} values={values} onToggle={(platform) => setValues((current) => ({
+            ...current,
+            ugcPlatforms: current.ugcPlatforms.includes(platform)
+              ? current.ugcPlatforms.filter((item) => item !== platform)
+              : [...current.ugcPlatforms, platform],
+          }))} onBack={back} onContinue={next} />
+        ) : step === "ugcContentTypes" ? (
+          <UgcContentTypesStep headingRef={headingRef} values={values} onToggle={(contentType) => setValues((current) => ({
+            ...current,
+            ugcContentTypes: current.ugcContentTypes.includes(contentType)
+              ? current.ugcContentTypes.filter((item) => item !== contentType)
+              : [...current.ugcContentTypes, contentType],
+          }))} onBack={back} onContinue={next} />
+        ) : step === "ugcContentVolume" ? (
+          <UgcContentVolumeStep headingRef={headingRef} values={values} onChange={update} onBack={back} onContinue={next} onAddService={() => {
+            setDirection("back");
+            setAddingService(true);
+            setAddServiceReturnStep("ugcContentVolume");
+            setSelectedService("");
+            setStep("service");
+          }} />
+        ) : step === "shootType" ? (
+          <ShootTypeStep headingRef={headingRef} values={values} onChange={update} onBack={back} onContinue={next} />
+        ) : step === "productionRequirements" ? (
+          <ProductionRequirementsStep headingRef={headingRef} values={values} onToggle={(requirement) => setValues((current) => ({
+            ...current,
+            productionRequirements: current.productionRequirements.includes(requirement)
+              ? current.productionRequirements.filter((item) => item !== requirement)
+              : [...current.productionRequirements, requirement],
+          }))} onBack={back} onContinue={next} />
+        ) : step === "shootSchedule" ? (
+          <ShootScheduleStep headingRef={headingRef} values={values} onChange={update} onBack={back} onContinue={next} onAddService={() => {
+            setDirection("back");
+            setAddingService(true);
+            setAddServiceReturnStep("shootSchedule");
+            setSelectedService("");
+            setStep("service");
+          }} />
+        ) : step === "customProject" ? (
+          <CustomProjectStep headingRef={headingRef} values={values} onChange={update} onBack={back} onContinue={next} />
+        ) : step === "customDeliverables" ? (
+          <CustomDeliverablesStep headingRef={headingRef} values={values} onToggle={(deliverable) => setValues((current) => ({
+            ...current,
+            expectedDeliverables: current.expectedDeliverables.includes(deliverable)
+              ? current.expectedDeliverables.filter((item) => item !== deliverable)
+              : [...current.expectedDeliverables, deliverable],
+          }))} onBack={back} onContinue={next} />
+        ) : step === "customReferences" ? (
+          <CustomReferencesStep headingRef={headingRef} values={values} onChange={update} onBack={back} onContinue={next} onAddService={() => {
+            setDirection("back");
+            setAddingService(true);
+            setAddServiceReturnStep("customReferences");
             setSelectedService("");
             setStep("service");
           }} />
@@ -571,6 +706,302 @@ function FootageDurationStep({ headingRef, values, onChange, onBack, onContinue,
       <div className="flex items-center gap-5">
         <button type="button" onClick={onAddService} className="ul-link text-[0.9rem] font-semibold text-ink">Add another service</button>
         <button type="button" onClick={onContinue} disabled={!values.footageDuration} className="primary-button">Continue</button>
+      </div>
+    </div>
+  </StepFrame>;
+}
+
+const podcastTypeOptions = [
+  "Business / Corporate",
+  "Educational",
+  "Interview-based",
+  "Video podcast",
+  "Personal brand",
+  "Other",
+] as const;
+
+const podcastServiceOptions = [
+  "Complete podcast production",
+  "Multi-camera video recording",
+  "Audio recording & editing",
+  "Video editing",
+  "Short-form podcast clips",
+  "Complete production & distribution",
+] as const;
+
+const episodeFrequencyOptions = [
+  "One-time recording",
+  "Weekly",
+  "Biweekly",
+  "Monthly",
+  "Multiple episodes per week",
+  "Not decided yet",
+] as const;
+
+function PodcastTypeStep({ headingRef, values, onChange, onBack, onContinue }: { headingRef: React.RefObject<HTMLHeadingElement | null>; values: ContactPayload; onChange: (field: keyof ContactPayload, value: string) => void; onBack: () => void; onContinue: () => void }) {
+  const valid = Boolean(values.podcastType) && (values.podcastType !== "Other" || Boolean(values.podcastTypeOther.trim()));
+  return <StepFrame headingRef={headingRef} heading="What type of podcast are you planning?" description="" onBack={onBack}>
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      {podcastTypeOptions.map((option) => {
+        const selected = values.podcastType === option;
+        return <button key={option} type="button" aria-pressed={selected} onClick={() => onChange("podcastType", option)} className={`min-h-16 rounded-md border px-5 py-4 text-left text-[0.975rem] font-semibold transition-all duration-200 active:translate-y-px ${selected ? "border-[#171827] bg-[#171827] text-white" : "border-hairline bg-white text-ink hover:border-[#E66B4B] hover:bg-[#F7F5F0]"}`}>{option}</button>;
+      })}
+    </div>
+    {values.podcastType === "Other" ? (
+      <div className="mt-5">
+        <label htmlFor="podcastTypeOther" className="sr-only">Other podcast type</label>
+        <input id="podcastTypeOther" name="podcastTypeOther" value={values.podcastTypeOther} onChange={(event) => onChange("podcastTypeOther", event.target.value)} placeholder="Tell us what type of podcast you're planning..." className={INPUT} />
+      </div>
+    ) : null}
+    <StepActions onBack={onBack} onContinue={onContinue} disabled={!valid} />
+  </StepFrame>;
+}
+
+function PodcastServicesStep({ headingRef, values, onToggle, onBack, onContinue }: { headingRef: React.RefObject<HTMLHeadingElement | null>; values: ContactPayload; onToggle: (service: string) => void; onBack: () => void; onContinue: () => void }) {
+  return <StepFrame headingRef={headingRef} heading="What production services do you need?" description="" onBack={onBack}>
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      {podcastServiceOptions.map((option) => {
+        const selected = values.podcastServices.includes(option);
+        return <button key={option} type="button" aria-pressed={selected} onClick={() => onToggle(option)} className={`min-h-16 rounded-md border px-5 py-4 text-left text-[0.975rem] font-semibold transition-all duration-200 active:translate-y-px ${selected ? "border-[#171827] bg-[#171827] text-white" : "border-hairline bg-white text-ink hover:border-[#E66B4B] hover:bg-[#F7F5F0]"}`}>{option}</button>;
+      })}
+    </div>
+    <StepActions onBack={onBack} onContinue={onContinue} disabled={values.podcastServices.length === 0} />
+  </StepFrame>;
+}
+
+function EpisodeFrequencyStep({ headingRef, values, onChange, onBack, onContinue, onAddService }: { headingRef: React.RefObject<HTMLHeadingElement | null>; values: ContactPayload; onChange: (field: keyof ContactPayload, value: string) => void; onBack: () => void; onContinue: () => void; onAddService: () => void }) {
+  return <StepFrame headingRef={headingRef} heading="How frequently do you plan to release episodes?" description="" onBack={onBack}>
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      {episodeFrequencyOptions.map((option) => {
+        const selected = values.episodeFrequency === option;
+        return <button key={option} type="button" aria-pressed={selected} onClick={() => onChange("episodeFrequency", option)} className={`min-h-16 rounded-md border px-5 py-4 text-left text-[0.975rem] font-semibold transition-all duration-200 active:translate-y-px ${selected ? "border-[#171827] bg-[#171827] text-white" : "border-hairline bg-white text-ink hover:border-[#E66B4B] hover:bg-[#F7F5F0]"}`}>{option}</button>;
+      })}
+    </div>
+    <div className="mt-7 flex flex-wrap items-center justify-between gap-4">
+      <button type="button" onClick={onBack} className="ul-link text-[0.9rem] font-semibold text-ink">Back</button>
+      <div className="flex items-center gap-5">
+        <button type="button" onClick={onAddService} className="ul-link text-[0.9rem] font-semibold text-ink">Add another service</button>
+        <button type="button" onClick={onContinue} disabled={!values.episodeFrequency} className="primary-button">Continue</button>
+      </div>
+    </div>
+  </StepFrame>;
+}
+
+const ugcPlatformOptions = [
+  "Instagram",
+  "YouTube",
+  "TikTok",
+  "LinkedIn",
+  "Facebook",
+  "Multiple platforms",
+] as const;
+
+const ugcContentTypeOptions = [
+  "UGC-style videos",
+  "Product demonstrations",
+  "Brand promotional reels",
+  "Educational content",
+  "Founder / personal brand content",
+  "Testimonials",
+  "Social media advertisements",
+] as const;
+
+const ugcContentVolumeOptions = [
+  "1–5 videos per month",
+  "5–10 videos per month",
+  "10–20 videos per month",
+  "20+ videos per month",
+  "One-time campaign",
+  "Ongoing monthly content",
+] as const;
+
+function UgcPlatformsStep({ headingRef, values, onToggle, onBack, onContinue }: { headingRef: React.RefObject<HTMLHeadingElement | null>; values: ContactPayload; onToggle: (platform: string) => void; onBack: () => void; onContinue: () => void }) {
+  return <StepFrame headingRef={headingRef} heading="Which platforms are you targeting?" description="" onBack={onBack}>
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      {ugcPlatformOptions.map((option) => {
+        const selected = values.ugcPlatforms.includes(option);
+        return <button key={option} type="button" aria-pressed={selected} onClick={() => onToggle(option)} className={`min-h-16 rounded-md border px-5 py-4 text-left text-[0.975rem] font-semibold transition-all duration-200 active:translate-y-px ${selected ? "border-[#171827] bg-[#171827] text-white" : "border-hairline bg-white text-ink hover:border-[#E66B4B] hover:bg-[#F7F5F0]"}`}>{option}</button>;
+      })}
+    </div>
+    <StepActions onBack={onBack} onContinue={onContinue} disabled={values.ugcPlatforms.length === 0} />
+  </StepFrame>;
+}
+
+function UgcContentTypesStep({ headingRef, values, onToggle, onBack, onContinue }: { headingRef: React.RefObject<HTMLHeadingElement | null>; values: ContactPayload; onToggle: (contentType: string) => void; onBack: () => void; onContinue: () => void }) {
+  return <StepFrame headingRef={headingRef} heading="What type of content do you need?" description="" onBack={onBack}>
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      {ugcContentTypeOptions.map((option) => {
+        const selected = values.ugcContentTypes.includes(option);
+        return <button key={option} type="button" aria-pressed={selected} onClick={() => onToggle(option)} className={`min-h-16 rounded-md border px-5 py-4 text-left text-[0.975rem] font-semibold transition-all duration-200 active:translate-y-px ${selected ? "border-[#171827] bg-[#171827] text-white" : "border-hairline bg-white text-ink hover:border-[#E66B4B] hover:bg-[#F7F5F0]"}`}>{option}</button>;
+      })}
+    </div>
+    <StepActions onBack={onBack} onContinue={onContinue} disabled={values.ugcContentTypes.length === 0} />
+  </StepFrame>;
+}
+
+function UgcContentVolumeStep({ headingRef, values, onChange, onBack, onContinue, onAddService }: { headingRef: React.RefObject<HTMLHeadingElement | null>; values: ContactPayload; onChange: (field: keyof ContactPayload, value: string) => void; onBack: () => void; onContinue: () => void; onAddService: () => void }) {
+  return <StepFrame headingRef={headingRef} heading="How much content do you need?" description="" onBack={onBack}>
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      {ugcContentVolumeOptions.map((option) => {
+        const selected = values.ugcContentVolume === option;
+        return <button key={option} type="button" aria-pressed={selected} onClick={() => onChange("ugcContentVolume", option)} className={`min-h-16 rounded-md border px-5 py-4 text-left text-[0.975rem] font-semibold transition-all duration-200 active:translate-y-px ${selected ? "border-[#171827] bg-[#171827] text-white" : "border-hairline bg-white text-ink hover:border-[#E66B4B] hover:bg-[#F7F5F0]"}`}>{option}</button>;
+      })}
+    </div>
+    <div className="mt-7 flex flex-wrap items-center justify-between gap-4">
+      <button type="button" onClick={onBack} className="ul-link text-[0.9rem] font-semibold text-ink">Back</button>
+      <div className="flex items-center gap-5">
+        <button type="button" onClick={onAddService} className="ul-link text-[0.9rem] font-semibold text-ink">Add another service</button>
+        <button type="button" onClick={onContinue} disabled={!values.ugcContentVolume} className="primary-button">Continue</button>
+      </div>
+    </div>
+  </StepFrame>;
+}
+
+const shootTypeOptions = [
+  "Corporate / Brand shoot",
+  "Industrial / Factory shoot",
+  "Product shoot",
+  "Real estate / Architecture",
+  "Events / Conferences",
+  "Interviews / Testimonials",
+  "Commercial advertisements",
+] as const;
+
+const productionRequirementOptions = [
+  "Professional videography",
+  "Photography",
+  "Drone cinematography",
+  "Multi-camera production",
+  "Interviews & sound recording",
+  "Complete production crew",
+] as const;
+
+const shootDurationOptions = [
+  "Half-day",
+  "Full-day",
+  "Multiple days",
+] as const;
+
+function ShootTypeStep({ headingRef, values, onChange, onBack, onContinue }: { headingRef: React.RefObject<HTMLHeadingElement | null>; values: ContactPayload; onChange: (field: keyof ContactPayload, value: string) => void; onBack: () => void; onContinue: () => void }) {
+  return <StepFrame headingRef={headingRef} heading="What type of shoot are you planning?" description="" onBack={onBack}>
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      {shootTypeOptions.map((option) => {
+        const selected = values.shootType === option;
+        return <button key={option} type="button" aria-pressed={selected} onClick={() => onChange("shootType", option)} className={`min-h-16 rounded-md border px-5 py-4 text-left text-[0.975rem] font-semibold transition-all duration-200 active:translate-y-px ${selected ? "border-[#171827] bg-[#171827] text-white" : "border-hairline bg-white text-ink hover:border-[#E66B4B] hover:bg-[#F7F5F0]"}`}>{option}</button>;
+      })}
+    </div>
+    <StepActions onBack={onBack} onContinue={onContinue} disabled={!values.shootType} />
+  </StepFrame>;
+}
+
+function ProductionRequirementsStep({ headingRef, values, onToggle, onBack, onContinue }: { headingRef: React.RefObject<HTMLHeadingElement | null>; values: ContactPayload; onToggle: (requirement: string) => void; onBack: () => void; onContinue: () => void }) {
+  return <StepFrame headingRef={headingRef} heading="What production requirements do you have?" description="" onBack={onBack}>
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      {productionRequirementOptions.map((option) => {
+        const selected = values.productionRequirements.includes(option);
+        return <button key={option} type="button" aria-pressed={selected} onClick={() => onToggle(option)} className={`min-h-16 rounded-md border px-5 py-4 text-left text-[0.975rem] font-semibold transition-all duration-200 active:translate-y-px ${selected ? "border-[#171827] bg-[#171827] text-white" : "border-hairline bg-white text-ink hover:border-[#E66B4B] hover:bg-[#F7F5F0]"}`}>{option}</button>;
+      })}
+    </div>
+    <StepActions onBack={onBack} onContinue={onContinue} disabled={values.productionRequirements.length === 0} />
+  </StepFrame>;
+}
+
+function ShootScheduleStep({ headingRef, values, onChange, onBack, onContinue, onAddService }: { headingRef: React.RefObject<HTMLHeadingElement | null>; values: ContactPayload; onChange: (field: keyof ContactPayload, value: string) => void; onBack: () => void; onContinue: () => void; onAddService: () => void }) {
+  const today = new Date();
+  const minDate = [
+    today.getFullYear(),
+    String(today.getMonth() + 1).padStart(2, "0"),
+    String(today.getDate()).padStart(2, "0"),
+  ].join("-");
+  const valid = Boolean(values.shootLocation.trim()) && Boolean(values.shootDate) && Boolean(values.shootDuration);
+
+  return <StepFrame headingRef={headingRef} heading="Where and when will the shoot take place?" description="" onBack={onBack}>
+    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+      <div>
+        <label htmlFor="shootLocation" className="mb-1.5 block text-[0.85rem] font-medium text-ink">City / Location <span style={{ color: ERROR_COLOR }}>*</span></label>
+        <input id="shootLocation" name="shootLocation" value={values.shootLocation} onChange={(event) => onChange("shootLocation", event.target.value)} placeholder="Enter your shoot location or city" className={INPUT} autoComplete="address-level2" />
+      </div>
+      <div>
+        <label htmlFor="shootDate" className="mb-1.5 block text-[0.85rem] font-medium text-ink">Preferred Shoot Date <span style={{ color: ERROR_COLOR }}>*</span></label>
+        <input id="shootDate" name="shootDate" type="date" min={minDate} value={values.shootDate} onChange={(event) => onChange("shootDate", event.target.value)} className={INPUT} />
+      </div>
+    </div>
+    <div className="mt-5">
+      <p className="mb-1.5 text-[0.85rem] font-medium text-ink">Duration of Shoot <span style={{ color: ERROR_COLOR }}>*</span></p>
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+        {shootDurationOptions.map((option) => {
+          const selected = values.shootDuration === option;
+          return <button key={option} type="button" aria-pressed={selected} onClick={() => onChange("shootDuration", option)} className={`min-h-16 rounded-md border px-5 py-4 text-left text-[0.975rem] font-semibold transition-all duration-200 active:translate-y-px ${selected ? "border-[#171827] bg-[#171827] text-white" : "border-hairline bg-white text-ink hover:border-[#E66B4B] hover:bg-[#F7F5F0]"}`}>{option}</button>;
+        })}
+      </div>
+    </div>
+    <div className="mt-7 flex flex-wrap items-center justify-between gap-4">
+      <button type="button" onClick={onBack} className="ul-link text-[0.9rem] font-semibold text-ink">Back</button>
+      <div className="flex items-center gap-5">
+        <button type="button" onClick={onAddService} className="ul-link text-[0.9rem] font-semibold text-ink">Add another service</button>
+        <button type="button" onClick={onContinue} disabled={!valid} className="primary-button">Continue</button>
+      </div>
+    </div>
+  </StepFrame>;
+}
+
+const customDeliverableOptions = [
+  "Video",
+  "Animation",
+  "Photography",
+  "Creative / Design",
+  "Marketing content",
+  "Other",
+] as const;
+
+function CustomProjectStep({ headingRef, values, onChange, onBack, onContinue }: { headingRef: React.RefObject<HTMLHeadingElement | null>; values: ContactPayload; onChange: (field: keyof ContactPayload, value: string) => void; onBack: () => void; onContinue: () => void }) {
+  return <StepFrame headingRef={headingRef} heading="What type of service or project do you have in mind?" description="" onBack={onBack}>
+    <label htmlFor="customProjectDescription" className="sr-only">Custom project description</label>
+    <textarea
+      id="customProjectDescription"
+      name="customProjectDescription"
+      rows={7}
+      maxLength={4000}
+      value={values.customProjectDescription}
+      onChange={(event) => onChange("customProjectDescription", event.target.value)}
+      placeholder="Tell us about the service or project you're looking for..."
+      className={`${INPUT} resize-y`}
+    />
+    <StepActions onBack={onBack} onContinue={onContinue} disabled={!values.customProjectDescription.trim()} />
+  </StepFrame>;
+}
+
+function CustomDeliverablesStep({ headingRef, values, onToggle, onBack, onContinue }: { headingRef: React.RefObject<HTMLHeadingElement | null>; values: ContactPayload; onToggle: (deliverable: string) => void; onBack: () => void; onContinue: () => void }) {
+  return <StepFrame headingRef={headingRef} heading="What deliverables are you expecting?" description="" onBack={onBack}>
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      {customDeliverableOptions.map((option) => {
+        const selected = values.expectedDeliverables.includes(option);
+        return <button key={option} type="button" aria-pressed={selected} onClick={() => onToggle(option)} className={`min-h-16 rounded-md border px-5 py-4 text-left text-[0.975rem] font-semibold transition-all duration-200 active:translate-y-px ${selected ? "border-[#171827] bg-[#171827] text-white" : "border-hairline bg-white text-ink hover:border-[#E66B4B] hover:bg-[#F7F5F0]"}`}>{option}</button>;
+      })}
+    </div>
+    <StepActions onBack={onBack} onContinue={onContinue} disabled={false} />
+  </StepFrame>;
+}
+
+function CustomReferencesStep({ headingRef, values, onChange, onBack, onContinue, onAddService }: { headingRef: React.RefObject<HTMLHeadingElement | null>; values: ContactPayload; onChange: (field: keyof ContactPayload, value: string) => void; onBack: () => void; onContinue: () => void; onAddService: () => void }) {
+  return <StepFrame headingRef={headingRef} heading="Do you have any references or examples of what you're looking for?" description="" onBack={onBack}>
+    <label htmlFor="customProjectReferences" className="sr-only">Project references</label>
+    <textarea
+      id="customProjectReferences"
+      name="customProjectReferences"
+      rows={7}
+      maxLength={4000}
+      value={values.customProjectReferences}
+      onChange={(event) => onChange("customProjectReferences", event.target.value)}
+      placeholder="Paste reference links, website URLs, video links, examples, or describe anything you have in mind..."
+      className={`${INPUT} resize-y break-words`}
+    />
+    <p className="mt-2 text-[0.8rem] text-muted">You can share links, references, examples, or anything that helps us understand your vision.</p>
+    <div className="mt-7 flex flex-wrap items-center justify-between gap-4">
+      <button type="button" onClick={onBack} className="ul-link text-[0.9rem] font-semibold text-ink">Back</button>
+      <div className="flex items-center gap-5">
+        <button type="button" onClick={onAddService} className="ul-link text-[0.9rem] font-semibold text-ink">Add another service</button>
+        <button type="button" onClick={onContinue} className="primary-button">Continue</button>
       </div>
     </div>
   </StepFrame>;
