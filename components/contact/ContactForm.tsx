@@ -50,6 +50,7 @@ export function ContactForm() {
   const [values, setValues] = useState<ContactPayload>(empty);
   const [selectedService, setSelectedService] = useState("");
   const [addingService, setAddingService] = useState(false);
+  const [addServiceReturnStep, setAddServiceReturnStep] = useState<FlowStep>("references");
   const [step, setStep] = useState<FlowStep>("service");
   const [direction, setDirection] = useState<"forward" | "back">("forward");
   const [errors, setErrors] = useState<FieldErrors>({});
@@ -63,7 +64,6 @@ export function ContactForm() {
     if (field === "service") setSelectedService(value);
     setValues((current) => {
       if (field === "service" && addingService) {
-        if (value === "3D Videos") return current;
         const additionalServices = current.additionalServices.includes(value)
           ? current.additionalServices
           : [...current.additionalServices, value];
@@ -160,8 +160,8 @@ export function ContactForm() {
     if (step === "service" && addingService) {
       setDirection("back");
       setAddingService(false);
-      setSelectedService("3D Videos");
-      setStep("references");
+      setSelectedService(values.service);
+      setStep(addServiceReturnStep);
       return;
     }
     if (stepIndex > 0) {
@@ -249,7 +249,13 @@ export function ContactForm() {
                 ? withoutNothing.filter((item) => item !== asset)
                 : [...withoutNothing, asset],
             };
-          })} onBack={back} onContinue={next} />
+          })} onBack={back} onContinue={next} onAddService={() => {
+            setDirection("back");
+            setAddingService(true);
+            setAddServiceReturnStep("saasAssets");
+            setSelectedService("");
+            setStep("service");
+          }} />
         ) : step === "projectSize" ? (
           <ChoiceStep headingRef={headingRef} heading={steps[1].heading} description={steps[1].description} options={steps[1].options} selected={values.projectSize} onSelect={(value) => update("projectSize", value)} onBack={back} onContinue={next} />
         ) : step === "budget" ? (
@@ -435,7 +441,7 @@ function SaasVideoTypeStep({ headingRef, values, onChange, onBack, onContinue }:
   </StepFrame>;
 }
 
-function SaasAssetsStep({ headingRef, values, onToggle, onBack, onContinue }: { headingRef: React.RefObject<HTMLHeadingElement | null>; values: ContactPayload; onToggle: (asset: string) => void; onBack: () => void; onContinue: () => void }) {
+function SaasAssetsStep({ headingRef, values, onToggle, onBack, onContinue, onAddService }: { headingRef: React.RefObject<HTMLHeadingElement | null>; values: ContactPayload; onToggle: (asset: string) => void; onBack: () => void; onContinue: () => void; onAddService: () => void }) {
   return <StepFrame headingRef={headingRef} heading="What assets do you currently have?" description="" onBack={onBack}>
     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
       {saasAssetOptions.map((option) => {
@@ -443,7 +449,13 @@ function SaasAssetsStep({ headingRef, values, onToggle, onBack, onContinue }: { 
         return <button key={option} type="button" aria-pressed={selected} onClick={() => onToggle(option)} className={`min-h-16 rounded-md border px-5 py-4 text-left text-[0.975rem] font-semibold transition-all duration-200 active:translate-y-px ${selected ? "border-[#171827] bg-[#171827] text-white" : "border-hairline bg-white text-ink hover:border-[#E66B4B] hover:bg-[#F7F5F0]"}`}>{option}</button>;
       })}
     </div>
-    <StepActions onBack={onBack} onContinue={onContinue} disabled={values.saasAssets.length === 0} />
+    <div className="mt-7 flex flex-wrap items-center justify-between gap-4">
+      <button type="button" onClick={onBack} className="ul-link text-[0.9rem] font-semibold text-ink">Back</button>
+      <div className="flex items-center gap-5">
+        <button type="button" onClick={onAddService} className="ul-link text-[0.9rem] font-semibold text-ink">Add another service</button>
+        <button type="button" onClick={onContinue} disabled={values.saasAssets.length === 0} className="primary-button">Continue</button>
+      </div>
+    </div>
   </StepFrame>;
 }
 
