@@ -17,10 +17,11 @@ const steps = [
   { key: "budget", heading: "What's your approximate budget?", description: "This helps us understand the scale of your project.", options: ["Under $500", "$500 – $1,000", "$1,000 – $3,000", "$3,000 – $5,000", "$5,000+", "Let's discuss"] },
 ] as const;
 
-type FlowStep = "service" | "visualization" | "videoType" | "references" | "projectSize" | "budget" | "projectDetails" | "region" | "contact";
+type FlowStep = "service" | "visualization" | "videoType" | "references" | "saasPlatform" | "saasVideoType" | "saasAssets" | "projectSize" | "budget" | "projectDetails" | "region" | "contact";
 
 const baseSteps: FlowStep[] = ["service", "projectSize", "budget", "projectDetails", "region", "contact"];
 const visualizationSteps: FlowStep[] = ["service", "visualization", "videoType", "references", "projectSize", "budget", "projectDetails", "region", "contact"];
+const saasSteps: FlowStep[] = ["service", "saasPlatform", "saasVideoType", "saasAssets", "projectSize", "budget", "projectDetails", "region", "contact"];
 
 const empty: ContactPayload = {
   service: "",
@@ -35,6 +36,10 @@ const empty: ContactPayload = {
   videoTypeOther: "",
   referenceMaterials: [],
   additionalServices: [],
+  saasPlatformType: "",
+  saasPlatformOther: "",
+  saasVideoType: "",
+  saasAssets: [],
   name: "",
   email: "",
   whatsapp: "",
@@ -64,7 +69,7 @@ export function ContactForm() {
           : [...current.additionalServices, value];
         return { ...current, additionalServices };
       }
-      if (field === "service" && value !== "3D Videos") {
+      if (field === "service") {
         return {
           ...current,
           service: value,
@@ -73,6 +78,10 @@ export function ContactForm() {
           videoType: "",
           videoTypeOther: "",
           referenceMaterials: [],
+          saasPlatformType: "",
+          saasPlatformOther: "",
+          saasVideoType: "",
+          saasAssets: [],
         };
       }
       if (field === "visualizationType" && value !== "Other") {
@@ -80,6 +89,9 @@ export function ContactForm() {
       }
       if (field === "videoType" && value !== "Other") {
         return { ...current, videoType: value, videoTypeOther: "" };
+      }
+      if (field === "saasPlatformType" && value !== "Other") {
+        return { ...current, saasPlatformType: value, saasPlatformOther: "" };
       }
       return { ...current, [field]: value };
     });
@@ -92,7 +104,11 @@ export function ContactForm() {
     }
   };
 
-  const flowSteps = selectedService === "3D Videos" ? visualizationSteps : baseSteps;
+  const flowSteps = selectedService === "3D Videos"
+    ? visualizationSteps
+    : selectedService === "SaaS & Motion Graphics"
+      ? saasSteps
+      : baseSteps;
   const stepIndex = flowSteps.indexOf(step);
 
   const next = () => {
@@ -104,7 +120,13 @@ export function ContactForm() {
         setStep("projectSize");
         return;
       }
-      setStep(selectedService === "3D Videos" ? "visualization" : "projectSize");
+      setStep(
+        selectedService === "3D Videos"
+          ? "visualization"
+          : selectedService === "SaaS & Motion Graphics"
+            ? "saasPlatform"
+            : "projectSize",
+      );
       return;
     }
     if (step === "projectSize" && !values.projectSize) return;
@@ -118,6 +140,12 @@ export function ContactForm() {
       if (values.videoType === "Other" && !values.videoTypeOther.trim()) return;
     }
     if (step === "references" && values.referenceMaterials.length === 0) return;
+    if (step === "saasPlatform") {
+      if (!values.saasPlatformType) return;
+      if (values.saasPlatformType === "Other" && !values.saasPlatformOther.trim()) return;
+    }
+    if (step === "saasVideoType" && !values.saasVideoType) return;
+    if (step === "saasAssets" && values.saasAssets.length === 0) return;
     if (step === "region" && !values.country) {
       setErrors((current) => ({ ...current, country: "Please select your country." }));
       return;
@@ -202,6 +230,26 @@ export function ContactForm() {
             setSelectedService("");
             setStep("service");
           }} />
+        ) : step === "saasPlatform" ? (
+          <SaasPlatformStep headingRef={headingRef} values={values} onChange={update} onBack={back} onContinue={next} />
+        ) : step === "saasVideoType" ? (
+          <SaasVideoTypeStep headingRef={headingRef} values={values} onChange={update} onBack={back} onContinue={next} />
+        ) : step === "saasAssets" ? (
+          <SaasAssetsStep headingRef={headingRef} values={values} onToggle={(asset) => setValues((current) => {
+            if (asset === "Nothing yet") {
+              return {
+                ...current,
+                saasAssets: current.saasAssets.includes("Nothing yet") ? [] : ["Nothing yet"],
+              };
+            }
+            const withoutNothing = current.saasAssets.filter((item) => item !== "Nothing yet");
+            return {
+              ...current,
+              saasAssets: withoutNothing.includes(asset)
+                ? withoutNothing.filter((item) => item !== asset)
+                : [...withoutNothing, asset],
+            };
+          })} onBack={back} onContinue={next} />
         ) : step === "projectSize" ? (
           <ChoiceStep headingRef={headingRef} heading={steps[1].heading} description={steps[1].description} options={steps[1].options} selected={values.projectSize} onSelect={(value) => update("projectSize", value)} onBack={back} onContinue={next} />
         ) : step === "budget" ? (
@@ -326,6 +374,76 @@ function ReferenceMaterialsStep({ headingRef, values, onToggle, onBack, onContin
         <button type="button" onClick={onContinue} disabled={values.referenceMaterials.length === 0} className="primary-button">Continue</button>
       </div>
     </div>
+  </StepFrame>;
+}
+
+const saasPlatformOptions = [
+  "SaaS platform",
+  "Mobile application",
+  "Website",
+  "Technology product",
+  "Software dashboard",
+  "Other",
+] as const;
+
+const saasVideoOptions = [
+  "SaaS product explainer",
+  "UI / UX animation",
+  "Product walkthrough",
+  "Feature demonstration",
+  "Motion graphics advertisement",
+  "Logo animation",
+] as const;
+
+const saasAssetOptions = [
+  "Product screenshots / screen recordings",
+  "Figma designs",
+  "Brand guidelines",
+  "Script / storyboard",
+  "Existing video references",
+  "Nothing yet",
+] as const;
+
+function SaasPlatformStep({ headingRef, values, onChange, onBack, onContinue }: { headingRef: React.RefObject<HTMLHeadingElement | null>; values: ContactPayload; onChange: (field: keyof ContactPayload, value: string) => void; onBack: () => void; onContinue: () => void }) {
+  const valid = Boolean(values.saasPlatformType) && (values.saasPlatformType !== "Other" || Boolean(values.saasPlatformOther.trim()));
+  return <StepFrame headingRef={headingRef} heading="What are we creating animations for?" description="" onBack={onBack}>
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      {saasPlatformOptions.map((option) => {
+        const selected = values.saasPlatformType === option;
+        return <button key={option} type="button" aria-pressed={selected} onClick={() => onChange("saasPlatformType", option)} className={`min-h-16 rounded-md border px-5 py-4 text-left text-[0.975rem] font-semibold transition-all duration-200 active:translate-y-px ${selected ? "border-[#171827] bg-[#171827] text-white" : "border-hairline bg-white text-ink hover:border-[#E66B4B] hover:bg-[#F7F5F0]"}`}>{option}</button>;
+      })}
+    </div>
+    {values.saasPlatformType === "Other" ? (
+      <div className="mt-5">
+        <label htmlFor="saasPlatformOther" className="sr-only">Other SaaS platform</label>
+        <input id="saasPlatformOther" name="saasPlatformOther" value={values.saasPlatformOther} onChange={(event) => onChange("saasPlatformOther", event.target.value)} placeholder="Tell us what we're creating animations for..." className={INPUT} />
+      </div>
+    ) : null}
+    <StepActions onBack={onBack} onContinue={onContinue} disabled={!valid} />
+  </StepFrame>;
+}
+
+function SaasVideoTypeStep({ headingRef, values, onChange, onBack, onContinue }: { headingRef: React.RefObject<HTMLHeadingElement | null>; values: ContactPayload; onChange: (field: keyof ContactPayload, value: string) => void; onBack: () => void; onContinue: () => void }) {
+  return <StepFrame headingRef={headingRef} heading="What type of video do you need?" description="" onBack={onBack}>
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      {saasVideoOptions.map((option) => {
+        const selected = values.saasVideoType === option;
+        return <button key={option} type="button" aria-pressed={selected} onClick={() => onChange("saasVideoType", option)} className={`min-h-16 rounded-md border px-5 py-4 text-left text-[0.975rem] font-semibold transition-all duration-200 active:translate-y-px ${selected ? "border-[#171827] bg-[#171827] text-white" : "border-hairline bg-white text-ink hover:border-[#E66B4B] hover:bg-[#F7F5F0]"}`}>{option}</button>;
+      })}
+    </div>
+    <StepActions onBack={onBack} onContinue={onContinue} disabled={!values.saasVideoType} />
+  </StepFrame>;
+}
+
+function SaasAssetsStep({ headingRef, values, onToggle, onBack, onContinue }: { headingRef: React.RefObject<HTMLHeadingElement | null>; values: ContactPayload; onToggle: (asset: string) => void; onBack: () => void; onContinue: () => void }) {
+  return <StepFrame headingRef={headingRef} heading="What assets do you currently have?" description="" onBack={onBack}>
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      {saasAssetOptions.map((option) => {
+        const selected = values.saasAssets.includes(option);
+        return <button key={option} type="button" aria-pressed={selected} onClick={() => onToggle(option)} className={`min-h-16 rounded-md border px-5 py-4 text-left text-[0.975rem] font-semibold transition-all duration-200 active:translate-y-px ${selected ? "border-[#171827] bg-[#171827] text-white" : "border-hairline bg-white text-ink hover:border-[#E66B4B] hover:bg-[#F7F5F0]"}`}>{option}</button>;
+      })}
+    </div>
+    <StepActions onBack={onBack} onContinue={onContinue} disabled={values.saasAssets.length === 0} />
   </StepFrame>;
 }
 

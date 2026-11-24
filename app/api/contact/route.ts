@@ -53,6 +53,12 @@ export async function POST(request: Request) {
     additionalServices: Array.isArray(body.additionalServices)
       ? body.additionalServices.filter((item): item is string => typeof item === "string")
       : [],
+    saasPlatformType: String(body.saasPlatformType ?? ""),
+    saasPlatformOther: String(body.saasPlatformOther ?? ""),
+    saasVideoType: String(body.saasVideoType ?? ""),
+    saasAssets: Array.isArray(body.saasAssets)
+      ? body.saasAssets.filter((item): item is string => typeof item === "string")
+      : [],
     name: String(body.name ?? ""),
     email: String(body.email ?? ""),
     whatsapp: String(body.whatsapp ?? ""),
@@ -104,6 +110,14 @@ export async function POST(request: Request) {
                 `3D video type details: ${payload.videoTypeOther || "Not provided"}`,
                 `Reference materials: ${payload.referenceMaterials.join(", ") || "Not provided"}`,
                 `Additional services: ${payload.additionalServices.join(", ") || "Not provided"}`,
+              ]
+            : []),
+          ...(payload.service === "SaaS & Motion Graphics"
+            ? [
+                `SaaS animation for: ${payload.saasPlatformType}`,
+                `SaaS animation details: ${payload.saasPlatformOther || "Not provided"}`,
+                `SaaS video type: ${payload.saasVideoType}`,
+                `Current assets: ${payload.saasAssets.join(", ") || "Not provided"}`,
               ]
             : []),
           "",

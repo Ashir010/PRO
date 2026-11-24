@@ -13,6 +13,10 @@ export type ContactPayload = {
   videoTypeOther: string;
   referenceMaterials: string[];
   additionalServices: string[];
+  saasPlatformType: string;
+  saasPlatformOther: string;
+  saasVideoType: string;
+  saasAssets: string[];
   name: string;
   email: string;
   whatsapp: string;
@@ -21,7 +25,7 @@ export type ContactPayload = {
 };
 
 export type FieldErrors = Partial<
-  Record<"service" | "projectSize" | "budget" | "projectDetails" | "country" | "city" | "visualizationType" | "visualizationOther" | "videoType" | "videoTypeOther" | "referenceMaterials" | "name" | "email" | "whatsapp", string>
+  Record<"service" | "projectSize" | "budget" | "projectDetails" | "country" | "city" | "visualizationType" | "visualizationOther" | "videoType" | "videoTypeOther" | "referenceMaterials" | "saasPlatformType" | "saasPlatformOther" | "saasVideoType" | "saasAssets" | "name" | "email" | "whatsapp", string>
 >;
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -44,6 +48,15 @@ export function validateContact(input: Partial<ContactPayload>): FieldErrors {
       errors.videoTypeOther = "Please describe the type of 3D video you need.";
     }
     if (!(input.referenceMaterials ?? []).length) errors.referenceMaterials = "Please choose at least one reference material.";
+  }
+
+  if ((input.service ?? "") === "SaaS & Motion Graphics") {
+    if (!(input.saasPlatformType ?? "").trim()) errors.saasPlatformType = "Please choose what we're creating animations for.";
+    if (input.saasPlatformType === "Other" && !(input.saasPlatformOther ?? "").trim()) {
+      errors.saasPlatformOther = "Please tell us what we're creating animations for.";
+    }
+    if (!(input.saasVideoType ?? "").trim()) errors.saasVideoType = "Please choose the type of video.";
+    if (!(input.saasAssets ?? []).length) errors.saasAssets = "Please choose at least one asset.";
   }
 
   const details = (input.projectDetails ?? "").trim();
