@@ -5,6 +5,7 @@ import Link from "next/link";
 import { hasErrors, validateContact, type ContactPayload, type FieldErrors } from "@/lib/validation";
 import { SpinningLogo } from "@/components/contact/SpinningLogo";
 import { CornerLabel } from "@/components/ui/CornerLabel";
+import { COUNTRIES } from "@/lib/countries";
 
 type Status = "idle" | "submitting" | "success" | "notConfigured" | "error";
 const ERROR_COLOR = "#B83E00";
@@ -16,7 +17,7 @@ const steps = [
   { key: "budget", heading: "What's your approximate budget?", description: "This helps us understand the scale of your project.", options: ["Under $500", "$500 – $1,000", "$1,000 – $3,000", "$3,000 – $5,000", "$5,000+", "Let's discuss"] },
 ] as const;
 
-const empty: ContactPayload = { service: "", projectSize: "", budget: "", projectDetails: "", name: "", email: "", whatsapp: "", company: "" };
+const empty: ContactPayload = { service: "", projectSize: "", budget: "", projectDetails: "", country: "", city: "", name: "", email: "", whatsapp: "", company: "" };
 
 export function ContactForm() {
   const [values, setValues] = useState<ContactPayload>(empty);
@@ -42,6 +43,10 @@ export function ContactForm() {
 
   const next = () => {
     if (step < 3 && !values[steps[step].key]) return;
+    if (step === 4 && !values.country) {
+      setErrors((current) => ({ ...current, country: "Please select your country." }));
+      return;
+    }
     setDirection("forward");
     setStep((current) => current + 1);
   };
@@ -77,15 +82,15 @@ export function ContactForm() {
   if (status === "notConfigured") return <StatusScreen heading="Delivery isn't connected yet." message={serverMessage || "This form is ready, but email delivery still needs to be configured before enquiries can be sent."} action="Back to contact details" onAction={() => setStatus("idle")} />;
 
   const activeStep = steps[step];
-  const progress = ((step + 1) / 5) * 100;
+  const progress = ((step + 1) / 6) * 100;
 
   return (
     <div className="mx-auto w-full max-w-4xl" aria-live="polite">
       <div className="mb-9 flex items-center justify-between gap-5">
         <SpinningLogo />
         <div className="w-full max-w-[17rem]">
-          <p className="mb-2 text-right text-caption text-muted">Step {step + 1} of 5</p>
-          <div className="h-1 overflow-hidden rounded-full bg-hairline" role="progressbar" aria-label="Enquiry progress" aria-valuemin={1} aria-valuemax={5} aria-valuenow={step + 1}>
+          <p className="mb-2 text-right text-caption text-muted">Step {step + 1} of 6</p>
+          <div className="h-1 overflow-hidden rounded-full bg-hairline" role="progressbar" aria-label="Enquiry progress" aria-valuemin={1} aria-valuemax={6} aria-valuenow={step + 1}>
             <div className="h-full rounded-full bg-[#E66B4B] transition-[width] duration-500 [transition-timing-function:var(--ease-signature)]" style={{ width: `${progress}%` }} />
           </div>
         </div>
@@ -96,6 +101,8 @@ export function ContactForm() {
           <ChoiceStep headingRef={headingRef} heading={activeStep.heading} description={activeStep.description} options={activeStep.options} selected={values[activeStep.key]} onSelect={(value) => update(activeStep.key, value)} onBack={step > 0 ? back : undefined} onContinue={next} />
         ) : step === 3 ? (
           <DetailsStep headingRef={headingRef} value={values.projectDetails} onChange={(value) => update("projectDetails", value)} onBack={back} onContinue={next} />
+        ) : step === 4 ? (
+          <RegionStep headingRef={headingRef} values={values} error={errors.country} onChange={update} onBack={back} onContinue={next} />
         ) : (
           <ContactDetailsStep headingRef={headingRef} values={values} errors={errors} status={status} serverMessage={serverMessage} onChange={update} onBack={back} onSubmit={submit} />
         )}
@@ -127,6 +134,103 @@ function DetailsStep({ headingRef, value, onChange, onBack, onContinue }: { head
         <button type="button" onClick={onContinue} className="primary-button">Continue</button>
       </div>
     </div>
+  </StepFrame>;
+}
+
+function RegionStep({ headingRef, values, error, onChange, onBack, onContinue }: { headingRef: React.RefObject<HTMLHeadingElement | null>; values: ContactPayload; error?: string; onChange: (field: keyof ContactPayload, value: string) => void; onBack: () => void; onContinue: () => void }) {
+  const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const searchRef = useRef<HTMLInputElement>(null);
+  const selected = COUNTRIES.find((country) => country.name === values.country);
+  const matches = COUNTRIES.filter((country) => country.name.toLowerCase().includes(query.trim().toLowerCase()));
+
+  useEffect(() => {
+    if (!open) return;
+    searchRef.current?.focus();
+    const closeOnOutsideClick = (event: MouseEvent) => {
+      if (!dropdownRef.current?.contains(event.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", closeOnOutsideClick);
+    return () => document.removeEventListener("mousedown", closeOnOutsideClick);
+  }, [open]);
+
+  const choose = (countryName: string) => {
+    onChange("country", countryName);
+    setQuery("");
+    setOpen(false);
+  };
+
+  return <StepFrame headingRef={headingRef} heading="Where are you joining us from?" description="We'd love to know where you're based." onBack={onBack}>
+    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+      <div ref={dropdownRef}>
+        <label id="country-label" className="mb-1.5 block text-[0.85rem] font-medium text-ink">Country <span style={{ color: ERROR_COLOR }}>*</span></label>
+        <div className="relative">
+          <button
+            type="button"
+            aria-labelledby="country-label"
+            aria-haspopup="listbox"
+            aria-expanded={open}
+            aria-describedby={error ? "country-error" : undefined}
+            onClick={() => setOpen((current) => !current)}
+            onKeyDown={(event) => {
+              if (event.key === "Escape") setOpen(false);
+            }}
+            className={`${INPUT} flex min-h-[3.1rem] items-center justify-between gap-3 text-left ${selected ? "text-ink" : "text-muted/70"}`}
+          >
+            <span className="flex min-w-0 items-center gap-2.5">
+              {selected ? <span aria-hidden="true" className="text-[1.15rem] leading-none">{selected.flag}</span> : null}
+              <span className="truncate">{selected?.name ?? "Select your country"}</span>
+            </span>
+            <span aria-hidden="true" className={`h-2 w-2 shrink-0 border-b border-r border-muted transition-transform duration-200 ${open ? "rotate-[225deg] translate-y-0.5" : "rotate-45 -translate-y-0.5"}`} />
+          </button>
+          {open ? (
+            <div className="absolute z-20 mt-2 w-full overflow-hidden rounded-md border border-hairline bg-white">
+              <div className="border-b border-hairline p-2">
+                <label htmlFor="country-search" className="sr-only">Search countries</label>
+                <input
+                  ref={searchRef}
+                  id="country-search"
+                  value={query}
+                  onChange={(event) => setQuery(event.target.value)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Escape") setOpen(false);
+                    if (event.key === "Enter" && matches[0]) {
+                      event.preventDefault();
+                      choose(matches[0].name);
+                    }
+                  }}
+                  placeholder="Search countries..."
+                  className={INPUT}
+                  autoComplete="off"
+                />
+              </div>
+              <div role="listbox" aria-labelledby="country-label" className="max-h-64 overflow-y-auto p-1.5">
+                {matches.length ? matches.map((country) => (
+                  <button
+                    key={country.code}
+                    type="button"
+                    role="option"
+                    aria-selected={values.country === country.name}
+                    onClick={() => choose(country.name)}
+                    className={`flex w-full items-center gap-2.5 rounded-md px-3 py-2.5 text-left text-[0.975rem] transition-colors duration-150 ${values.country === country.name ? "bg-[#171827] text-white" : "text-ink hover:bg-[#F7F5F0]"}`}
+                  >
+                    <span aria-hidden="true" className="text-[1.15rem] leading-none">{country.flag}</span>
+                    <span>{country.name}</span>
+                  </button>
+                )) : <p className="px-3 py-4 text-[0.9rem] text-muted">No countries found.</p>}
+              </div>
+            </div>
+          ) : null}
+        </div>
+        {error && <p id="country-error" role="alert" className="mt-1.5 text-[0.8rem]" style={{ color: ERROR_COLOR }}>{error}</p>}
+      </div>
+      <div>
+        <label htmlFor="city" className="mb-1.5 block text-[0.85rem] font-medium text-ink">City <span className="text-muted">(optional)</span></label>
+        <input id="city" name="city" value={values.city} onChange={(event) => onChange("city", event.target.value)} placeholder="Your city (optional)" className={INPUT} autoComplete="address-level2" />
+      </div>
+    </div>
+    <StepActions onBack={onBack} onContinue={onContinue} disabled={!values.country} />
   </StepFrame>;
 }
 

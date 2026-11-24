@@ -5,6 +5,8 @@ export type ContactPayload = {
   projectSize: string;
   budget: string;
   projectDetails: string;
+  country: string;
+  city: string;
   name: string;
   email: string;
   whatsapp: string;
@@ -13,7 +15,7 @@ export type ContactPayload = {
 };
 
 export type FieldErrors = Partial<
-  Record<"service" | "projectSize" | "budget" | "projectDetails" | "name" | "email" | "whatsapp", string>
+  Record<"service" | "projectSize" | "budget" | "projectDetails" | "country" | "city" | "name" | "email" | "whatsapp", string>
 >;
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -28,6 +30,8 @@ export function validateContact(input: Partial<ContactPayload>): FieldErrors {
 
   const details = (input.projectDetails ?? "").trim();
   if (details.length > 4000) errors.projectDetails = "That project description is too long.";
+
+  if (!(input.country ?? "").trim()) errors.country = "Please select your country.";
 
   const name = (input.name ?? "").trim();
   if (name.length < 2) errors.name = "Please enter your name.";
