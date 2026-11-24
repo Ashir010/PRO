@@ -12,6 +12,7 @@ export type ContactPayload = {
   videoType: string;
   videoTypeOther: string;
   referenceMaterials: string[];
+  additionalServices: string[];
   name: string;
   email: string;
   whatsapp: string;

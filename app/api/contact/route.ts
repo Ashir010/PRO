@@ -50,6 +50,9 @@ export async function POST(request: Request) {
     referenceMaterials: Array.isArray(body.referenceMaterials)
       ? body.referenceMaterials.filter((item): item is string => typeof item === "string")
       : [],
+    additionalServices: Array.isArray(body.additionalServices)
+      ? body.additionalServices.filter((item): item is string => typeof item === "string")
+      : [],
     name: String(body.name ?? ""),
     email: String(body.email ?? ""),
     whatsapp: String(body.whatsapp ?? ""),
@@ -100,6 +103,7 @@ export async function POST(request: Request) {
                 `3D video type: ${payload.videoType}`,
                 `3D video type details: ${payload.videoTypeOther || "Not provided"}`,
                 `Reference materials: ${payload.referenceMaterials.join(", ") || "Not provided"}`,
+                `Additional services: ${payload.additionalServices.join(", ") || "Not provided"}`,
               ]
             : []),
           "",

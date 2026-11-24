@@ -34,6 +34,7 @@ const empty: ContactPayload = {
   videoType: "",
   videoTypeOther: "",
   referenceMaterials: [],
+  additionalServices: [],
   name: "",
   email: "",
   whatsapp: "",
@@ -43,6 +44,7 @@ const empty: ContactPayload = {
 export function ContactForm() {
   const [values, setValues] = useState<ContactPayload>(empty);
   const [selectedService, setSelectedService] = useState("");
+  const [addingService, setAddingService] = useState(false);
   const [step, setStep] = useState<FlowStep>("service");
   const [direction, setDirection] = useState<"forward" | "back">("forward");
   const [errors, setErrors] = useState<FieldErrors>({});
@@ -55,6 +57,13 @@ export function ContactForm() {
   const update = (field: keyof ContactPayload, value: string) => {
     if (field === "service") setSelectedService(value);
     setValues((current) => {
+      if (field === "service" && addingService) {
+        if (value === "3D Videos") return current;
+        const additionalServices = current.additionalServices.includes(value)
+          ? current.additionalServices
+          : [...current.additionalServices, value];
+        return { ...current, additionalServices };
+      }
       if (field === "service" && value !== "3D Videos") {
         return {
           ...current,
@@ -90,6 +99,11 @@ export function ContactForm() {
     if (step === "service") {
       if (!selectedService) return;
       setDirection("forward");
+      if (addingService) {
+        setAddingService(false);
+        setStep("projectSize");
+        return;
+      }
       setStep(selectedService === "3D Videos" ? "visualization" : "projectSize");
       return;
     }
@@ -115,6 +129,13 @@ export function ContactForm() {
   };
 
   const back = () => {
+    if (step === "service" && addingService) {
+      setDirection("back");
+      setAddingService(false);
+      setSelectedService("3D Videos");
+      setStep("references");
+      return;
+    }
     if (stepIndex > 0) {
       setDirection("back");
       setStep(flowSteps[stepIndex - 1]);
@@ -161,7 +182,7 @@ export function ContactForm() {
 
       <div key={`${step}-${direction}-${status}`} className={direction === "forward" ? "contact-step-in" : "contact-step-in contact-step-in--back"}>
         {step === "service" ? (
-          <ChoiceStep headingRef={headingRef} heading={steps[0].heading} description={steps[0].description} options={steps[0].options} selected={values.service} onSelect={(value) => update("service", value)} onBack={undefined} onContinue={next} />
+          <ChoiceStep headingRef={headingRef} heading={steps[0].heading} description={steps[0].description} options={steps[0].options} selected={addingService ? selectedService : values.service} onSelect={(value) => update("service", value)} onBack={addingService ? back : undefined} onContinue={next} />
         ) : step === "visualization" ? (
           <VisualizationStep headingRef={headingRef} values={values} onChange={update} onBack={back} onContinue={next} />
         ) : step === "videoType" ? (
@@ -175,6 +196,11 @@ export function ContactForm() {
           }))} onBack={back} onContinue={() => {
             setDirection("forward");
             setStep("projectSize");
+          }} onAddService={() => {
+            setDirection("back");
+            setAddingService(true);
+            setSelectedService("");
+            setStep("service");
           }} />
         ) : step === "projectSize" ? (
           <ChoiceStep headingRef={headingRef} heading={steps[1].heading} description={steps[1].description} options={steps[1].options} selected={values.projectSize} onSelect={(value) => update("projectSize", value)} onBack={back} onContinue={next} />
@@ -285,7 +311,7 @@ function VideoTypeStep({ headingRef, values, onChange, onBack, onContinue }: { h
   </StepFrame>;
 }
 
-function ReferenceMaterialsStep({ headingRef, values, onToggle, onBack, onContinue }: { headingRef: React.RefObject<HTMLHeadingElement | null>; values: ContactPayload; onToggle: (material: string) => void; onBack: () => void; onContinue: () => void }) {
+function ReferenceMaterialsStep({ headingRef, values, onToggle, onBack, onContinue, onAddService }: { headingRef: React.RefObject<HTMLHeadingElement | null>; values: ContactPayload; onToggle: (material: string) => void; onBack: () => void; onContinue: () => void; onAddService: () => void }) {
   return <StepFrame headingRef={headingRef} heading="What reference materials can you provide?" description="" onBack={onBack}>
     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
       {referenceOptions.map((option) => {
@@ -293,7 +319,13 @@ function ReferenceMaterialsStep({ headingRef, values, onToggle, onBack, onContin
         return <button key={option} type="button" aria-pressed={selected} onClick={() => onToggle(option)} className={`min-h-16 rounded-md border px-5 py-4 text-left text-[0.975rem] font-semibold transition-all duration-200 active:translate-y-px ${selected ? "border-[#171827] bg-[#171827] text-white" : "border-hairline bg-white text-ink hover:border-[#E66B4B] hover:bg-[#F7F5F0]"}`}>{option}</button>;
       })}
     </div>
-    <StepActions onBack={onBack} onContinue={onContinue} disabled={values.referenceMaterials.length === 0} />
+    <div className="mt-7 flex flex-wrap items-center justify-between gap-4">
+      <button type="button" onClick={onBack} className="ul-link text-[0.9rem] font-semibold text-ink">Back</button>
+      <div className="flex items-center gap-5">
+        <button type="button" onClick={onAddService} className="ul-link text-[0.9rem] font-semibold text-ink">Add another service</button>
+        <button type="button" onClick={onContinue} disabled={values.referenceMaterials.length === 0} className="primary-button">Continue</button>
+      </div>
+    </div>
   </StepFrame>;
 }
 
