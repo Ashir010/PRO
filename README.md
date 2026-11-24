@@ -92,7 +92,9 @@ The 4:5 box already prevents layout shift. Keep the `alt` text.
 ## Contact form & email delivery
 
 Fields: **service, project size, budget, project details, country, optional city,
-name, email, and optional WhatsApp number** (+ a hidden honeypot). Validation is shared
+name, email, and optional WhatsApp number** (+ a hidden honeypot). When 3D Videos
+is selected, the enquiry also includes visualization, 3D video type, and reference
+materials fields. Validation is shared
 client+server (`lib/validation.ts`). The route
 `app/api/contact/route.ts` validates server-side, rejects the honeypot, applies
 a best-effort in-memory rate limit, and **never fakes a send** — until a provider

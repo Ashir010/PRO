@@ -43,6 +43,13 @@ export async function POST(request: Request) {
     projectDetails: String(body.projectDetails ?? ""),
     country: String(body.country ?? ""),
     city: String(body.city ?? ""),
+    visualizationType: String(body.visualizationType ?? ""),
+    visualizationOther: String(body.visualizationOther ?? ""),
+    videoType: String(body.videoType ?? ""),
+    videoTypeOther: String(body.videoTypeOther ?? ""),
+    referenceMaterials: Array.isArray(body.referenceMaterials)
+      ? body.referenceMaterials.filter((item): item is string => typeof item === "string")
+      : [],
     name: String(body.name ?? ""),
     email: String(body.email ?? ""),
     whatsapp: String(body.whatsapp ?? ""),
@@ -86,6 +93,15 @@ export async function POST(request: Request) {
           `Budget: ${payload.budget}`,
           `Country: ${payload.country}`,
           `City: ${payload.city || "Not provided"}`,
+          ...(payload.service === "3D Videos"
+            ? [
+                `Visualization: ${payload.visualizationType}`,
+                `Visualization details: ${payload.visualizationOther || "Not provided"}`,
+                `3D video type: ${payload.videoType}`,
+                `3D video type details: ${payload.videoTypeOther || "Not provided"}`,
+                `Reference materials: ${payload.referenceMaterials.join(", ") || "Not provided"}`,
+              ]
+            : []),
           "",
           "Project details:",
           payload.projectDetails || "Not provided",

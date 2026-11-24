@@ -17,11 +17,33 @@ const steps = [
   { key: "budget", heading: "What's your approximate budget?", description: "This helps us understand the scale of your project.", options: ["Under $500", "$500 – $1,000", "$1,000 – $3,000", "$3,000 – $5,000", "$5,000+", "Let's discuss"] },
 ] as const;
 
-const empty: ContactPayload = { service: "", projectSize: "", budget: "", projectDetails: "", country: "", city: "", name: "", email: "", whatsapp: "", company: "" };
+type FlowStep = "service" | "visualization" | "videoType" | "references" | "projectSize" | "budget" | "projectDetails" | "region" | "contact";
+
+const baseSteps: FlowStep[] = ["service", "projectSize", "budget", "projectDetails", "region", "contact"];
+const visualizationSteps: FlowStep[] = ["service", "visualization", "videoType", "references", "projectSize", "budget", "projectDetails", "region", "contact"];
+
+const empty: ContactPayload = {
+  service: "",
+  projectSize: "",
+  budget: "",
+  projectDetails: "",
+  country: "",
+  city: "",
+  visualizationType: "",
+  visualizationOther: "",
+  videoType: "",
+  videoTypeOther: "",
+  referenceMaterials: [],
+  name: "",
+  email: "",
+  whatsapp: "",
+  company: "",
+};
 
 export function ContactForm() {
   const [values, setValues] = useState<ContactPayload>(empty);
-  const [step, setStep] = useState(0);
+  const [selectedService, setSelectedService] = useState("");
+  const [step, setStep] = useState<FlowStep>("service");
   const [direction, setDirection] = useState<"forward" | "back">("forward");
   const [errors, setErrors] = useState<FieldErrors>({});
   const [status, setStatus] = useState<Status>("idle");
@@ -31,7 +53,27 @@ export function ContactForm() {
   useEffect(() => { headingRef.current?.focus(); }, [step, status]);
 
   const update = (field: keyof ContactPayload, value: string) => {
-    setValues((current) => ({ ...current, [field]: value }));
+    if (field === "service") setSelectedService(value);
+    setValues((current) => {
+      if (field === "service" && value !== "3D Videos") {
+        return {
+          ...current,
+          service: value,
+          visualizationType: "",
+          visualizationOther: "",
+          videoType: "",
+          videoTypeOther: "",
+          referenceMaterials: [],
+        };
+      }
+      if (field === "visualizationType" && value !== "Other") {
+        return { ...current, visualizationType: value, visualizationOther: "" };
+      }
+      if (field === "videoType" && value !== "Other") {
+        return { ...current, videoType: value, videoTypeOther: "" };
+      }
+      return { ...current, [field]: value };
+    });
     if (errors[field as keyof FieldErrors]) {
       setErrors((current) => {
         const next = { ...current };
@@ -41,20 +83,42 @@ export function ContactForm() {
     }
   };
 
+  const flowSteps = selectedService === "3D Videos" ? visualizationSteps : baseSteps;
+  const stepIndex = flowSteps.indexOf(step);
+
   const next = () => {
-    if (step < 3 && !values[steps[step].key]) return;
-    if (step === 4 && !values.country) {
+    if (step === "service") {
+      if (!selectedService) return;
+      setDirection("forward");
+      setStep(selectedService === "3D Videos" ? "visualization" : "projectSize");
+      return;
+    }
+    if (step === "projectSize" && !values.projectSize) return;
+    if (step === "budget" && !values.budget) return;
+    if (step === "visualization") {
+      if (!values.visualizationType) return;
+      if (values.visualizationType === "Other" && !values.visualizationOther.trim()) return;
+    }
+    if (step === "videoType") {
+      if (!values.videoType) return;
+      if (values.videoType === "Other" && !values.videoTypeOther.trim()) return;
+    }
+    if (step === "references" && values.referenceMaterials.length === 0) return;
+    if (step === "region" && !values.country) {
       setErrors((current) => ({ ...current, country: "Please select your country." }));
       return;
     }
-    setDirection("forward");
-    setStep((current) => current + 1);
+    if (stepIndex >= 0 && stepIndex < flowSteps.length - 1) {
+      setDirection("forward");
+      setStep(flowSteps[stepIndex + 1]);
+    }
   };
 
   const back = () => {
-    if (step === 0) return;
-    setDirection("back");
-    setStep((current) => current - 1);
+    if (stepIndex > 0) {
+      setDirection("back");
+      setStep(flowSteps[stepIndex - 1]);
+    }
   };
 
   async function submit() {
@@ -81,27 +145,41 @@ export function ContactForm() {
   if (status === "success") return <SuccessScreen />;
   if (status === "notConfigured") return <StatusScreen heading="Delivery isn't connected yet." message={serverMessage || "This form is ready, but email delivery still needs to be configured before enquiries can be sent."} action="Back to contact details" onAction={() => setStatus("idle")} />;
 
-  const activeStep = steps[step];
-  const progress = ((step + 1) / 6) * 100;
+  const progress = ((stepIndex + 1) / flowSteps.length) * 100;
 
   return (
     <div className="mx-auto w-full max-w-4xl" aria-live="polite">
       <div className="mb-9 flex items-center justify-between gap-5">
         <SpinningLogo />
         <div className="w-full max-w-[17rem]">
-          <p className="mb-2 text-right text-caption text-muted">Step {step + 1} of 6</p>
-          <div className="h-1 overflow-hidden rounded-full bg-hairline" role="progressbar" aria-label="Enquiry progress" aria-valuemin={1} aria-valuemax={6} aria-valuenow={step + 1}>
+          <p className="mb-2 text-right text-caption text-muted">Step {stepIndex + 1} of {flowSteps.length}</p>
+          <div className="h-1 overflow-hidden rounded-full bg-hairline" role="progressbar" aria-label="Enquiry progress" aria-valuemin={1} aria-valuemax={flowSteps.length} aria-valuenow={stepIndex + 1}>
             <div className="h-full rounded-full bg-[#E66B4B] transition-[width] duration-500 [transition-timing-function:var(--ease-signature)]" style={{ width: `${progress}%` }} />
           </div>
         </div>
       </div>
 
       <div key={`${step}-${direction}-${status}`} className={direction === "forward" ? "contact-step-in" : "contact-step-in contact-step-in--back"}>
-        {step < 3 && activeStep ? (
-          <ChoiceStep headingRef={headingRef} heading={activeStep.heading} description={activeStep.description} options={activeStep.options} selected={values[activeStep.key]} onSelect={(value) => update(activeStep.key, value)} onBack={step > 0 ? back : undefined} onContinue={next} />
-        ) : step === 3 ? (
+        {step === "service" ? (
+          <ChoiceStep headingRef={headingRef} heading={steps[0].heading} description={steps[0].description} options={steps[0].options} selected={values.service} onSelect={(value) => update("service", value)} onBack={undefined} onContinue={next} />
+        ) : step === "visualization" ? (
+          <VisualizationStep headingRef={headingRef} values={values} onChange={update} onBack={back} onContinue={next} />
+        ) : step === "videoType" ? (
+          <VideoTypeStep headingRef={headingRef} values={values} onChange={update} onBack={back} onContinue={next} />
+        ) : step === "references" ? (
+          <ReferenceMaterialsStep headingRef={headingRef} values={values} onToggle={(material) => setValues((current) => ({
+            ...current,
+            referenceMaterials: current.referenceMaterials.includes(material)
+              ? current.referenceMaterials.filter((item) => item !== material)
+              : [...current.referenceMaterials, material],
+          }))} onBack={back} onContinue={next} />
+        ) : step === "projectSize" ? (
+          <ChoiceStep headingRef={headingRef} heading={steps[1].heading} description={steps[1].description} options={steps[1].options} selected={values.projectSize} onSelect={(value) => update("projectSize", value)} onBack={back} onContinue={next} />
+        ) : step === "budget" ? (
+          <ChoiceStep headingRef={headingRef} heading={steps[2].heading} description={steps[2].description} options={steps[2].options} selected={values.budget} onSelect={(value) => update("budget", value)} onBack={back} onContinue={next} />
+        ) : step === "projectDetails" ? (
           <DetailsStep headingRef={headingRef} value={values.projectDetails} onChange={(value) => update("projectDetails", value)} onBack={back} onContinue={next} />
-        ) : step === 4 ? (
+        ) : step === "region" ? (
           <RegionStep headingRef={headingRef} values={values} error={errors.country} onChange={update} onBack={back} onContinue={next} />
         ) : (
           <ContactDetailsStep headingRef={headingRef} values={values} errors={errors} status={status} serverMessage={serverMessage} onChange={update} onBack={back} onSubmit={submit} />
@@ -134,6 +212,85 @@ function DetailsStep({ headingRef, value, onChange, onBack, onContinue }: { head
         <button type="button" onClick={onContinue} className="primary-button">Continue</button>
       </div>
     </div>
+  </StepFrame>;
+}
+
+const visualizationOptions = [
+  "Industrial machinery & equipment",
+  "Manufacturing / production processes",
+  "Products & components",
+  "Factories & industrial facilities",
+  "Buildings & infrastructure",
+  "Automotive & mechanical systems",
+  "Other",
+] as const;
+
+const videoTypeOptions = [
+  "Product demonstration",
+  "Technical / functional animation",
+  "Exploded-view animation",
+  "Manufacturing process animation",
+  "Photorealistic product visualization",
+  "Full-scale industrial walkthrough",
+  "Other",
+] as const;
+
+const referenceOptions = [
+  "CAD / 3D files",
+  "Technical drawings / blueprints",
+  "Product photographs",
+  "Existing videos",
+  "Reference links",
+  "Starting from scratch",
+] as const;
+
+function VisualizationStep({ headingRef, values, onChange, onBack, onContinue }: { headingRef: React.RefObject<HTMLHeadingElement | null>; values: ContactPayload; onChange: (field: keyof ContactPayload, value: string) => void; onBack: () => void; onContinue: () => void }) {
+  const valid = Boolean(values.visualizationType) && (values.visualizationType !== "Other" || Boolean(values.visualizationOther.trim()));
+  return <StepFrame headingRef={headingRef} heading="What would you like us to visualize?" description="" onBack={onBack}>
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      {visualizationOptions.map((option) => {
+        const selected = values.visualizationType === option;
+        return <button key={option} type="button" aria-pressed={selected} onClick={() => onChange("visualizationType", option)} className={`min-h-16 rounded-md border px-5 py-4 text-left text-[0.975rem] font-semibold transition-all duration-200 active:translate-y-px ${selected ? "border-[#171827] bg-[#171827] text-white" : "border-hairline bg-white text-ink hover:border-[#E66B4B] hover:bg-[#F7F5F0]"}`}>{option}</button>;
+      })}
+    </div>
+    {values.visualizationType === "Other" ? (
+      <div className="mt-5">
+        <label htmlFor="visualizationOther" className="sr-only">Other visualization</label>
+        <input id="visualizationOther" name="visualizationOther" value={values.visualizationOther} onChange={(event) => onChange("visualizationOther", event.target.value)} placeholder="Tell us what you'd like to visualize..." className={INPUT} />
+      </div>
+    ) : null}
+    <StepActions onBack={onBack} onContinue={onContinue} disabled={!valid} />
+  </StepFrame>;
+}
+
+function VideoTypeStep({ headingRef, values, onChange, onBack, onContinue }: { headingRef: React.RefObject<HTMLHeadingElement | null>; values: ContactPayload; onChange: (field: keyof ContactPayload, value: string) => void; onBack: () => void; onContinue: () => void }) {
+  const valid = Boolean(values.videoType) && (values.videoType !== "Other" || Boolean(values.videoTypeOther.trim()));
+  return <StepFrame headingRef={headingRef} heading="What type of 3D video are you looking for?" description="" onBack={onBack}>
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      {videoTypeOptions.map((option) => {
+        const selected = values.videoType === option;
+        return <button key={option} type="button" aria-pressed={selected} onClick={() => onChange("videoType", option)} className={`min-h-16 rounded-md border px-5 py-4 text-left text-[0.975rem] font-semibold transition-all duration-200 active:translate-y-px ${selected ? "border-[#171827] bg-[#171827] text-white" : "border-hairline bg-white text-ink hover:border-[#E66B4B] hover:bg-[#F7F5F0]"}`}>{option}</button>;
+      })}
+    </div>
+    {values.videoType === "Other" ? (
+      <div className="mt-5">
+        <label htmlFor="videoTypeOther" className="sr-only">Other 3D video type</label>
+        <input id="videoTypeOther" name="videoTypeOther" value={values.videoTypeOther} onChange={(event) => onChange("videoTypeOther", event.target.value)} placeholder="Describe the type of 3D video you need..." className={INPUT} />
+      </div>
+    ) : null}
+    <StepActions onBack={onBack} onContinue={onContinue} disabled={!valid} />
+  </StepFrame>;
+}
+
+function ReferenceMaterialsStep({ headingRef, values, onToggle, onBack, onContinue }: { headingRef: React.RefObject<HTMLHeadingElement | null>; values: ContactPayload; onToggle: (material: string) => void; onBack: () => void; onContinue: () => void }) {
+  return <StepFrame headingRef={headingRef} heading="What reference materials can you provide?" description="" onBack={onBack}>
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      {referenceOptions.map((option) => {
+        const selected = values.referenceMaterials.includes(option);
+        return <button key={option} type="button" aria-pressed={selected} onClick={() => onToggle(option)} className={`min-h-16 rounded-md border px-5 py-4 text-left text-[0.975rem] font-semibold transition-all duration-200 active:translate-y-px ${selected ? "border-[#171827] bg-[#171827] text-white" : "border-hairline bg-white text-ink hover:border-[#E66B4B] hover:bg-[#F7F5F0]"}`}>{option}</button>;
+      })}
+    </div>
+    <StepActions onBack={onBack} onContinue={onContinue} disabled={values.referenceMaterials.length === 0} />
   </StepFrame>;
 }
 
@@ -255,7 +412,7 @@ function StepFrame({ headingRef, heading, description, onBack, children }: { hea
   return <section aria-label={heading} data-has-back={onBack ? "true" : undefined} className="min-h-[28rem]">
     <CornerLabel>Start a project</CornerLabel>
     <h2 ref={headingRef} tabIndex={-1} className="font-display mt-5 text-[length:var(--text-title)] font-semibold leading-[1.06] tracking-[-0.02em] text-ink focus:outline-none">{heading}</h2>
-    <p className="mt-4 max-w-[46ch] text-[length:var(--text-body-lg)] text-muted">{description}</p>
+    {description ? <p className="mt-4 max-w-[46ch] text-[length:var(--text-body-lg)] text-muted">{description}</p> : null}
     <div className="mt-8">{children}</div>
   </section>;
 }

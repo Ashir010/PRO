@@ -7,6 +7,11 @@ export type ContactPayload = {
   projectDetails: string;
   country: string;
   city: string;
+  visualizationType: string;
+  visualizationOther: string;
+  videoType: string;
+  videoTypeOther: string;
+  referenceMaterials: string[];
   name: string;
   email: string;
   whatsapp: string;
@@ -15,7 +20,7 @@ export type ContactPayload = {
 };
 
 export type FieldErrors = Partial<
-  Record<"service" | "projectSize" | "budget" | "projectDetails" | "country" | "city" | "name" | "email" | "whatsapp", string>
+  Record<"service" | "projectSize" | "budget" | "projectDetails" | "country" | "city" | "visualizationType" | "visualizationOther" | "videoType" | "videoTypeOther" | "referenceMaterials" | "name" | "email" | "whatsapp", string>
 >;
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -27,6 +32,18 @@ export function validateContact(input: Partial<ContactPayload>): FieldErrors {
   if (!(input.service ?? "").trim()) errors.service = "Please choose the work you need.";
   if (!(input.projectSize ?? "").trim()) errors.projectSize = "Please choose a project size.";
   if (!(input.budget ?? "").trim()) errors.budget = "Please choose a budget range.";
+
+  if ((input.service ?? "") === "3D Videos") {
+    if (!(input.visualizationType ?? "").trim()) errors.visualizationType = "Please choose what you'd like us to visualize.";
+    if (input.visualizationType === "Other" && !(input.visualizationOther ?? "").trim()) {
+      errors.visualizationOther = "Please tell us what you'd like us to visualize.";
+    }
+    if (!(input.videoType ?? "").trim()) errors.videoType = "Please choose the type of 3D video.";
+    if (input.videoType === "Other" && !(input.videoTypeOther ?? "").trim()) {
+      errors.videoTypeOther = "Please describe the type of 3D video you need.";
+    }
+    if (!(input.referenceMaterials ?? []).length) errors.referenceMaterials = "Please choose at least one reference material.";
+  }
 
   const details = (input.projectDetails ?? "").trim();
   if (details.length > 4000) errors.projectDetails = "That project description is too long.";
